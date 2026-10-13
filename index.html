@@ -2,98 +2,293 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Independent US stock research, technical analysis, breakout setups, and market insights.">
-  <title>Satisfynex — Independent Stock Research</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background: #080b12;
-      color: #f3f5fa;
-      font-family: Arial, sans-serif;
-      line-height: 1.6;
-    }
-    header {
-      padding: 24px 8%;
-      border-bottom: 1px solid #202635;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .logo { font-size: 22px; font-weight: 800; letter-spacing: 1px; }
-    nav a { color: #aeb8ca; margin-left: 22px; text-decoration: none; font-size: 14px; }
-    .hero { max-width: 1000px; margin: auto; padding: 110px 24px 90px; }
-    .eyebrow { color: #7ee7c0; text-transform: uppercase; letter-spacing: 3px; font-size: 12px; }
-    h1 { font-size: clamp(42px, 7vw, 76px); line-height: 1.08; margin: 20px 0; letter-spacing: -2px; }
-    .sub { color: #aeb8ca; max-width: 620px; font-size: 18px; }
-    .button {
-      display: inline-block; margin-top: 24px; padding: 13px 20px;
-      background: #7ee7c0; color: #08110f; text-decoration: none;
-      font-weight: 700; border-radius: 5px;
-    }
-    section { padding: 48px 8%; border-top: 1px solid #202635; }
-    .cards { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 18px; }
-    .card { border: 1px solid #252d3e; border-radius: 9px; padding: 22px; background: #0d121d; }
-    .card p, .muted { color: #aeb8ca; }
-    footer { padding: 30px 8%; color: #8994a8; font-size: 13px; border-top: 1px solid #202635; }
-    footer a { color: #aeb8ca; margin-right: 16px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Independent US stock research, technical analysis, growth stocks and breakout setups.">
+<title>Research & Articles | Satisfynex</title>
+<style>
+:root{--bg:#080b12;--panel:#101622;--line:#273144;--text:#f3f5fa;--muted:#a5b0c3;--green:#7ee7c0}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.7 Arial,sans-serif}
+a{color:inherit;text-decoration:none}
+header{height:76px;padding:0 7%;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
+.logo{font-weight:800;font-size:21px;letter-spacing:1px}
+.logo span,.accent{color:var(--green)}
+nav{display:flex;gap:24px;color:var(--muted);font-size:14px}
+nav a:hover,.footer a:hover{color:var(--green)}
+.wrap{max-width:1120px;margin:auto;padding:0 24px}
+.hero{padding:76px 0 52px}
+.eyebrow{color:var(--green);font-size:11px;letter-spacing:3px;text-transform:uppercase}
+h1{font-size:clamp(38px,6vw,64px);line-height:1.1;letter-spacing:-2px;margin:16px 0}
+h2{font-size:28px;line-height:1.25}
+h3{line-height:1.4}
+.muted{color:var(--muted)}
+.hero p{max-width:650px;color:var(--muted);font-size:17px}
+.controls{display:flex;gap:12px;flex-wrap:wrap;margin:22px 0 30px}
+input,select{background:#101622;color:var(--text);border:1px solid var(--line);padding:14px;border-radius:6px;font-size:14px}
+input{flex:1;min-width:220px}
+select{min-width:190px}
+input:focus,select:focus{outline:1px solid var(--green)}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:32px;padding-bottom:80px}
+.articles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-content:start}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:23px;transition:border-color .2s}
+.card:hover{border-color:var(--green)}
+.tag{color:var(--green);font-size:11px;letter-spacing:1.2px;text-transform:uppercase}
+.ticker{display:inline-block;border:1px solid #354157;padding:3px 8px;border-radius:4px;font-size:12px;color:#c7d2e5;margin-top:16px}
+.card h3{font-size:21px;margin:12px 0 8px}
+.card p{color:var(--muted);font-size:14px}
+.meta{font-size:12px;color:#8390a5}
+.side{border:1px solid var(--line);border-radius:9px;padding:22px;height:max-content}
+.side h3{margin-top:0}
+.side a{display:block;color:var(--muted);padding:8px 0}
+.side a:hover{color:var(--green)}
+.disclaimer{font-size:12px;color:#8490a4;margin-top:22px}
+.article-view{max-width:780px;margin:0 auto;padding:58px 24px 90px}
+.article-view h1{font-size:clamp(34px,5vw,54px)}
+.article-body{color:#d0d7e4;font-size:17px;line-height:1.9}
+.article-body h2{color:var(--text);margin-top:36px;font-size:26px}
+.article-body ul{padding-left:22px}
+.notice{border-left:3px solid var(--green);background:var(--panel);padding:16px 20px;margin:24px 0;color:var(--muted);font-size:14px}
+.back{display:inline-block;color:var(--green);margin-bottom:24px}
+.hidden{display:none!important}
+footer{border-top:1px solid var(--line);padding:30px 7%;color:#8994a8;font-size:12px}
+.footer-links{display:flex;gap:18px;flex-wrap:wrap;margin:12px 0}
+@media(max-width:760px){header{padding:0 20px}nav{gap:12px}.layout{grid-template-columns:1fr}.side{order:-1}.articles{grid-template-columns:1fr}.hero{padding-top:54px}}
+</style>
 </head>
 <body>
-  <header>
-    <div class="logo">SATISFYNEX<span style="color:#7ee7c0">.</span></div>
-    <nav>
-      <a href="#research">Research</a>
-      <a href="#about">About</a>
-    </nav>
-  </header>
+<header>
+  <a class="logo" href="#" onclick="showListing();return false">SATISFYNEX<span>.</span></a>
+  <nav>
+    <a href="#" onclick="showListing();return false">Research</a>
+    <a href="#about">About</a>
+  </nav>
+</header>
 
-  <main>
-    <div class="hero">
-      <div class="eyebrow">Independent Research. Smarter Decisions.</div>
-      <h1>See the setup<br>before the breakout.</h1>
-      <p class="sub">Independent research on US stocks, technical setups, growth opportunities, and market trends — built to help investors think more clearly.</p>
-      <a class="button" href="#research">Explore Research ↗</a>
+<main id="listing">
+  <section class="hero wrap">
+    <div class="eyebrow">Independent Research. Smarter Decisions.</div>
+    <h1>Research beyond<br>the headlines.</h1>
+    <p>Explore company developments, technical structures, emerging industry trends and potential setups across the US stock market.</p>
+    <div class="controls">
+      <input id="search" type="search" placeholder="Search ticker, company or keyword..." aria-label="Search articles">
+      <select id="category" aria-label="Filter by category">
+        <option value="all">All categories</option>
+        <option>Technical Analysis</option>
+        <option>Breakout Setups</option>
+        <option>Growth Stocks</option>
+        <option>Semiconductors</option>
+        <option>Energy</option>
+        <option>Market Insights</option>
+        <option>Risk Management</option>
+      </select>
     </div>
+  </section>
 
-    <section id="research">
-      <div class="eyebrow">Explore</div>
-      <h2>Research & Insights</h2>
-      <div class="cards">
-        <article class="card">
-          <h3>Technical Analysis</h3>
-          <p>Chart structure, key levels, momentum, and risk scenarios.</p>
-        </article>
-        <article class="card">
-          <h3>Breakout Setups</h3>
-          <p>Watchlists and potential setups before major price moves.</p>
-        </article>
-        <article class="card">
-          <h3>Growth Stocks</h3>
-          <p>Businesses, industry trends, and potential growth drivers.</p>
-        </article>
-        <article class="card">
-          <h3>Market Insights</h3>
-          <p>Understand the forces shaping US equities and investor sentiment.</p>
-        </article>
+  <section class="wrap layout">
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px">
+        <h2 style="margin:0">Latest Research</h2>
+        <span id="count" class="meta"></span>
       </div>
-      <p class="muted">Research articles are coming soon.</p>
-    </section>
+      <div class="articles" id="articles"></div>
+      <p id="empty" class="muted hidden">No articles match your search. Try another ticker or category.</p>
+    </div>
+    <aside class="side">
+      <div class="eyebrow">Browse by topic</div>
+      <h3>Research Desk</h3>
+      <a href="#" onclick="filterCategory('Technical Analysis');return false">Technical Analysis ↗</a>
+      <a href="#" onclick="filterCategory('Breakout Setups');return false">Breakout Setups ↗</a>
+      <a href="#" onclick="filterCategory('Growth Stocks');return false">Growth Stocks ↗</a>
+      <a href="#" onclick="filterCategory('Semiconductors');return false">Semiconductors ↗</a>
+      <a href="#" onclick="filterCategory('Energy');return false">Energy ↗</a>
+      <a href="#" onclick="filterCategory('Market Insights');return false">Market Insights ↗</a>
+      <div class="disclaimer">Research is educational and informational. It is not personalized investment advice or a promise of returns.</div>
+    </aside>
+  </section>
+</main>
 
-    <section id="about">
-      <div class="eyebrow">About Satisfynex</div>
-      <h2>Independent thinking. Clearer research.</h2>
-      <p class="sub">Satisfynex explores market structure, company developments, and investing ideas through independent analysis. Every setup involves uncertainty and risk.</p>
-    </section>
-  </main>
+<main id="articlePage" class="hidden">
+  <article class="article-view">
+    <a class="back" href="#" onclick="showListing();return false">← Back to Research</a>
+    <div id="detail"></div>
+  </article>
+</main>
 
-  <footer>
-    <p>© 2026 Satisfynex. Independent Research. Smarter Decisions.</p>
-    <p>Content is for educational and informational purposes only, not personalized financial advice. Investing involves risk, including the loss of principal.</p>
+<section id="about" class="wrap" style="padding-top:36px;padding-bottom:50px;border-top:1px solid var(--line)">
+  <div class="eyebrow">About Satisfynex</div>
+  <h2>Independent thinking. Clearer research.</h2>
+  <p class="muted" style="max-width:700px">We examine publicly available company information, price structure and market themes to help readers develop their own investment research process.</p>
+</section>
+
+<footer>
+  <div class="logo">SATISFYNEX<span>.</span></div>
+  <div class="footer-links">
     <a href="#about">About</a>
     <a href="mailto:contact@satisfynex.com">Contact</a>
-  </footer>
+    <a href="#" onclick="showPolicy('Privacy Policy');return false">Privacy Policy</a>
+    <a href="#" onclick="showPolicy('Terms of Use');return false">Terms of Use</a>
+    <a href="#" onclick="showPolicy('Disclaimer');return false">Disclaimer</a>
+  </div>
+  <p>© 2026 Satisfynex. Independent Research. Smarter Decisions.</p>
+  <p>Investing involves risk, including possible loss of principal. Always conduct your own research.</p>
+</footer>
+
+<script>
+const articles = [
+ {
+  id:"nvda-ai-infrastructure",
+  ticker:"NVDA",
+  company:"NVIDIA",
+  category:"Semiconductors",
+  title:"AI Infrastructure: What Investors Should Watch Beyond the Hype",
+  date:"Research Guide",
+  excerpt:"A framework for evaluating AI demand, data-center investment, competition and the risks behind semiconductor growth.",
+  sections:[
+   ["The bigger picture","AI infrastructure demand depends on more than headlines. Investors should examine customer spending, deployment schedules, supply availability and whether revenue growth translates into sustainable cash flow."],
+   ["What to monitor", "Track reported data-center revenue, gross margins, customer concentration, product transitions and management commentary. Compare actual results with expectations already reflected in the share price."],
+   ["Key risks", "Competition, export restrictions, customer concentration, supply constraints and slower capital spending can change the outlook. A strong industry does not automatically make every entry price attractive."],
+   ["Investor takeaway","Build a thesis from reported evidence, define what would invalidate it and avoid treating a popular narrative as a guarantee of future returns."]
+  ]
+ },
+ {
+  id:"mu-memory-cycle",
+  ticker:"MU",
+  company:"Micron Technology",
+  category:"Semiconductors",
+  title:"Memory Stocks: Understanding the Cycle Before Making a Decision",
+  date:"Research Guide",
+  excerpt:"How memory pricing, inventory, capital expenditure and high-bandwidth memory demand can shape the semiconductor cycle.",
+  sections:[
+   ["Why the cycle matters","Memory companies are exposed to supply and demand swings. Prices and profitability can improve quickly during a recovery, but the same cyclicality can reverse when supply grows faster than demand."],
+   ["Signals to track","Review DRAM and NAND pricing trends, inventory levels, capital expenditure plans, high-bandwidth memory demand and company guidance. Check whether stronger pricing is already reflected in valuation."],
+   ["What could go wrong","New capacity, weaker electronics demand or customer inventory corrections can pressure pricing. Strong earnings growth near a cyclical peak can also be misleading."],
+   ["Investor takeaway","Separate durable demand from temporary pricing strength. Use a range of scenarios rather than assuming recent growth will continue indefinitely."]
+  ]
+ },
+ {
+  id:"xom-energy-cashflow",
+  ticker:"XOM",
+  company:"Exxon Mobil",
+  category:"Energy",
+  title:"Oil Prices and Energy Stocks: Revenue Is Only One Part of the Story",
+  date:"Research Guide",
+  excerpt:"A practical look at commodity exposure, production costs, capital spending, dividends and downside risk.",
+  sections:[
+   ["How oil exposure works","Higher oil prices can support upstream revenue, but the impact varies with production mix, costs, hedging, taxes and the duration of the price move."],
+   ["Beyond the oil chart","Assess free cash flow, debt, capital expenditure, project economics, reserve quality and shareholder distributions. Integrated businesses may also have refining and chemical exposure."],
+   ["Risks to consider","Commodity prices can reverse rapidly. Political decisions, supply disruptions, demand weakness and rising costs can all affect earnings and valuation."],
+   ["Investor takeaway","Use multiple oil-price scenarios and examine balance-sheet resilience. A bullish commodity view alone is not a complete investment thesis."]
+  ]
+ },
+ {
+  id:"breakout-checklist",
+  ticker:"SETUP",
+  company:"Technical Research",
+  category:"Breakout Setups",
+  title:"A Breakout Checklist: Volume, Structure and Risk Before Entry",
+  date:"Trading Education",
+  excerpt:"A repeatable framework for checking resistance, relative volume, market context and invalidation levels.",
+  sections:[
+   ["Start with price structure","Identify a clear consolidation or resistance zone. A potential breakout is more useful when the structure is easy to define and the invalidation point is not excessively far away."],
+   ["Check participation","Compare breakout volume with the stock's normal activity. Relative volume can add context, but a single volume spike does not confirm sustained demand."],
+   ["Plan the risk first","Define the level that would invalidate the setup before entering. Consider liquidity, gap risk, position size and whether the potential reward justifies the downside."],
+   ["Investor takeaway","No checklist eliminates false breakouts. Wait for evidence that matches your plan, and avoid risking money you cannot afford to lose."]
+  ]
+ },
+ {
+  id:"position-sizing",
+  ticker:"RISK",
+  company:"Risk Management",
+  category:"Risk Management",
+  title:"Position Sizing: Protecting Capital When a Thesis Goes Wrong",
+  date:"Investor Education",
+  excerpt:"Why position size, portfolio concentration and predefined risk matter as much as choosing a stock.",
+  sections:[
+   ["Start with portfolio risk","A compelling idea can still produce a damaging loss if the position is too large. Think about how much of the portfolio could be lost if the thesis fails."],
+   ["Account for real-world conditions","Stops may execute below their trigger after a gap, and thinly traded stocks can have wider spreads. Diversification also cannot remove broad market risk."],
+   ["Review the whole portfolio","Several stocks from the same industry may behave like one concentrated position. Consider correlated exposures and keep adequate liquidity for changing conditions."],
+   ["Investor takeaway","A repeatable risk process cannot guarantee profits, but it can help prevent one mistake from dominating the portfolio."]
+  ]
+ },
+ {
+  id:"market-expectations",
+  ticker:"MARKET",
+  company:"US Market Insights",
+  category:"Market Insights",
+  title:"Good Company, Bad Entry? The Difference Between Growth and Valuation",
+  date:"Investor Education",
+  excerpt:"Why strong businesses can still disappoint investors when expectations and valuations are too high.",
+  sections:[
+   ["Expectations move prices","Share prices reflect both business performance and what investors expected beforehand. Results can improve while the stock falls if the market expected even better results."],
+   ["What to compare","Review revenue growth, profitability, cash flow, competitive position and valuation relative to plausible future outcomes. Avoid relying on a single metric."],
+   ["Consider multiple outcomes","Build optimistic, base and pessimistic scenarios. Ask what assumptions must hold for the current price to make sense."],
+   ["Investor takeaway","Business quality and investment attractiveness are related but different questions. Price, expectations and risk still matter."]
+  ]
+ }
+];
+
+const esc = s => String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+function renderList(){
+ const q=document.getElementById("search").value.toLowerCase().trim();
+ const cat=document.getElementById("category").value;
+ const filtered=articles.filter(a=>(cat==="all"||a.category===cat)&&[a.title,a.ticker,a.company,a.category,a.excerpt].join(" ").toLowerCase().includes(q));
+ document.getElementById("articles").innerHTML=filtered.map(a=>`
+ <a class="card" href="#article/${a.id}" onclick="openArticle('${a.id}');return false">
+  <div class="tag">${esc(a.category)}</div>
+  <h3>${esc(a.title)}</h3>
+  <p>${esc(a.excerpt)}</p>
+  <span class="ticker">${esc(a.ticker)}</span>
+  <div class="meta" style="margin-top:18px">${esc(a.date)} · Read research ↗</div>
+ </a>`).join("");
+ document.getElementById("count").textContent=filtered.length+" articles";
+ document.getElementById("empty").classList.toggle("hidden",filtered.length>0);
+}
+
+function openArticle(id){
+ const a=articles.find(x=>x.id===id);
+ if(!a)return;
+ document.getElementById("listing").classList.add("hidden");
+ document.getElementById("about").classList.add("hidden");
+ document.getElementById("articlePage").classList.remove("hidden");
+ document.getElementById("detail").innerHTML=`
+ <div class="eyebrow">${esc(a.category)}</div>
+ <h1>${esc(a.title)}</h1>
+ <p class="muted">${esc(a.company)} · ${esc(a.ticker)} · ${esc(a.date)}</p>
+ <p class="muted">${esc(a.excerpt)}</p>
+ <div class="notice">This is general educational research, not a live trade alert or a recommendation to buy or sell a security.</div>
+ <div class="article-body">${a.sections.map(s=>`<h2>${esc(s[0])}</h2><p>${esc(s[1])}</p>`).join("")}
+ <div class="notice"><strong>Risk reminder:</strong> Verify current company filings, market data and valuation before making an investment decision. Prices can rise or fall, and losses are possible.</div></div>`;
+ window.scrollTo(0,0);
+}
+
+function showListing(){
+ document.getElementById("articlePage").classList.add("hidden");
+ document.getElementById("listing").classList.remove("hidden");
+ document.getElementById("about").classList.remove("hidden");
+ history.replaceState(null,"",location.pathname);
+ window.scrollTo(0,0);
+ renderList();
+}
+
+function filterCategory(cat){
+ document.getElementById("category").value=cat;
+ document.getElementById("search").value="";
+ showListing();
+ document.getElementById("research");
+ window.scrollTo(0,0);
+}
+
+function showPolicy(name){
+ alert(name+" page is not published yet. We will build a complete standalone page before the site is submitted for advertising approval.");
+}
+
+document.getElementById("search").addEventListener("input",renderList);
+document.getElementById("category").addEventListener("change",renderList);
+renderList();
+
+if(location.hash.startsWith("#article/"))openArticle(location.hash.slice(9));
+</script>
 </body>
 </html>
