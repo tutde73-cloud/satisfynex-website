@@ -1016,4 +1016,592 @@
           </p>
         </div>
 
-        <
+        <div class="about-card">
+          <div class="about-icon">↗</div>
+          <h3>Understand Trends</h3>
+          <p>
+            Connect emerging technologies, economic developments, and sector
+            shifts to understand how they may influence financial markets.
+          </p>
+        </div>
+
+        <div class="about-card">
+          <div class="about-icon">◎</div>
+          <h3>Respect Risk</h3>
+          <p>
+            Learn about uncertainty, valuation, diversification, and risk
+            management before making investment decisions.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<section class="container article-view" id="articleView">
+  <a class="back-link" href="#" onclick="showHome();return false;">← Back to Research</a>
+  <article class="article-detail" id="articleDetail"></article>
+</section>
+
+<section class="container legal-page" id="legalPage">
+  <a class="back-link" href="#" onclick="showHome();return false;">← Back to Home</a>
+  <div id="legalContent"></div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+
+    <div class="footer-top">
+      <a href="#" class="brand" onclick="showHome();return false;">
+        <span class="brand-mark">S</span>
+        <span>Satisfynex</span>
+      </a>
+
+      <div class="footer-links">
+        <a href="#about" onclick="showHome()">About Us</a>
+        <a href="#privacy" onclick="showLegal('privacy');return false;">Privacy Policy</a>
+        <a href="#terms" onclick="showLegal('terms');return false;">Terms of Use</a>
+        <a href="#disclaimer" onclick="showLegal('disclaimer');return false;">Disclaimer</a>
+      </div>
+    </div>
+
+    <div class="disclaimer" id="disclaimer">
+      <strong>Investment Disclaimer:</strong>
+      Satisfynex provides general information and educational content for
+      informational purposes only. Nothing on this website constitutes
+      financial, investment, tax, or legal advice, or a recommendation to buy
+      or sell any security. Financial markets involve risk, including the
+      possible loss of principal. Always conduct your own research and consider
+      consulting a qualified financial professional before making investment
+      decisions. Images and chart illustrations are for editorial purposes.
+      Market examples are not necessarily real-time data.
+    </div>
+
+    <p class="copyright">
+      © <span id="year"></span> Satisfynex. All rights reserved.
+    </p>
+
+  </div>
+</footer>
+
+<script>
+  const articles = [
+    {
+      id: "ai-infrastructure",
+      title: "The AI Infrastructure Boom: Looking Beyond the Biggest Names",
+      category: "Technology",
+      date: "October 12, 2026",
+      read: "8 min read",
+      image: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1000&q=85",
+      excerpt: "Explore the data centers, networking equipment, power systems, and infrastructure supporting artificial intelligence.",
+      paragraphs: [
+        {
+          heading: "AI Is More Than a Chip Story",
+          text: "Artificial intelligence has become a major investment theme, but the opportunity extends beyond the companies designing advanced processors. AI models require computing capacity, high-speed networking, data storage, cooling systems, and reliable electricity. Each layer creates different business opportunities and risks."
+        },
+        {
+          heading: "The Infrastructure Behind the Expansion",
+          text: "Data center operators need servers, networking equipment, power distribution, backup systems, and increasingly sophisticated cooling technology. Companies supplying these components may benefit from rising infrastructure investment, although the timing and scale of that benefit vary considerably."
+        },
+        {
+          heading: "What Investors Should Examine",
+          text: "Revenue growth alone does not determine whether a stock is attractive. Investors should examine valuation, customer concentration, capital expenditure requirements, margins, debt, competitive positioning, and whether expected demand is already reflected in the share price."
+        },
+        {
+          heading: "The Risks Behind the Opportunity",
+          text: "AI spending could slow, projects may be delayed, and rapid technological change can make existing equipment less competitive. Higher financing costs can also affect infrastructure projects. A compelling industry trend does not automatically make every company in that industry a compelling investment."
+        }
+      ]
+    },
+    {
+      id: "semiconductor-cycle",
+      title: "Understanding the Semiconductor Cycle Before Buying the Next Rally",
+      category: "Semiconductors",
+      date: "October 10, 2026",
+      read: "7 min read",
+      image: "https://images.unsplash.com/photo-1555617981-dac3880eac6e?auto=format&fit=crop&w=1000&q=85",
+      excerpt: "Chip demand moves in cycles. Learn how inventory, capital spending, and end-market demand influence semiconductor businesses.",
+      paragraphs: [
+        {
+          heading: "Why Semiconductor Stocks Move in Cycles",
+          text: "Semiconductor companies operate in an industry shaped by supply, demand, product transitions, and capital-intensive manufacturing. Strong demand can lead to higher utilization and better pricing, while excess inventory can pressure sales and margins."
+        },
+        {
+          heading: "Watch Inventory and Capital Spending",
+          text: "Inventory trends, management guidance, customer orders, and capital expenditure plans can help investors assess the industry's direction. One strong quarter may not be enough to confirm a durable recovery."
+        },
+        {
+          heading: "Growth and Valuation Must Work Together",
+          text: "A company can operate in a fast-growing market and still be overvalued. Compare expected earnings growth with the current valuation, balance-sheet strength, and the sustainability of demand."
+        }
+      ]
+    },
+    {
+      id: "micron-memory",
+      title: "Memory Chips and AI: What Investors Should Know About Micron",
+      category: "Semiconductors",
+      date: "October 9, 2026",
+      read: "6 min read",
+      image: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1000&q=85",
+      excerpt: "A practical introduction to memory demand, high-bandwidth memory, and the risks of investing in a cyclical industry.",
+      paragraphs: [
+        {
+          heading: "Why Memory Matters for AI",
+          text: "AI computing requires substantial data movement alongside processing power. Memory products help processors access the information needed to train and run complex models. As AI infrastructure develops, demand for advanced memory solutions has become an important industry theme."
+        },
+        {
+          heading: "The Business Is Still Cyclical",
+          text: "Memory markets have historically experienced periods of oversupply and shortage. Pricing, manufacturing capacity, customer inventories, and technology transitions can all affect profitability."
+        },
+        {
+          heading: "Questions to Ask Before Investing",
+          text: "Review the company's product mix, capital expenditure, manufacturing costs, customer demand, and valuation. Consider what happens if memory prices weaken or competitors expand capacity more quickly than expected."
+        }
+      ]
+    },
+    {
+      id: "energy-security",
+      title: "Energy Security and the Power Demand Behind the Digital Economy",
+      category: "Energy",
+      date: "October 7, 2026",
+      read: "7 min read",
+      image: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=1000&q=85",
+      excerpt: "Electricity demand, grid investment, and energy infrastructure are increasingly relevant to technology growth.",
+      paragraphs: [
+        {
+          heading: "The Physical Cost of Digital Growth",
+          text: "Data centers and industrial facilities depend on reliable electricity. As computing workloads grow, power availability, grid connections, energy efficiency, and infrastructure investment can become important constraints."
+        },
+        {
+          heading: "Different Businesses, Different Exposures",
+          text: "Utilities, independent power producers, equipment suppliers, and energy companies have different revenue models and risk profiles. Their performance depends on regulation, commodity prices, financing costs, and contract structures."
+        },
+        {
+          heading: "Look Beyond the Headline",
+          text: "Higher electricity demand does not guarantee higher profits for every energy-related company. Investors should examine capacity, pricing arrangements, project costs, debt, and the time required to bring new infrastructure online."
+        }
+      ]
+    },
+    {
+      id: "technical-breakouts",
+      title: "How to Evaluate a Stock Breakout Without Chasing Price",
+      category: "Technical Analysis",
+      date: "October 5, 2026",
+      read: "6 min read",
+      image: "https://images.unsplash.com/photo-1642790106117-e829e14a795f?auto=format&fit=crop&w=1000&q=85",
+      excerpt: "Learn how price structure, trading volume, resistance, and risk-to-reward can help evaluate potential breakouts.",
+      paragraphs: [
+        {
+          heading: "Start With Price Structure",
+          text: "A potential breakout becomes more meaningful when the price approaches a clearly defined resistance area after forming a recognizable consolidation. The quality of the structure matters more than a single candle."
+        },
+        {
+          heading: "Use Volume as Context",
+          text: "A rise in trading volume may indicate greater participation, but volume alone does not establish whether a breakout will succeed. Examine the price response, the broader market environment, and whether the move holds after the initial advance."
+        },
+        {
+          heading: "Plan the Risk Before Entry",
+          text: "Identify the price level that would invalidate the setup, estimate potential upside, and consider the position size before entering. Avoid buying simply because a stock has already moved sharply higher."
+        }
+      ]
+    },
+    {
+      id: "portfolio-risk",
+      title: "Five Risk Management Principles Every Stock Investor Should Understand",
+      category: "Education",
+      date: "October 3, 2026",
+      read: "5 min read",
+      image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1000&q=85",
+      excerpt: "Position sizing, diversification, investment horizons, and decision discipline can help investors manage uncertainty.",
+      paragraphs: [
+        {
+          heading: "Protecting Capital Matters",
+          text: "Investing involves uncertainty, and even carefully researched ideas can fail. A risk management framework helps investors prepare for unfavorable outcomes instead of relying entirely on optimistic scenarios."
+        },
+        {
+          heading: "Avoid Excessive Concentration",
+          text: "Holding several stocks does not necessarily provide diversification if they depend on the same industry, customer, or economic factor. Consider how different holdings may behave under the same market stress."
+        },
+        {
+          heading: "Define Your Plan in Advance",
+          text: "Before making an investment, document the underlying thesis, the factors that could invalidate it, the intended holding period, and the conditions for reviewing the position. This can reduce impulsive decisions during volatile markets."
+        }
+      ]
+    },
+    {
+      id: "oil-market",
+      title: "What Moves Oil Stocks? Understanding Crude Prices and Company Fundamentals",
+      category: "Energy",
+      date: "September 30, 2026",
+      read: "7 min read",
+      image: "https://images.unsplash.com/photo-1516937941344-00b4e0337589?auto=format&fit=crop&w=1000&q=85",
+      excerpt: "Oil prices matter, but production costs, hedging, debt, and capital allocation also influence energy company performance.",
+      paragraphs: [
+        {
+          heading: "Oil Prices Are Only One Variable",
+          text: "Higher crude prices can improve revenue and cash flow for some producers, but the impact depends on production costs, taxes, hedging, production volumes, and existing contracts."
+        },
+        {
+          heading: "Understand the Company's Exposure",
+          text: "Integrated energy companies, exploration and production businesses, refiners, and oilfield service providers respond differently to commodity price changes. Their economics should not be treated as interchangeable."
+        },
+        {
+          heading: "Check Valuation and Balance Sheets",
+          text: "Review debt levels, free cash flow, capital spending, and management's approach to dividends or share repurchases. Stress-test the investment thesis against a scenario in which crude prices fall."
+        }
+      ]
+    },
+    {
+      id: "valuation-basics",
+      title: "A Beginner's Guide to Stock Valuation: Beyond the Share Price",
+      category: "Education",
+      date: "September 27, 2026",
+      read: "6 min read",
+      image: "https://images.unsplash.com/photo-1468254095679-bbcba94a7066?auto=format&fit=crop&w=1000&q=85",
+      excerpt: "A low share price does not automatically mean a stock is cheap. Learn the basics of earnings, cash flow, and valuation multiples.",
+      paragraphs: [
+        {
+          heading: "Share Price Is Not Valuation",
+          text: "A company with a low share price can be expensive relative to its earnings or assets. Another company with a much higher share price may have a different share count, growth profile, and financial structure."
+        },
+        {
+          heading: "Common Valuation Measures",
+          text: "Price-to-earnings, enterprise value to EBITDA, price-to-sales, and free cash flow yield each provide different perspectives. Their usefulness depends on the company's business model and financial condition."
+        },
+        {
+          heading: "Compare Like With Like",
+          text: "Compare companies within similar industries, accounting for growth, margins, leverage, and cyclicality. Valuation ratios are analytical tools, not guarantees of future returns."
+        }
+      ]
+    }
+  ];
+
+  const homeView = document.getElementById("homeView");
+  const articleView = document.getElementById("articleView");
+  const legalPage = document.getElementById("legalPage");
+  const articleGrid = document.getElementById("articleGrid");
+  const emptyState = document.getElementById("emptyState");
+  const searchInput = document.getElementById("searchInput");
+
+  let activeCategory = "All";
+
+  function escapeHTML(value) {
+    return String(value).replace(/[&<>"']/g, function(character) {
+      return {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      }[character];
+    });
+  }
+
+  function renderArticles() {
+    const query = searchInput.value.trim().toLowerCase();
+
+    const filtered = articles.filter(function(article) {
+      const matchesCategory =
+        activeCategory === "All" || article.category === activeCategory;
+
+      const searchableText = [
+        article.title,
+        article.category,
+        article.excerpt
+      ].join(" ").toLowerCase();
+
+      return matchesCategory && searchableText.includes(query);
+    });
+
+    articleGrid.innerHTML = filtered.map(function(article) {
+      return `
+        <article class="article-card">
+          <a href="#article-${article.id}"
+             class="card-image"
+             onclick="openArticle('${article.id}');return false;"
+             aria-label="Read ${escapeHTML(article.title)}">
+            <img
+              src="${escapeHTML(article.image)}"
+              alt="${escapeHTML(article.title)}"
+              loading="lazy"
+              onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1000&q=80';"
+            >
+            <span class="tag">${escapeHTML(article.category)}</span>
+          </a>
+
+          <div class="card-content">
+            <div class="meta">
+              <span>${escapeHTML(article.date)}</span>
+              <span>${escapeHTML(article.read)}</span>
+            </div>
+
+            <h3>
+              <a href="#article-${article.id}"
+                 onclick="openArticle('${article.id}');return false;">
+                ${escapeHTML(article.title)}
+              </a>
+            </h3>
+
+            <p>${escapeHTML(article.excerpt)}</p>
+
+            <div class="card-bottom">
+              <span>Market Insights</span>
+              <a href="#article-${article.id}"
+                 onclick="openArticle('${article.id}');return false;">
+                Read Article →
+              </a>
+            </div>
+          </div>
+        </article>
+      `;
+    }).join("");
+
+    emptyState.style.display = filtered.length ? "none" : "block";
+  }
+
+  function openArticle(id) {
+    const article = articles.find(function(item) {
+      return item.id === id;
+    });
+
+    if (!article) return;
+
+    homeView.style.display = "none";
+    legalPage.style.display = "none";
+    articleView.style.display = "block";
+
+    const paragraphs = article.paragraphs.map(function(section) {
+      return `
+        <h2>${escapeHTML(section.heading)}</h2>
+        <p>${escapeHTML(section.text)}</p>
+      `;
+    }).join("");
+
+    document.getElementById("articleDetail").innerHTML = `
+      <span class="tag">${escapeHTML(article.category)}</span>
+
+      <h1>${escapeHTML(article.title)}</h1>
+
+      <div class="detail-meta">
+        <span>${escapeHTML(article.date)}</span>
+        <span>${escapeHTML(article.read)}</span>
+        <span>Satisfynex Research</span>
+      </div>
+
+      <img
+        class="detail-image"
+        src="${escapeHTML(article.image)}"
+        alt="${escapeHTML(article.title)}"
+        onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80';"
+      >
+
+      <div class="article-body">
+        <p>${escapeHTML(article.excerpt)}</p>
+
+        ${paragraphs}
+
+        <div class="notice">
+          <strong>Important:</strong> This article is provided for educational
+          and informational purposes only. It is not financial advice or a
+          recommendation to buy or sell any security. Always conduct your own
+          research and consider your risk tolerance.
+        </div>
+      </div>
+    `;
+
+    history.pushState({ view: "article", id: id }, "", "#article-" + id);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function showHome() {
+    homeView.style.display = "block";
+    articleView.style.display = "none";
+    legalPage.style.display = "none";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function showLegal(type) {
+    homeView.style.display = "none";
+    articleView.style.display = "none";
+    legalPage.style.display = "block";
+
+    const pages = {
+      privacy: {
+        title: "Privacy Policy",
+        paragraphs: [
+          "Satisfynex respects your privacy. This website may collect limited technical information through hosting infrastructure, security systems, or analytics tools if those services are enabled.",
+          "If advertising or analytics services are added in the future, those providers may use cookies or similar technologies according to their own policies and applicable requirements.",
+          "Do not submit sensitive personal or financial information through this website. Contact us through an official contact channel if you have a privacy-related question."
+        ]
+      },
+      terms: {
+        title: "Terms of Use",
+        paragraphs: [
+          "By using Satisfynex, you agree to use this website for lawful informational and educational purposes.",
+          "Content is provided on an as-is basis without guarantees of accuracy, completeness, or availability. Market information can change, and editorial content may become outdated.",
+          "You are responsible for your own investment decisions. You may not reproduce or redistribute website content in a misleading way or in violation of applicable law."
+        ]
+      },
+      disclaimer: {
+        title: "Financial Disclaimer",
+        paragraphs: [
+          "Satisfynex is an educational market research publication. Its content does not constitute financial, investment, tax, or legal advice, nor does it constitute a solicitation or recommendation to transact in any security.",
+          "Investing in stocks involves risk, including the potential loss of your entire investment. Historical performance and illustrative examples do not guarantee future results.",
+          "Conduct independent research and consult a qualified professional when appropriate. Any company names mentioned are for informational discussion and do not imply endorsement or affiliation."
+        ]
+      }
+    };
+
+    const page = pages[type];
+    if (!page) return;
+
+    document.getElementById("legalContent").innerHTML = `
+      <span class="eyebrow">Satisfynex Policies</span>
+      <h1>${escapeHTML(page.title)}</h1>
+      ${page.paragraphs.map(function(paragraph) {
+        return "<p>" + escapeHTML(paragraph) + "</p>";
+      }).join("")}
+    `;
+
+    history.pushState({ view: "legal", type: type }, "", "#" + type);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  document.querySelectorAll(".filter-btn").forEach(function(button) {
+    button.addEventListener("click", function() {
+      document.querySelectorAll(".filter-btn").forEach(function(item) {
+        item.classList.remove("active");
+      });
+
+      button.classList.add("active");
+      activeCategory = button.dataset.category;
+      renderArticles();
+    });
+  });
+
+  searchInput.addEventListener("input", renderArticles);
+
+  window.addEventListener("popstate", function() {
+    const hash = window.location.hash;
+
+    if (hash.startsWith("#article-")) {
+      const id = hash.replace("#article-", "");
+      const article = articles.find(function(item) {
+        return item.id === id;
+      });
+
+      if (article) {
+        openArticleFromHistory(id);
+        return;
+      }
+    }
+
+    if (hash === "#privacy") {
+      showLegalWithoutHistory("privacy");
+      return;
+    }
+
+    if (hash === "#terms") {
+      showLegalWithoutHistory("terms");
+      return;
+    }
+
+    if (hash === "#disclaimer") {
+      showLegalWithoutHistory("disclaimer");
+      return;
+    }
+
+    homeView.style.display = "block";
+    articleView.style.display = "none";
+    legalPage.style.display = "none";
+  });
+
+  function openArticleFromHistory(id) {
+    const article = articles.find(function(item) {
+      return item.id === id;
+    });
+
+    if (!article) return;
+
+    homeView.style.display = "none";
+    legalPage.style.display = "none";
+    articleView.style.display = "block";
+
+    const paragraphs = article.paragraphs.map(function(section) {
+      return `
+        <h2>${escapeHTML(section.heading)}</h2>
+        <p>${escapeHTML(section.text)}</p>
+      `;
+    }).join("");
+
+    document.getElementById("articleDetail").innerHTML = `
+      <span class="tag">${escapeHTML(article.category)}</span>
+      <h1>${escapeHTML(article.title)}</h1>
+      <div class="detail-meta">
+        <span>${escapeHTML(article.date)}</span>
+        <span>${escapeHTML(article.read)}</span>
+        <span>Satisfynex Research</span>
+      </div>
+      <img class="detail-image"
+        src="${escapeHTML(article.image)}"
+        alt="${escapeHTML(article.title)}">
+      <div class="article-body">
+        <p>${escapeHTML(article.excerpt)}</p>
+        ${paragraphs}
+        <div class="notice">
+          <strong>Important:</strong> This article is for educational purposes
+          only and is not financial advice.
+        </div>
+      </div>
+    `;
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function showLegalWithoutHistory(type) {
+    showLegalContent(type);
+  }
+
+  function showLegalContent(type) {
+    homeView.style.display = "none";
+    articleView.style.display = "none";
+    legalPage.style.display = "block";
+
+    const content = {
+      privacy: {
+        title: "Privacy Policy",
+        text: "Satisfynex respects your privacy. Technical information may be processed by hosting, security, analytics, or advertising services if enabled. Do not submit sensitive personal or financial information through this website."
+      },
+      terms: {
+        title: "Terms of Use",
+        text: "Use this website for lawful informational and educational purposes. Content is provided without guarantees of accuracy or completeness. You are responsible for your own decisions and use of the information."
+      },
+      disclaimer: {
+        title: "Financial Disclaimer",
+        text: "Satisfynex does not provide personalized financial advice. Investing involves risk, including loss of principal. Research companies independently and consider consulting a qualified professional before making investment decisions."
+      }
+    };
+
+    document.getElementById("legalContent").innerHTML = `
+      <span class="eyebrow">Satisfynex Policies</span>
+      <h1>${escapeHTML(content[type].title)}</h1>
+      <p>${escapeHTML(content[type].text)}</p>
+    `;
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  renderArticles();
+
+  if (window.location.hash.startsWith("#article-")) {
+    const initialId = window.location.hash.replace("#article-", "");
+    openArticleFromHistory(initialId);
+  }
+</script>
+
+</body>
+</html>
