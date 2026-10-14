@@ -1,324 +1,241 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Satisfynex — Admin</title>
-  <meta name="robots" content="noindex, nofollow">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <style>
-    :root {
-      color-scheme: dark;
-      --bg: #090d14;
-      --panel: #111824;
-      --line: #263244;
-      --text: #eef3fb;
-      --muted: #94a3b8;
-      --accent: #8be0c0;
-      --danger: #ff9292;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font: 15px/1.6 Inter, system-ui, -apple-system, sans-serif;
-    }
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 20px max(20px, calc((100% - 1180px)/2));
-      border-bottom: 1px solid var(--line);
-    }
-    .brand { font-size: 20px; font-weight: 800; letter-spacing: -.5px; }
-    .brand span { color: var(--accent); }
-    main {
-      max-width: 1180px;
-      padding: 28px 20px 60px;
-      margin: auto;
-    }
-    h1 { font-size: clamp(26px, 4vw, 36px); line-height: 1.2; margin: 0 0 8px; }
-    h2 { font-size: 19px; margin: 0 0 18px; }
-    p { color: var(--muted); }
-    .panel {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 22px;
-      margin: 22px 0;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.5fr) minmax(280px, .8fr);
-      gap: 22px;
-      align-items: start;
-    }
-    label { display: block; font-size: 13px; color: #c3cede; margin: 15px 0 6px; }
-    input, select, textarea {
-      width: 100%;
-      background: #0b111b;
-      color: var(--text);
-      border: 1px solid #344258;
-      border-radius: 9px;
-      padding: 12px;
-      font: inherit;
-      outline: none;
-    }
-    input:focus, select:focus, textarea:focus { border-color: var(--accent); }
-    textarea { min-height: 125px; resize: vertical; }
-    #content { min-height: 320px; }
-    .hint { font-size: 12px; color: var(--muted); margin-top: 5px; }
-    .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-    button, .link-button {
-      cursor: pointer;
-      border: 1px solid var(--line);
-      border-radius: 9px;
-      padding: 10px 14px;
-      color: var(--text);
-      background: #1a2535;
-      font: inherit;
-      text-decoration: none;
-    }
-    button.primary { background: var(--accent); color: #07140f; border-color: var(--accent); font-weight: 750; }
-    button:disabled { opacity: .5; cursor: wait; }
-    .small { font-size: 12px; padding: 6px 9px; }
-    .status { min-height: 24px; color: var(--accent); margin: 12px 0; overflow-wrap: anywhere; }
-    .status.error { color: var(--danger); }
-    .article {
-      padding: 15px 0;
-      border-bottom: 1px solid var(--line);
-    }
-    .article:last-child { border-bottom: 0; }
-    .article-title { font-weight: 700; overflow-wrap: anywhere; }
-    .meta { color: var(--muted); font-size: 12px; margin: 3px 0 9px; }
-    .pill { display: inline-block; border: 1px solid var(--line); border-radius: 20px; padding: 1px 8px; margin-left: 6px; }
-    .preview { display: block; width: 100%; max-height: 230px; object-fit: contain; border-radius: 10px; margin-top: 12px; background: #080c12; }
-    #app { display: none; }
-    #loginPanel { max-width: 460px; margin: 50px auto; }
-    .top-note { font-size: 13px; color: var(--muted); }
-    @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } header { padding: 16px 20px; } }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Satisfynex — Admin</title>
+<meta name="robots" content="noindex,nofollow">
+<style>
+:root{color-scheme:dark;--bg:#090d14;--panel:#111824;--line:#263244;--text:#eef3fb;--muted:#94a3b8;--accent:#8be0c0;--danger:#ff9292}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 system-ui,-apple-system,sans-serif}
+header{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid var(--line);gap:12px}
+.brand{font-size:20px;font-weight:800}.brand span{color:var(--accent)}
+main{max-width:1180px;padding:26px 18px 60px;margin:auto}
+h1{font-size:clamp(25px,4vw,35px);line-height:1.2;margin:0 0 8px}
+h2{font-size:19px;margin:0 0 15px}
+p,.muted,.hint{color:var(--muted)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:20px;margin:20px 0}
+.grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(260px,.8fr);gap:20px;align-items:start}
+label{display:block;font-size:13px;margin:14px 0 6px;color:#c3cede}
+input,select,textarea{width:100%;background:#0b111b;color:var(--text);border:1px solid #344258;border-radius:8px;padding:12px;font:inherit}
+textarea{min-height:110px;resize:vertical}#content{min-height:300px}
+input:focus,select:focus,textarea:focus{outline:1px solid var(--accent)}
+button,.link{cursor:pointer;border:1px solid var(--line);border-radius:8px;padding:10px 14px;background:#1a2535;color:var(--text);font:inherit;text-decoration:none}
+button.primary{background:var(--accent);color:#07140f;border-color:var(--accent);font-weight:750}
+button:disabled{opacity:.5}
+.row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.small{font-size:12px;padding:6px 9px}
+.status{min-height:24px;margin:12px 0;color:var(--accent);overflow-wrap:anywhere}
+.status.error{color:var(--danger)}
+.hint{font-size:12px;margin-top:5px}
+#loginPanel{max-width:450px;margin:45px auto}
+#app{display:none}
+.article{padding:14px 0;border-bottom:1px solid var(--line)}
+.article-title{font-weight:700;overflow-wrap:anywhere}
+.meta{font-size:12px;color:var(--muted);margin:4px 0 9px}
+.preview{display:block;width:100%;max-height:240px;object-fit:contain;margin-top:12px;border-radius:8px;background:#080c12}
+@media(max-width:760px){.grid{grid-template-columns:1fr}header{padding:15px}}
+</style>
 </head>
 <body>
 <header>
   <div class="brand">SATISFY<span>NEX</span> <span style="color:#94a3b8;font-size:12px;font-weight:500">/ ADMIN</span></div>
   <div class="row">
-    <a class="link-button small" href="/" target="_blank" rel="noopener">View website ↗</a>
-    <button id="logoutBtn" class="small" style="display:none">Log out</button>
+    <a class="link small" href="/" target="_blank" rel="noopener">View website ↗</a>
+    <button id="logoutBtn" class="small" hidden>Log out</button>
   </div>
 </header>
 
 <main>
-  <section id="loginPanel" class="panel">
-    <h1>Admin login</h1>
-    <p>Sign in to manage Satisfynex research articles.</p>
-    <form id="loginForm">
-      <label for="email">Admin email</label>
-      <input id="email" type="email" autocomplete="username" required>
-      <label for="password">Password</label>
-      <input id="password" type="password" autocomplete="current-password" required>
-      <div class="row" style="margin-top:18px">
-        <button class="primary" type="submit">Sign in</button>
-      </div>
-    </form>
-    <div id="loginStatus" class="status" role="status"></div>
-  </section>
-
-  <section id="app">
-    <h1>Research dashboard</h1>
-    <p>Write, manage, and publish your US stock analysis.</p>
-    <div class="top-note">Your changes are saved to the Satisfynex Supabase database.</div>
-
-    <div class="grid">
-      <section class="panel">
-        <div class="row" style="justify-content:space-between">
-          <h2 id="editorHeading">Write an article</h2>
-          <button id="newBtn" type="button" class="small">New article</button>
-        </div>
-
-        <form id="articleForm">
-          <input id="articleId" type="hidden">
-
-          <label for="title">Title *</label>
-          <input id="title" maxlength="200" required placeholder="Why AI Infrastructure Stocks Could Benefit">
-
-          <label for="ticker">Ticker</label>
-          <input id="ticker" maxlength="30" placeholder="NVDA, MU, XOM...">
-
-          <label for="category">Category *</label>
-          <select id="category" required>
-            <option value="Stock Analysis">Stock Analysis</option>
-            <option value="AI & Technology">AI & Technology</option>
-            <option value="Energy">Energy</option>
-            <option value="Semiconductors">Semiconductors</option>
-            <option value="Market Insights">Market Insights</option>
-            <option value="Earnings">Earnings</option>
-            <option value="Risk Analysis">Risk Analysis</option>
-          </select>
-
-          <label for="slug">URL slug *</label>
-          <input id="slug" required maxlength="220" placeholder="ai-infrastructure-stocks">
-          <div class="hint">Generated from the title. You can edit it manually.</div>
-
-          <label for="excerpt">Short summary</label>
-          <textarea id="excerpt" maxlength="500" style="min-height:85px" placeholder="A concise summary for the homepage card."></textarea>
-
-          <label for="content">Article content * </label>
-          <textarea id="content" required placeholder="Write your analysis here. Use plain text and separate paragraphs with blank lines."></textarea>
-          <div class="hint">Plain text is supported. Separate paragraphs with a blank line.</div>
-
-          <label for="imageFile">Cover image / chart</label>
-          <input id="imageFile" type="file" accept="image/png,image/jpeg,image/webp,image/gif">
-          <div class="hint">Recommended: JPG, PNG, or WebP. Maximum 8 MB.</div>
-          <div id="imageStatus" class="hint"></div>
-          <img id="imagePreview" class="preview" alt="Article image preview" hidden>
-          <div class="row" style="margin-top:10px">
-            <button id="removeImageBtn" type="button" class="small" hidden>Remove image</button>
-          </div>
-
-          <div class="row" style="margin-top:20px">
-            <button id="draftBtn" type="button">Save draft</button>
-            <button id="publishBtn" type="button" class="primary">Publish article</button>
-          </div>
-          <div id="saveStatus" class="status" role="status"></div>
-        </form>
-      </section>
-
-      <aside class="panel">
-        <div class="row" style="justify-content:space-between">
-          <h2>Articles</h2>
-          <button id="refreshBtn" type="button" class="small">Refresh</button>
-        </div>
-        <div id="articleList">Loading articles…</div>
-      </aside>
+<section id="loginPanel" class="panel">
+  <h1>Admin login</h1>
+  <p>Sign in to manage Satisfynex research articles.</p>
+  <form id="loginForm">
+    <label for="email">Admin email</label>
+    <input id="email" type="email" autocomplete="username" required>
+    <label for="password">Password</label>
+    <input id="password" type="password" autocomplete="current-password" required>
+    <div class="row" style="margin-top:18px">
+      <button class="primary" type="submit">Sign in</button>
     </div>
-  </section>
+  </form>
+  <div id="loginStatus" class="status" role="status">Loading admin tools…</div>
+</section>
+
+<section id="app">
+  <h1>Research dashboard</h1>
+  <p>Create, edit, and publish your US stock analysis.</p>
+  <div class="grid">
+    <section class="panel">
+      <div class="row" style="justify-content:space-between">
+        <h2 id="editorHeading">Write an article</h2>
+        <button id="newBtn" type="button" class="small">New article</button>
+      </div>
+      <form id="articleForm">
+        <input id="articleId" type="hidden">
+
+        <label for="title">Title *</label>
+        <input id="title" maxlength="200" required placeholder="Why AI Infrastructure Stocks Could Benefit">
+
+        <label for="ticker">Ticker</label>
+        <input id="ticker" maxlength="30" placeholder="NVDA, MU, XOM...">
+
+        <label for="category">Category *</label>
+        <select id="category" required>
+          <option>Stock Analysis</option>
+          <option>AI &amp; Technology</option>
+          <option>Energy</option>
+          <option>Semiconductors</option>
+          <option>Market Insights</option>
+          <option>Earnings</option>
+          <option>Risk Analysis</option>
+        </select>
+
+        <label for="slug">URL slug *</label>
+        <input id="slug" maxlength="220" required placeholder="ai-infrastructure-stocks">
+        <div class="hint">Generated from the title; editable.</div>
+
+        <label for="excerpt">Short summary</label>
+        <textarea id="excerpt" maxlength="500" style="min-height:85px" placeholder="A concise homepage summary."></textarea>
+
+        <label for="content">Article content *</label>
+        <textarea id="content" required placeholder="Write your analysis here. Separate paragraphs with a blank line."></textarea>
+
+        <label for="imageFile">Cover image / chart</label>
+        <input id="imageFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif">
+        <div class="hint">JPG, PNG, WebP, or GIF. Maximum 8 MB.</div>
+        <div id="imageStatus" class="hint"></div>
+        <img id="imagePreview" class="preview" alt="Article image preview" hidden>
+        <div class="row" style="margin-top:8px">
+          <button id="removeImageBtn" type="button" class="small" hidden>Remove image</button>
+        </div>
+
+        <div class="row" style="margin-top:20px">
+          <button id="draftBtn" type="button">Save draft</button>
+          <button id="publishBtn" type="button" class="primary">Publish article</button>
+        </div>
+        <div id="saveStatus" class="status" role="status"></div>
+      </form>
+    </section>
+
+    <aside class="panel">
+      <div class="row" style="justify-content:space-between">
+        <h2>Articles</h2>
+        <button id="refreshBtn" class="small" type="button">Refresh</button>
+      </div>
+      <div id="articleList">Sign in to load articles.</div>
+    </aside>
+  </div>
+</section>
 </main>
 
+<!-- Load Supabase after the page content is rendered -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-  const SUPABASE_URL = "https://ngysrsypmieuvucqupgd.supabase.co";
-  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_U05M_WQFKioCZ1LNSfyNbQ_jUoJTQvd";
+(() => {
+  const URL = "https://ngysrsypmieuvucqupgd.supabase.co";
+  const KEY = "sb_publishable_U05M_WQFKioCZ1LNSfyNbQ_jUoJTQvd";
   const ADMIN_UID = "27b4b511-aa7a-42cd-888b-f2cf2183aa02";
   const BUCKET = "article-images";
+  const $ = id => document.getElementById(id);
 
-  const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-  const $ = (id) => document.getElementById(id);
+  if (!window.supabase) {
+    $("loginStatus").textContent =
+      "Supabase library failed to load. Check your internet connection or try again later.";
+    $("loginStatus").classList.add("error");
+    return;
+  }
 
-  let currentUser = null;
-  let currentImageUrl = "";
-  let imageRemoved = false;
-  let articles = [];
+  const db = window.supabase.createClient(URL, KEY);
+  let user = null;
+  let imageUrl = "";
+  let removeImage = false;
+  let busy = false;
 
-  function showStatus(id, message, isError = false) {
-    const el = $(id);
-    el.textContent = message;
-    el.classList.toggle("error", isError);
+  function status(id, message, error = false) {
+    $(id).textContent = message;
+    $(id).classList.toggle("error", error);
   }
 
   function slugify(value) {
     return value.toLowerCase().trim()
-      .normalize("NFKD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-+|-+$/g, "")
+      .normalize("NFKD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")
       .slice(0, 200);
   }
 
-  function setImagePreview(url) {
-    const img = $("imagePreview");
-    if (url) {
-      img.src = url;
-      img.hidden = false;
-      $("removeImageBtn").hidden = false;
-    } else {
-      img.removeAttribute("src");
-      img.hidden = true;
-      $("removeImageBtn").hidden = true;
-    }
+  function preview(url) {
+    $("imagePreview").hidden = !url;
+    $("removeImageBtn").hidden = !url;
+    if (url) $("imagePreview").src = url;
+    else $("imagePreview").removeAttribute("src");
   }
 
-  function showApp(user) {
-    currentUser = user;
-    $("loginPanel").style.display = "none";
-    $("app").style.display = "block";
-    $("logoutBtn").style.display = "inline-block";
-    loadArticles();
-  }
-
-  function showLogin() {
-    currentUser = null;
+  function loginView() {
+    user = null;
     $("loginPanel").style.display = "block";
     $("app").style.display = "none";
-    $("logoutBtn").style.display = "none";
+    $("logoutBtn").hidden = true;
   }
 
-  async function verifyUser(user) {
-    if (!user) {
-      showLogin();
-      return;
-    }
-    if (user.id !== ADMIN_UID) {
+  async function enter(userData) {
+    if (!userData) return loginView();
+    if (userData.id !== ADMIN_UID) {
       await db.auth.signOut();
-      showLogin();
-      showStatus("loginStatus", "This account is not authorized for the admin dashboard.", true);
+      loginView();
+      status("loginStatus", "This account is not authorized.", true);
       return;
     }
-    showApp(user);
+    user = userData;
+    $("loginPanel").style.display = "none";
+    $("app").style.display = "block";
+    $("logoutBtn").hidden = false;
+    await loadArticles();
   }
 
-  $("loginForm").addEventListener("submit", async (event) => {
+  $("loginForm").addEventListener("submit", async event => {
     event.preventDefault();
-    showStatus("loginStatus", "Signing in…");
+    status("loginStatus", "Signing in…");
     const { data, error } = await db.auth.signInWithPassword({
       email: $("email").value.trim(),
       password: $("password").value
     });
-    if (error) {
-      showStatus("loginStatus", error.message, true);
-      return;
-    }
-    await verifyUser(data.user);
+    if (error) return status("loginStatus", error.message, true);
+    await enter(data.user);
   });
 
   $("logoutBtn").addEventListener("click", async () => {
     await db.auth.signOut();
-    showLogin();
-    showStatus("loginStatus", "You have been logged out.");
+    loginView();
+    status("loginStatus", "You have been logged out.");
   });
 
   $("title").addEventListener("input", () => {
-    if (!$("articleId").value || !$("slug").dataset.manuallyEdited) {
-      $("slug").value = slugify($("title").value);
-    }
+    if (!$("slug").dataset.edited) $("slug").value = slugify($("title").value);
   });
-
-  $("slug").addEventListener("input", () => {
-    $("slug").dataset.manuallyEdited = "true";
-  });
+  $("slug").addEventListener("input", () => $("slug").dataset.edited = "1");
 
   function resetEditor() {
     $("articleForm").reset();
     $("articleId").value = "";
-    $("slug").dataset.manuallyEdited = "";
-    currentImageUrl = "";
-    imageRemoved = false;
+    $("slug").dataset.edited = "";
+    imageUrl = "";
+    removeImage = false;
     $("imageFile").value = "";
     $("imageStatus").textContent = "";
-    setImagePreview("");
+    preview("");
     $("editorHeading").textContent = "Write an article";
-    showStatus("saveStatus", "");
+    status("saveStatus", "");
   }
-
   $("newBtn").addEventListener("click", resetEditor);
 
   $("removeImageBtn").addEventListener("click", () => {
-    currentImageUrl = "";
-    imageRemoved = true;
+    imageUrl = "";
+    removeImage = true;
     $("imageFile").value = "";
-    setImagePreview("");
-    $("imageStatus").textContent = "Image will be removed when you save.";
+    $("imageStatus").textContent = "Image will be removed when saved.";
+    preview("");
   });
 
   $("imageFile").addEventListener("change", () => {
@@ -326,195 +243,178 @@
     if (!file) return;
     if (file.size > 8 * 1024 * 1024) {
       $("imageFile").value = "";
-      showStatus("saveStatus", "Image exceeds the 8 MB limit.", true);
-      return;
+      return status("saveStatus", "Image exceeds the 8 MB limit.", true);
     }
-    if (!["image/jpeg", "image/png", "image/webp", "image/gif"].includes(file.type)) {
+    if (!["image/jpeg","image/png","image/webp","image/gif"].includes(file.type)) {
       $("imageFile").value = "";
-      showStatus("saveStatus", "Please choose a JPG, PNG, WebP, or GIF image.", true);
-      return;
+      return status("saveStatus", "Unsupported image type.", true);
     }
-    setImagePreview(URL.createObjectURL(file));
+    $("imagePreview").src = URL.createObjectURL(file);
+    $("imagePreview").hidden = false;
+    $("removeImageBtn").hidden = false;
     $("imageStatus").textContent = "Ready to upload: " + file.name;
-    imageRemoved = false;
+    removeImage = false;
   });
 
   async function uploadImage(file) {
-    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "-");
-    const path = `${currentUser.id}/${Date.now()}-${safeName}`;
+    const name = file.name.replace(/[^a-zA-Z0-9._-]/g, "-");
+    const path = user.id + "/" + Date.now() + "-" + name;
     const { error } = await db.storage.from(BUCKET).upload(path, file, {
       cacheControl: "3600",
       upsert: false,
       contentType: file.type
     });
     if (error) throw error;
-    const { data } = db.storage.from(BUCKET).getPublicUrl(path);
-    return data.publicUrl;
+    return db.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
   }
 
-  async function saveArticle(status) {
-    if (!currentUser || currentUser.id !== ADMIN_UID) {
-      showStatus("saveStatus", "Please sign in with the authorized admin account.", true);
-      return;
+  async function save(statusValue) {
+    if (busy) return;
+    if (!user || user.id !== ADMIN_UID) {
+      return status("saveStatus", "Please sign in with the admin account.", true);
     }
-
     const title = $("title").value.trim();
     const slug = slugify($("slug").value);
-    const category = $("category").value;
     const content = $("content").value.trim();
 
-    if (!title || !slug || !category || !content) {
-      showStatus("saveStatus", "Please fill in the title, slug, category, and content.", true);
-      return;
+    if (!title || !slug || !content) {
+      return status("saveStatus", "Title, slug, and content are required.", true);
     }
 
-    const file = $("imageFile").files[0];
-    const buttons = [$("draftBtn"), $("publishBtn")];
-    buttons.forEach((button) => button.disabled = true);
-    showStatus("saveStatus", "Saving article…");
+    busy = true;
+    $("draftBtn").disabled = $("publishBtn").disabled = true;
+    status("saveStatus", "Saving article…");
 
     try {
-      let imageUrl = imageRemoved ? null : currentImageUrl;
+      let finalImage = removeImage ? null : imageUrl;
+      const file = $("imageFile").files[0];
       if (file) {
-        showStatus("saveStatus", "Uploading image…");
-        imageUrl = await uploadImage(file);
+        status("saveStatus", "Uploading image…");
+        finalImage = await uploadImage(file);
       }
 
       const article = {
         title,
         slug,
         ticker: $("ticker").value.trim().toUpperCase() || null,
-        category,
+        category: $("category").value,
         excerpt: $("excerpt").value.trim() || null,
         content,
-        image_url: imageUrl,
-        status,
+        image_url: finalImage,
+        status: statusValue,
         updated_at: new Date().toISOString()
       };
 
       const id = $("articleId").value;
-      let result;
-      if (id) {
-        result = await db.from("articles").update(article).eq("id", id).select().single();
-      } else {
-        result = await db.from("articles").insert(article).select().single();
-      }
+      const result = id
+        ? await db.from("articles").update(article).eq("id", id).select().single()
+        : await db.from("articles").insert(article).select().single();
 
       if (result.error) throw result.error;
 
-      currentImageUrl = imageUrl || "";
-      imageRemoved = false;
+      $("articleId").value = result.data.id;
+      imageUrl = finalImage || "";
+      removeImage = false;
       $("imageFile").value = "";
       $("imageStatus").textContent = "";
-      setImagePreview(currentImageUrl);
-      $("articleId").value = result.data.id;
-      $("slug").dataset.manuallyEdited = "true";
+      preview(imageUrl);
+      $("slug").dataset.edited = "1";
       $("editorHeading").textContent = "Edit article";
-      showStatus("saveStatus", status === "published" ? "Article published successfully." : "Draft saved successfully.");
+      status("saveStatus", statusValue === "published"
+        ? "Article published successfully."
+        : "Draft saved successfully.");
       await loadArticles();
-    } catch (error) {
-      showStatus("saveStatus", error.message || "Could not save the article.", true);
+    } catch (err) {
+      status("saveStatus", err.message || "Unable to save article.", true);
     } finally {
-      buttons.forEach((button) => button.disabled = false);
+      busy = false;
+      $("draftBtn").disabled = $("publishBtn").disabled = false;
     }
   }
 
-  $("draftBtn").addEventListener("click", () => saveArticle("draft"));
-  $("publishBtn").addEventListener("click", () => saveArticle("published"));
+  $("draftBtn").addEventListener("click", () => save("draft"));
+  $("publishBtn").addEventListener("click", () => save("published"));
   $("refreshBtn").addEventListener("click", loadArticles);
 
   async function loadArticles() {
-    if (!currentUser || currentUser.id !== ADMIN_UID) return;
+    if (!user || user.id !== ADMIN_UID) return;
     $("articleList").textContent = "Loading articles…";
-
     const { data, error } = await db.from("articles")
       .select("id,title,slug,ticker,category,status,created_at")
-      .order("created_at", { ascending: false })
-      .limit(100);
+      .order("created_at", { ascending: false }).limit(100);
 
     if (error) {
       $("articleList").textContent = "Could not load articles: " + error.message;
       return;
     }
 
-    articles = data || [];
     $("articleList").replaceChildren();
-
-    if (!articles.length) {
+    if (!data.length) {
       $("articleList").textContent = "No articles yet. Create your first article.";
       return;
     }
 
-    articles.forEach((article) => {
+    data.forEach(article => {
       const wrapper = document.createElement("div");
       wrapper.className = "article";
-
       const title = document.createElement("div");
       title.className = "article-title";
       title.textContent = article.title;
-
       const meta = document.createElement("div");
       meta.className = "meta";
       meta.textContent = [
-        article.ticker || "No ticker",
-        article.category,
-        article.status,
+        article.ticker || "No ticker", article.category, article.status,
         new Date(article.created_at).toLocaleDateString()
       ].join(" · ");
-
       const edit = document.createElement("button");
       edit.type = "button";
       edit.className = "small";
       edit.textContent = "Edit";
       edit.addEventListener("click", () => editArticle(article.id));
-
       wrapper.append(title, meta, edit);
       $("articleList").append(wrapper);
     });
   }
 
   async function editArticle(id) {
-    showStatus("saveStatus", "Loading article…");
-    const { data, error } = await db.from("articles").select("*").eq("id", id).single();
-    if (error) {
-      showStatus("saveStatus", error.message, true);
-      return;
-    }
+    status("saveStatus", "Loading article…");
+    const { data, error } = await db.from("articles")
+      .select("*").eq("id", id).single();
+    if (error) return status("saveStatus", error.message, true);
 
     $("articleId").value = data.id;
     $("title").value = data.title || "";
     $("ticker").value = data.ticker || "";
     $("category").value = data.category || "Stock Analysis";
     $("slug").value = data.slug || "";
-    $("slug").dataset.manuallyEdited = "true";
+    $("slug").dataset.edited = "1";
     $("excerpt").value = data.excerpt || "";
     $("content").value = data.content || "";
-    currentImageUrl = data.image_url || "";
-    imageRemoved = false;
+    imageUrl = data.image_url || "";
+    removeImage = false;
     $("imageFile").value = "";
-    $("imageStatus").textContent = currentImageUrl ? "Current image loaded." : "No image attached.";
-    setImagePreview(currentImageUrl);
+    $("imageStatus").textContent = imageUrl ? "Current image loaded." : "No image attached.";
+    preview(imageUrl);
     $("editorHeading").textContent = "Edit article";
-    showStatus("saveStatus", `Editing article #${data.id} (${data.status}).`);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    status("saveStatus", "Editing article #" + data.id + " (" + data.status + ").");
+    window.scrollTo({top:0,behavior:"smooth"});
   }
 
-  db.auth.getSession().then(({ data, error }) => {
+  db.auth.getSession().then(({data,error}) => {
     if (error) {
-      showStatus("loginStatus", error.message, true);
-      showLogin();
-      return;
+      status("loginStatus", error.message, true);
+      return loginView();
     }
-    verifyUser(data.session?.user || null);
+    enter(data.session?.user || null);
+  }).catch(error => {
+    status("loginStatus", "Startup error: " + error.message, true);
   });
 
   db.auth.onAuthStateChange((_event, session) => {
-    if (!session?.user) {
-      showLogin();
-    } else if (session.user.id !== ADMIN_UID) {
-      verifyUser(session.user);
-    }
+    if (!session?.user) loginView();
+    else if (session.user.id !== ADMIN_UID) enter(session.user);
   });
+})();
 </script>
 </body>
 </html>
