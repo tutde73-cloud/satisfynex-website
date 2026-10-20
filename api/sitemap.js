@@ -11,28 +11,6 @@ function escapeXml(value) {
     .replace(/'/g, "&apos;");
 }
 
-function cleanSlug(value) {
-  let slug = String(value ?? "").trim();
-
-  if (/^https?:\/\//i.test(slug)) {
-    try {
-      slug = new URL(slug).pathname;
-    } catch {
-      return "";
-    }
-  }
-
-  slug = slug.split(/[?#]/)[0];
-  slug = slug.replace(/^\/+|\/+$/g, "");
-  slug = slug.replace(/^articles\//i, "");
-
-  if (!slug || /https?:|www\.|satisfynex\.com/i.test(slug)) {
-    return "";
-  }
-
-  return slug;
-}
-
 export default async function handler(req, res) {
   try {
     const response = await fetch(
@@ -53,18 +31,25 @@ export default async function handler(req, res) {
     const seen = new Set();
     const urls = [];
 
+    // Homepage
     urls.push(`
   <url>
     <loc>${SITE_URL}/</loc>
   </url>`);
 
     for (const article of articles) {
-      const slug = cleanSlug(article.slug);
-      if (!slug || seen.has(slug)) continue;
+      if (!article.slug) continue;
 
-      seen.add(slug);
+      // Bersihkan slug dari karakter tak terduga
+      let cleanSlug = String(article.slug)
+        .trim()
+        .replace(/^\/+|\/+$/g, "")
+        .replace(/^articles\//i, "");
 
-      const loc = `${SITE_URL}/articles/${encodeURIComponent(slug)}`;
+      if (!cleanSlug || seen.has(cleanSlug)) continue;
+      seen.add(cleanSlug);
+
+      const loc = `${SITE_URL}/articles/${encodeURIComponent(cleanSlug)}`;
       const date = article.updated_at || article.created_at;
 
       let lastmod = "";
@@ -86,16 +71,13 @@ export default async function handler(req, res) {
 
     res.statusCode = 200;
     res.setHeader("Content-Type", "application/xml; charset=UTF-8");
-    res.setHeader("Cache-Control", "no-store");
-    res.setHeader("X-Content-Type-Options", "nosniff");
+    res.setHeader("Cache-Control", "no-store, max-age=0");
 
     return res.end(xml);
   } catch (error) {
     console.error("Sitemap generation failed:", error);
-
     res.statusCode = 500;
     res.setHeader("Content-Type", "text/plain; charset=UTF-8");
-
-    return res.end("Sitemap generation failed. Check Vercel function logs.");
+    return res.end("Sitemap generation failed.");
   }
 }
