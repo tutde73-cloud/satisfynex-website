@@ -1,7 +1,7 @@
 
 const SUPABASE_URL = "https://ngysrsypmieuvucqupgd.supabase.co";
 const SUPABASE_KEY = "sb_publishable_U05M_WQFKioCZ1LNSfyNbQ_jUoJTQvd";
-const SITE_URL = "https://satisfynex-website-768x.vercel.app";
+const SITE_URL = "https://satisfynex.com";
 
 function slugify(value) {
   return String(value || "")
