@@ -1,0 +1,18 @@
+name: Auto Ping Google Sitemap
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  ping-google:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Ping to Google Engine
+        run: |
+          curl -s "https://www.google.com/ping?sitemap=https://www.satisfynex.com/sitemap.xml"
+          echo "Sitemap ping successfully sent to Google."
