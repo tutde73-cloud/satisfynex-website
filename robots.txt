@@ -1,5 +1,4 @@
-
 User-agent: *
 Allow: /
 
-Sitemap: https://satisfynex.com/sitemap.xml
+Sitemap: https://www.satisfynex.com/sitemap.xml
