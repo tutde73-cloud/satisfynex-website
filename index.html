@@ -14,6 +14,16 @@
 <meta property="og:description" content="Independent research on US stocks, company fundamentals, technical charts and market trends.">
 <meta property="og:url" content="https://www.satisfynex.com/">
 
+<!-- Google tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-742MNVD8XT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-742MNVD8XT');
+</script>
+
 <style>
 :root{--bg:#0c1017;--panel:#131a25;--line:#283344;--text:#f2f5fa;--muted:#9ca9bb;--accent:#8ee0bd;--max:1180px}
 *{box-sizing:border-box}
@@ -127,7 +137,6 @@ h1,h2,h3,p{margin-top:0}
  <section class="hero"><div class="container">
   <div class="eyebrow">Independent market research</div>
   <h1>Understand the business behind the stock.</h1>
-  <!-- Teks Rotator Smooth -->
   <p id="dynamicHeroText" class="text-rotator">Satisfynex delivers daily visual chart breakdowns and technical price action research on high-momentum US equities.</p>
   <div class="hero-note">Research and education · Not financial advice</div>
  </div></section>
@@ -188,7 +197,6 @@ const ARTICLES_PER_PAGE=20;
 
 const $=s=>document.querySelector(s);
 
-// Variasi Teks Rotator Penjelas Satisfynex
 const rotatingSentences = [
   "Satisfynex delivers daily visual chart breakdowns and technical price action research on high-momentum US equities.",
   "At Satisfynex, we bridge the gap between underlying business fundamentals and technical chart structures for US-listed companies.",
@@ -212,7 +220,7 @@ function initTextRotator() {
       targetElement.classList.remove("fade-out");
     }, 600);
 
-  }, 3800); // Ganti teks secara mulus setiap 3.8 detik
+  }, 3800);
 }
 
 function escapeHTML(v){
@@ -430,8 +438,8 @@ function openArticleById(id,push=true){
 }
 
 const pages={
- privacy:{title:"Privacy Policy",body:`<p><strong>Last updated: October 20, 2026</strong></p><p>This Privacy Policy explains how Satisfynex handles information when you visit our website.</p>2Information we may collect</h2><p>Our hosting and website services may process technical information such as IP address, browser type, device information, and request logs to operate and secure the website.</p><h2>Contacting us</h2><p>If you email us, we receive the information you choose to include and use it to respond.</p><h2>Cookies and advertising</h2><p>If analytics or advertising services are enabled, those services may use cookies or similar technologies under their own policies. Actual use depends on the services enabled on this website.</p><h2>Third-party services</h2><p>Hosting, database, analytics, and advertising providers may process information under their own policies.</p><h2>Your choices</h2><p>Depending on applicable law, you may request access to, correction of, or deletion of personal information.</p><h2>Contact</h2><p>Privacy questions: <a href="mailto:Satisfynex@gmail.com">Satisfynex@gmail.com</a>.</p>`},
- terms:{title:"Terms of Service",body:`<p><strong>Last updated: October 20, 2026</strong></p><p>By using Satisfynex, you agree to these terms.</p><h2>Purpose</h2><p>Satisfynex publishes general information and educational research about US-listed companies, financial results, industries, and markets.</p>2No investment advice</h2><p>Content is not personalized financial, legal, or tax advice and is not an offer to buy or sell securities. You are responsible for your decisions.</p><h2>Accuracy and risks</h2><p>We do not guarantee content is complete, current, or error-free. Investing involves risk, including the possible loss of capital. Past performance does not guarantee future results.</p><h2>Intellectual property</h2><p>Do not republish substantial original content commercially without permission from the relevant rights holder.</p><h2>Third-party links</h2><p>We are not responsible for external websites or services.</p><h2>Contact</h2><p><a href="mailto:Satisfynex@gmail.com">Satisfynex@gmail.com</a></p>`},
+ privacy:{title:"Privacy Policy",body:`<p><strong>Last updated: October 20, 2026</strong></p><p>This Privacy Policy explains how Satisfynex handles information when you visit our website.</p><h2>Information we may collect</h2><p>Our hosting and website services may process technical information such as IP address, browser type, device information, and request logs to operate and secure the website.</p><h2>Contacting us</h2><p>If you email us, we receive the information you choose to include and use it to respond.</p><h2>Cookies and advertising</h2><p>If analytics or advertising services are enabled, those services may use cookies or similar technologies under their own policies. Actual use depends on the services enabled on this website.</p><h2>Third-party services</h2><p>Hosting, database, analytics, and advertising providers may process information under their own policies.</p><h2>Your choices</h2><p>Depending on applicable law, you may request access to, correction of, or deletion of personal information.</p><h2>Contact</h2><p>Privacy questions: <a href="mailto:Satisfynex@gmail.com">Satisfynex@gmail.com</a>.</p>`},
+ terms:{title:"Terms of Service",body:`<p><strong>Last updated: October 20, 2026</strong></p><p>By using Satisfynex, you agree to these terms.</p><h2>Purpose</h2><p>Satisfynex publishes general information and educational research about US-listed companies, financial results, industries, and markets.</p><h2>No investment advice</h2><p>Content is not personalized financial, legal, or tax advice and is not an offer to buy or sell securities. You are responsible for your decisions.</p><h2>Accuracy and risks</h2><p>We do not guarantee content is complete, current, or error-free. Investing involves risk, including the possible loss of capital. Past performance does not guarantee future results.</p><h2>Intellectual property</h2><p>Do not republish substantial original content commercially without permission from the relevant rights holder.</p><h2>Third-party links</h2><p>We are not responsible for external websites or services.</p><h2>Contact</h2><p><a href="mailto:Satisfynex@gmail.com">Satisfynex@gmail.com</a></p>`},
  about:{title:"About Us",body:`<p>Satisfynex is an independently operated research and investing education website focused on US-listed companies, fundamentals, earnings, industries, technical charts, and market developments.</p><h2>Our mission</h2><p>We aim to help readers look beyond a ticker and understand the business, evidence, opportunities, and risks behind an investment thesis.</p><h2>Our approach</h2><p>Our research may examine company disclosures, financial performance, industry trends, competition, market developments, and technical evidence. Readers should verify important facts independently.</p><h2>Who is behind Satisfynex?</h2><p>Satisfynex is an independently operated research project. We do not claim to be a licensed investment adviser, broker-dealer, or financial institution. Content is not personalized financial advice.</p><h2>Contact</h2><p><a href="mailto:Satisfynex@gmail.com">Satisfynex@gmail.com</a></p>`},
  contact:{title:"Contact Us",body:`<p>We welcome reader feedback, questions about published research, and correction requests.</p><div class="contact-card"><div class="eyebrow">Email</div><h2>Get in touch with Satisfynex</h2><p>Include the article title or URL if your inquiry concerns a specific publication.</p><p><a class="email-link" href="mailto:Satisfynex@gmail.com">Satisfynex@gmail.com</a></p><a class="button-link" href="mailto:Satisfynex@gmail.com?subject=Satisfynex%20Website%20Inquiry">Email Satisfynex →</a></div><p>Please do not send passwords, payment details, or other sensitive information. We do not provide individualized investment recommendations by email.</p>`},
  disclaimer:{title:"Investment Disclaimer",body:`<p><strong>Last updated: October 20, 2026</strong></p><p>All articles, charts, commentary, and materials published by Satisfynex are for general informational and educational purposes only.</p><h2>Not financial advice</h2><p>Nothing on this website is personalized investment advice or a recommendation to buy, hold, or sell any security.</p><h2>Investment risk</h2><p>Investments can lose value, including the loss of some or all of your capital. Historical performance does not guarantee future results.</p><h2>Independent verification</h2><p>Information may be incomplete, delayed, or outdated. Consult official company filings and reliable sources before making decisions.</p><h2>Contact</h2><p><a href="mailto:Satisfynex@gmail.com">Satisfynex@gmail.com</a></p>`}
