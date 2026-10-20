@@ -1,87 +1,97 @@
 
 const SUPABASE_URL = "https://ngysrsypmieuvucqupgd.supabase.co";
 const SUPABASE_KEY = "sb_publishable_U05M_WQFKioCZ1LNSfyNbQ_jUoJTQvd";
-const SITE_URL = "https://satisfynex.com";
+const SITE_URL = "https://www.satisfynex.com";
 
-function slugify(value) {
-  return String(value || "")
-    .normalize("NFKD")
-    .toLowerCase()
-    .trim()
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 180);
+function cleanSlug(value) {
+  if (!value) return "";
+
+  let slug = String(value).trim();
+
+  // Jika slug ternyata URL lengkap, ambil bagian slug artikelnya saja.
+  if (/^https?:\/\//i.test(slug)) {
+    try {
+      slug = new URL(slug).pathname;
+    } catch {
+      return "";
+    }
+  }
+
+  // Hilangkan awalan /articles/ jika tersimpan dalam database.
+  slug = slug.replace(/^\/+/, "");
+  slug = slug.replace(/^articles\//i, "");
+  slug = slug.split(/[?#]/)[0];
+  slug = slug.replace(/\/+$/, "");
+
+  // Tolak slug yang masih mengandung protokol atau domain.
+  if (!slug || /https?:|satisfynex\.com/i.test(slug)) {
+    return "";
+  }
+
+  return slug;
 }
 
-function escapeXml(value) {
-  return String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&apos;");
+function xmlEscape(value) {
+  return String(value).replace(/[<>&'"]/g, char => ({
+    "<": "&lt;",
+    ">": "&gt;",
+    "&": "&amp;",
+    "'": "&apos;",
+    '"': "&quot;"
+  })[char]);
 }
 
-module.exports = async function handler(req, res) {
+module.exports = async (req, res) => {
   try {
     const response = await fetch(
-      SUPABASE_URL +
-      "/rest/v1/articles?select=title,slug,updated_at,created_at&status=eq.published&order=created_at.desc",
+      `${SUPABASE_URL}/rest/v1/articles?select=title,slug,created_at,status&status=eq.published&order=created_at.desc`,
       {
         headers: {
           apikey: SUPABASE_KEY,
-          Authorization: "Bearer " + SUPABASE_KEY
+          Authorization: `Bearer ${SUPABASE_KEY}`
         }
       }
     );
 
     if (!response.ok) {
-      throw new Error("Supabase HTTP " + response.status);
+      throw new Error(`Supabase returned ${response.status}`);
     }
 
     const articles = await response.json();
     const urls = new Map();
 
-    urls.set(SITE_URL + "/", "");
+    urls.set(
+      `${SITE_URL}/`,
+      `<url><loc>${xmlEscape(SITE_URL)}/</loc></url>`
+    );
 
     for (const article of articles) {
-      const slug = slugify(article.slug || article.title);
+      const slug = cleanSlug(article.slug || article.title);
       if (!slug) continue;
 
-      const url = SITE_URL + "/articles/" + encodeURIComponent(slug);
-      const date = article.updated_at || article.created_at || "";
-      urls.set(url, date);
+      const loc = `${SITE_URL}/articles/${slug}`;
+
+      urls.set(
+        loc,
+        `<url><loc>${xmlEscape(loc)}</loc>${
+          article.created_at
+            ? `<lastmod>${new Date(article.created_at).toISOString()}</lastmod>`
+            : ""
+        }</url>`
+      );
     }
-
-    const entries = [...urls.entries()].map(([url, date]) => {
-      let lastmod = "";
-
-      if (date) {
-        const timestamp = new Date(date);
-        if (!Number.isNaN(timestamp.getTime())) {
-          lastmod =
-            "<lastmod>" +
-            timestamp.toISOString().slice(0, 10) +
-            "</lastmod>";
-        }
-      }
-
-      return "<url><loc>" + escapeXml(url) + "</loc>" +
-        lastmod + "</url>";
-    }).join("");
 
     const xml =
       '<?xml version="1.0" encoding="UTF-8"?>' +
       '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' +
-      entries +
+      [...urls.values()].join("") +
       "</urlset>";
 
     res.setHeader("Content-Type", "application/xml; charset=utf-8");
-    res.setHeader("Cache-Control", "public, max-age=300");
+    res.setHeader("Cache-Control", "no-store");
     return res.status(200).send(xml);
   } catch (error) {
-    console.error(error);
-    return res.status(500).send("Unable to generate sitemap");
+    console.error("Sitemap error:", error);
+    return res.status(500).send("Sitemap generation failed");
   }
 };
