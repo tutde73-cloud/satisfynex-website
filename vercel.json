@@ -7,7 +7,7 @@
       "destination": "/api/sitemap"
     },
     {
-      "source": "/articles/:slug",
+      "source": "/articles/:path*",
       "destination": "/index.html"
     },
     {
