@@ -3,7 +3,7 @@
   "rewrites": [
     {
       "source": "/rss.xml",
-      "destination": "/api/rss.xml"
+      "destination": "/api/rss.xml.js"
     },
     {
       "source": "/sitemap.xml",
