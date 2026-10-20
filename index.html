@@ -13,6 +13,7 @@
 <meta property="og:title" content="Satisfynex — Independent US Stock Research">
 <meta property="og:description" content="Independent research on US stocks, company fundamentals, technical charts and market trends.">
 <meta property="og:url" content="https://www.satisfynex.com/">
+
 <style>
 :root{--bg:#0c1017;--panel:#131a25;--line:#283344;--text:#f2f5fa;--muted:#9ca9bb;--accent:#8ee0bd;--max:1180px}
 *{box-sizing:border-box}
@@ -91,15 +92,19 @@ h1,h2,h3,p{margin-top:0}
 @media(max-width:580px){.container{width:calc(100% - 28px)}.nav{min-height:65px}.brand{font-size:22px}.navlinks{gap:12px;font-size:12px}.hero{padding:45px 0 35px}.hero h1{letter-spacing:-1px}.article-grid{grid-template-columns:1fr}.side-story{grid-template-columns:90px minmax(0,1fr)}.section,.article-page{padding:30px 0}}
 </style>
 </head>
+
 <body>
 <header class="topbar">
  <div class="container nav">
   <a class="brand" href="/">satisfy<span>nex</span></a>
   <nav class="navlinks" aria-label="Main navigation">
-   <a href="/">Research</a><a href="/#latest">Latest</a><a href="/about">About</a>
+   <a href="/">Research</a>
+   <a href="/#latest">Latest</a>
+   <a href="/about">About</a>
   </nav>
  </div>
 </header>
+
 <main>
 <div id="homeView">
  <section class="hero"><div class="container">
@@ -108,33 +113,47 @@ h1,h2,h3,p{margin-top:0}
   <p>Independent research on US-listed companies, business fundamentals, technical charts, earnings, and emerging market trends. Built for investors who want to think beyond the ticker.</p>
   <div class="hero-note">Research and education · Not financial advice</div>
  </div></section>
+
  <section class="section"><div class="container">
   <div class="section-heading"><div><div class="eyebrow">Editor's selection</div><h2>Featured research</h2></div></div>
   <div id="featuredGrid" class="featured-grid"><div class="notice">Loading published research...</div></div>
  </div></section>
+
  <section class="section" id="latest"><div class="container">
   <div class="section-heading"><div><div class="eyebrow">Explore the research</div><h2>Latest articles</h2></div><div id="articleCount" class="muted small"></div></div>
-  <div class="filters"><input id="searchInput" type="search" placeholder="Search company, ticker, or topic..." aria-label="Search articles"><select id="categoryFilter" aria-label="Filter by category"><option value="">All categories</option></select></div>
+  <div class="filters">
+   <input id="searchInput" type="search" placeholder="Search company, ticker, or topic..." aria-label="Search articles">
+   <select id="categoryFilter" aria-label="Filter by category"><option value="">All categories</option></select>
+  </div>
   <div id="articleGrid" class="article-grid"><div class="notice">Loading articles...</div></div>
  </div></section>
 </div>
+
 <section id="articleView" class="article-page hidden"><div class="container">
  <a class="back-link" href="/">← Back to research</a><div id="articleDetail"></div>
 </div></section>
+
 <section id="pageView" class="article-page hidden"><div class="container legal-content">
  <a class="back-link" href="/">← Back to research</a><div id="pageDetail"></div>
 </div></section>
 </main>
+
 <footer class="footer"><div class="container">
  <div class="footer-row"><div>
   <a class="brand" href="/">satisfy<span>nex</span></a>
   <p style="margin:8px 0">Independent US stock research and investing education.</p>
   <p>Questions? <a class="email-link" href="mailto:Satisfynex@gmail.com">Satisfynex@gmail.com</a></p>
- </div><nav class="footer-links" aria-label="Policies and information">
-  <a href="/privacy-policy">Privacy Policy</a><a href="/terms-of-service">Terms of Service</a><a href="/about">About Us</a><a href="/contact">Contact Us</a><a href="/disclaimer">Investment Disclaimer</a>
+ </div>
+ <nav class="footer-links" aria-label="Policies and information">
+  <a href="/privacy-policy">Privacy Policy</a>
+  <a href="/terms-of-service">Terms of Service</a>
+  <a href="/about">About Us</a>
+  <a href="/contact">Contact Us</a>
+  <a href="/disclaimer">Investment Disclaimer</a>
  </nav></div>
  <p>© <span id="year"></span> Satisfynex. All rights reserved. Market analysis is for educational purposes only.</p>
 </div></footer>
+
 <script>
 "use strict";
 
@@ -150,111 +169,218 @@ const $=s=>document.querySelector(s);
 function escapeHTML(v){
  return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 }
+
 function slugify(v){
  return String(v||"").normalize("NFKD").toLowerCase().trim()
-  .replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,180);
+  .replace(/[\u0300-\u036f]/g,"")
+  .replace(/[^a-z0-9]+/g,"-")
+  .replace(/^-+|-+$/g,"")
+  .slice(0,180);
 }
+
+/*
+ * FIX UTAMA:
+ * Normalisasi slug harus menghapus domain dan prefix /articles/
+ * sebelum slug dipakai untuk membentuk tautan.
+ * URL penuh tidak boleh digabungkan dengan SITE_URL.
+ */
 function normalizeSlug(value){
- let raw=String(value||"").trim();
+ if(value===null||value===undefined)return "";
+
+ let raw=String(value).trim();
+ if(!raw)return "";
+
+ // Jika nilai merupakan URL penuh, ambil pathname saja.
  if(/^https?:\/\//i.test(raw)){
-  try{const u=new URL(raw);raw=u.pathname.split("/").filter(Boolean).pop()||"";}catch(e){}
+  try{
+   raw=new URL(raw).pathname;
+  }catch(error){
+   raw=raw.replace(/^https?:\/\/[^/]+/i,"");
+  }
  }
- raw=raw.replace(/^\/+articles\//i,"").replace(/^\/+/,"").replace(/\/+$/,"");
- try{raw=decodeURIComponent(raw);}catch(e){}
+
+ // Bersihkan query string, hash, domain, dan prefix artikel.
+ raw=raw.split(/[?#]/)[0].trim();
+ raw=raw.replace(/^https?:\/\/[^/]+/i,"");
+ raw=raw.replace(/^\/+/,"");
+ raw=raw.replace(/^www\.satisfynex\.com\/?/i,"");
+ raw=raw.replace(/^satisfynex\.com\/?/i,"");
+ raw=raw.replace(/^articles\//i,"");
+ raw=raw.replace(/\/+$/,"");
+
+ // Bila masih terdapat segmen path, gunakan slug terakhir.
+ raw=raw.split("/").filter(Boolean).pop()||"";
+
+ try{
+  raw=decodeURIComponent(raw);
+ }catch(error){}
+
  return slugify(raw);
 }
+
+function articleUrl(value){
+ const slug=normalizeSlug(value);
+ if(!slug)return "/";
+ return "/articles/"+encodeURIComponent(slug);
+}
+
 function safeImage(value){
- try{const u=new URL(value||FALLBACK_IMAGE,SITE_URL);if(["https:","http:"].includes(u.protocol))return u.href;}catch(e){}
+ try{
+  const u=new URL(value||FALLBACK_IMAGE,SITE_URL);
+  if(["https:","http:"].includes(u.protocol))return u.href;
+ }catch(e){}
  return FALLBACK_IMAGE;
 }
+
 function formatDate(value){
  if(!value)return "Research";
- const d=new Date(value);if(Number.isNaN(d.getTime()))return "Research";
+ const d=new Date(value);
+ if(Number.isNaN(d.getTime()))return "Research";
  return new Intl.DateTimeFormat("en-US",{month:"short",day:"numeric",year:"numeric",timeZone:"UTC"}).format(d);
 }
+
 function contentToText(content){
- if(Array.isArray(content))return content.map(x=>typeof x==="string"?x:(x.text||x.content||"")).join("\n\n");
+ if(Array.isArray(content)){
+  return content.map(x=>typeof x==="string"?x:(x.text||x.content||"")).join("\n\n");
+ }
  return String(content||"");
 }
+
 function toArticle(row){
  const content=contentToText(row.content);
  const words=content.trim().split(/\s+/).filter(Boolean).length;
+
+ // Utamakan slug database. Jika slug berisi URL lengkap, normalizeSlug
+ // hanya mengambil bagian slug dan mengabaikan domain.
  const id=normalizeSlug(row.slug)||slugify(row.title)||String(row.id);
- return {id,title:row.title||"Untitled Article",ticker:row.ticker||"",category:row.category||"Market Insights",date:formatDate(row.created_at),image:safeImage(row.image_url),read:Math.max(1,Math.ceil(words/200))+" min read",excerpt:row.excerpt||content.slice(0,220)||"Read the latest Satisfynex research.",content,paragraphs:content.replace(/\r\n/g,"\n").split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean)};
+
+ return {
+  id,
+  title:row.title||"Untitled Article",
+  ticker:row.ticker||"",
+  category:row.category||"Market Insights",
+  date:formatDate(row.created_at),
+  image:safeImage(row.image_url),
+  read:Math.max(1,Math.ceil(words/200))+" min read",
+  excerpt:row.excerpt||content.slice(0,220)||"Read the latest Satisfynex research.",
+  content,
+  paragraphs:content.replace(/\r\n/g,"\n").split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean)
+ };
 }
-function articleUrl(id){return "/articles/"+encodeURIComponent(id);}
+
 function cardMarkup(a){
+ const url=articleUrl(a.id);
  return `<article class="article-card">
- <a href="${escapeHTML(articleUrl(a.id))}" data-article="${escapeHTML(a.id)}"><img class="cover" src="${escapeHTML(a.image)}" alt="${escapeHTML(a.title)}" loading="lazy"></a>
+ <a href="${escapeHTML(url)}" data-article="${escapeHTML(a.id)}"><img class="cover" src="${escapeHTML(a.image)}" alt="${escapeHTML(a.title)}" loading="lazy"></a>
  <div class="body"><span class="tag">${escapeHTML(a.category)}</span>
- <h3><a href="${escapeHTML(articleUrl(a.id))}" data-article="${escapeHTML(a.id)}">${escapeHTML(a.title)}</a></h3>
+ <h3><a href="${escapeHTML(url)}" data-article="${escapeHTML(a.id)}">${escapeHTML(a.title)}</a></h3>
  <div class="meta"><span>${escapeHTML(a.ticker)}</span><span>${escapeHTML(a.date)}</span><span>${escapeHTML(a.read)}</span></div>
- <p class="excerpt">${escapeHTML(a.excerpt)}</p><a class="read-more" href="${escapeHTML(articleUrl(a.id))}" data-article="${escapeHTML(a.id)}">Read analysis →</a></div></article>`;
+ <p class="excerpt">${escapeHTML(a.excerpt)}</p><a class="read-more" href="${escapeHTML(url)}" data-article="${escapeHTML(a.id)}">Read analysis →</a></div></article>`;
 }
+
 function renderFeatured(){
  const target=$("#featuredGrid");
- if(!articles.length){target.innerHTML='<div class="notice">No published articles yet. Publish an article through your admin page.</div>';return;}
+ if(!articles.length){
+  target.innerHTML='<div class="notice">No published articles yet. Publish an article through your admin page.</div>';
+  return;
+ }
+
  const main=articles[0],side=articles.slice(1,4);
+ const mainUrl=articleUrl(main.id);
+
  target.innerHTML=`<article class="feature-main">
- <a href="${escapeHTML(articleUrl(main.id))}" data-article="${escapeHTML(main.id)}"><img class="cover" src="${escapeHTML(main.image)}" alt="${escapeHTML(main.title)}"></a>
- <div class="body"><span class="tag">${escapeHTML(main.category)}</span><h3><a href="${escapeHTML(articleUrl(main.id))}" data-article="${escapeHTML(main.id)}">${escapeHTML(main.title)}</a></h3>
+ <a href="${escapeHTML(mainUrl)}" data-article="${escapeHTML(main.id)}"><img class="cover" src="${escapeHTML(main.image)}" alt="${escapeHTML(main.title)}"></a>
+ <div class="body"><span class="tag">${escapeHTML(main.category)}</span><h3><a href="${escapeHTML(mainUrl)}" data-article="${escapeHTML(main.id)}">${escapeHTML(main.title)}</a></h3>
  <div class="meta"><span>${escapeHTML(main.ticker)}</span><span>${escapeHTML(main.date)}</span><span>${escapeHTML(main.read)}</span></div>
- <p class="excerpt">${escapeHTML(main.excerpt)}</p><a class="read-more" href="${escapeHTML(articleUrl(main.id))}" data-article="${escapeHTML(main.id)}">Read full analysis →</a></div></article>
+ <p class="excerpt">${escapeHTML(main.excerpt)}</p><a class="read-more" href="${escapeHTML(mainUrl)}" data-article="${escapeHTML(main.id)}">Read full analysis →</a></div></article>
  <div class="feature-side">${side.length?side.map(a=>`<article class="side-story"><a href="${escapeHTML(articleUrl(a.id))}" data-article="${escapeHTML(a.id)}"><img src="${escapeHTML(a.image)}" alt="${escapeHTML(a.title)}" loading="lazy"></a><div><span class="tag">${escapeHTML(a.category)}</span><h3><a href="${escapeHTML(articleUrl(a.id))}" data-article="${escapeHTML(a.id)}">${escapeHTML(a.title)}</a></h3><div class="meta">${escapeHTML(a.date)}</div></div></article>`).join(""):'<div class="notice">More research coming soon.</div>'}</div>`;
 }
+
 function renderCategories(){
  const s=$("#categoryFilter"),old=s.value;
  const categories=[...new Set(articles.map(a=>a.category))].filter(Boolean).sort();
  s.innerHTML='<option value="">All categories</option>'+categories.map(c=>`<option value="${escapeHTML(c)}">${escapeHTML(c)}</option>`).join("");
  if(categories.includes(old))s.value=old;
 }
+
 function renderArticles(){
- const search=($("#searchInput").value||"").trim().toLowerCase(),cat=$("#categoryFilter").value;
+ const search=($("#searchInput").value||"").trim().toLowerCase();
+ const cat=$("#categoryFilter").value;
  const filtered=articles.filter(a=>(!search||[a.title,a.ticker,a.category,a.excerpt,a.content].join(" ").toLowerCase().includes(search))&&(!cat||a.category===cat));
  $("#articleCount").textContent=filtered.length+(filtered.length===1?" article":" articles");
  $("#articleGrid").innerHTML=filtered.length?filtered.map(cardMarkup).join(""):'<div class="empty" style="grid-column:1/-1">No matching articles found.</div>';
 }
+
 function setMeta(article=null,pageTitle=null){
  const title=article?`${article.title} | Satisfynex`:pageTitle?`${pageTitle} | Satisfynex`:"Satisfynex — Independent US Stock Research";
  const description=String(article?.excerpt||"Independent US stock analysis, company research, technical charts, and investing education.").replace(/\s+/g," ").slice(0,155);
+
  document.title=title;
- let d=document.querySelector('meta[name="description"]');if(d)d.content=description;
- let c=document.querySelector('link[rel="canonical"]');if(!c){c=document.createElement("link");c.rel="canonical";document.head.appendChild(c);}
+ let d=document.querySelector('meta[name="description"]');
+ if(d)d.content=description;
+
+ let c=document.querySelector('link[rel="canonical"]');
+ if(!c){
+  c=document.createElement("link");
+  c.rel="canonical";
+  document.head.appendChild(c);
+ }
+
+ // Gunakan satu domain kanonis. location.pathname tidak pernah ditambah
+ // ke domain yang mungkin sudah ada di slug.
  c.href=SITE_URL+(location.pathname.replace(/\/+$/,"")||"/");
- let og=document.querySelector('meta[property="og:title"]');if(og)og.content=title;
- og=document.querySelector('meta[property="og:description"]');if(og)og.content=description;
- og=document.querySelector('meta[property="og:url"]');if(og)og.content=c.href;
+
+ let og=document.querySelector('meta[property="og:title"]');
+ if(og)og.content=title;
+ og=document.querySelector('meta[property="og:description"]');
+ if(og)og.content=description;
+ og=document.querySelector('meta[property="og:url"]');
+ if(og)og.content=c.href;
 }
+
 function showView(view){
  $("#homeView").classList.toggle("hidden",view!=="home");
  $("#articleView").classList.toggle("hidden",view!=="article");
  $("#pageView").classList.toggle("hidden",view!=="page");
 }
+
 function showHome(push=true,hash=""){
- showView("home");setMeta();
+ showView("home");
+ setMeta();
  if(push)history.pushState({view:"home"},"","/"+hash);
  if(hash==="#latest")setTimeout(()=>$("#latest").scrollIntoView({behavior:"smooth"}),0);
  else window.scrollTo({top:0,behavior:"auto"});
 }
+
 function openArticleById(id,push=true){
  const normalized=normalizeSlug(id);
  const article=articles.find(a=>a.id===normalized);
+
  if(!article){
-  showView("home");setMeta();
+  showView("home");
+  setMeta();
   $("#articleGrid").insertAdjacentHTML("afterbegin",'<div class="notice" style="grid-column:1/-1">This article could not be found. Check that its published slug matches the URL.</div>');
   if(push)history.pushState({view:"home"},"","/");
   return;
  }
+
  showView("article");
+
  const paragraphs=article.paragraphs.map(p=>`<p>${escapeHTML(p).replace(/\n/g,"<br>")}</p>`).join("");
+
  $("#articleDetail").innerHTML=`<article><header class="article-header"><span class="tag">${escapeHTML(article.category)}</span><h1>${escapeHTML(article.title)}</h1><p class="article-lead">${escapeHTML(article.excerpt)}</p><div class="meta"><span>${escapeHTML(article.ticker)}</span><span>${escapeHTML(article.date)}</span><span>${escapeHTML(article.read)}</span></div></header>
  <img class="article-hero" src="${escapeHTML(article.image)}" alt="${escapeHTML(article.title)}">
  <div class="article-layout"><div class="article-content">${paragraphs||"<p>Full analysis coming soon.</p>"}<hr style="border:0;border-top:1px solid var(--line);margin:35px 0"><p class="muted small">This article is provided for informational and educational purposes only. It is not a recommendation to buy or sell any security.</p></div>
  <aside class="sidebar"><div class="panel"><h3>About this research</h3><p>Satisfynex explores company fundamentals, market developments, technical evidence, and investment risks.</p></div><div class="panel"><h3>Explore more</h3><a class="read-more" href="/#latest">Browse all articles →</a></div></aside></div></article>`;
+
  setMeta(article);
+
+ // URL riwayat juga dibentuk dari slug yang sudah dibersihkan.
  if(push)history.pushState({view:"article",id:article.id},"",articleUrl(article.id));
+
  window.scrollTo({top:0,behavior:"auto"});
 }
+
 const pages={
  privacy:{title:"Privacy Policy",body:`<p><strong>Last updated: October 20, 2026</strong></p><p>This Privacy Policy explains how Satisfynex handles information when you visit our website.</p><h2>Information we may collect</h2><p>Our hosting and website services may process technical information such as IP address, browser type, device information, and request logs to operate and secure the website.</p><h2>Contacting us</h2><p>If you email us, we receive the information you choose to include and use it to respond.</p><h2>Cookies and advertising</h2><p>If analytics or advertising services are enabled, those services may use cookies or similar technologies under their own policies. Actual use depends on the services enabled on this website.</p><h2>Third-party services</h2><p>Hosting, database, analytics, and advertising providers may process information under their own policies.</p><h2>Your choices</h2><p>Depending on applicable law, you may request access to, correction of, or deletion of personal information.</p><h2>Contact</h2><p>Privacy questions: <a href="mailto:Satisfynex@gmail.com">Satisfynex@gmail.com</a>.</p>`},
  terms:{title:"Terms of Service",body:`<p><strong>Last updated: October 20, 2026</strong></p><p>By using Satisfynex, you agree to these terms.</p><h2>Purpose</h2><p>Satisfynex publishes general information and educational research about US-listed companies, financial results, industries, and markets.</p><h2>No investment advice</h2><p>Content is not personalized financial, legal, or tax advice and is not an offer to buy or sell securities. You are responsible for your decisions.</p><h2>Accuracy and risks</h2><p>We do not guarantee content is complete, current, or error-free. Investing involves risk, including the possible loss of capital. Past performance does not guarantee future results.</p><h2>Intellectual property</h2><p>Do not republish substantial original content commercially without permission from the relevant rights holder.</p><h2>Third-party links</h2><p>We are not responsible for external websites or services.</p><h2>Contact</h2><p><a href="mailto:Satisfynex@gmail.com">Satisfynex@gmail.com</a></p>`},
@@ -262,33 +388,73 @@ const pages={
  contact:{title:"Contact Us",body:`<p>We welcome reader feedback, questions about published research, and correction requests.</p><div class="contact-card"><div class="eyebrow">Email</div><h2>Get in touch with Satisfynex</h2><p>Include the article title or URL if your inquiry concerns a specific publication.</p><p><a class="email-link" href="mailto:Satisfynex@gmail.com">Satisfynex@gmail.com</a></p><a class="button-link" href="mailto:Satisfynex@gmail.com?subject=Satisfynex%20Website%20Inquiry">Email Satisfynex →</a></div><p>Please do not send passwords, payment details, or other sensitive information. We do not provide individualized investment recommendations by email.</p>`},
  disclaimer:{title:"Investment Disclaimer",body:`<p><strong>Last updated: October 20, 2026</strong></p><p>All articles, charts, commentary, and materials published by Satisfynex are for general informational and educational purposes only.</p><h2>Not financial advice</h2><p>Nothing on this website is personalized investment advice or a recommendation to buy, hold, or sell any security.</p><h2>Investment risk</h2><p>Investments can lose value, including the loss of some or all of your capital. Historical performance does not guarantee future results.</p><h2>Independent verification</h2><p>Information may be incomplete, delayed, or outdated. Consult official company filings and reliable sources before making decisions.</p><h2>Contact</h2><p><a href="mailto:Satisfynex@gmail.com">Satisfynex@gmail.com</a></p>`}
 };
+
 function showPage(type,push=true){
- const p=pages[type];if(!p){showHome(false);return;}
- showView("page");$("#pageDetail").innerHTML=`<h1>${escapeHTML(p.title)}</h1>${p.body}`;setMeta(null,p.title);
+ const p=pages[type];
+ if(!p){showHome(false);return;}
+
+ showView("page");
+ $("#pageDetail").innerHTML=`<h1>${escapeHTML(p.title)}</h1>${p.body}`;
+ setMeta(null,p.title);
+
  const paths={privacy:"/privacy-policy",terms:"/terms-of-service",about:"/about",contact:"/contact",disclaimer:"/disclaimer"};
  if(push)history.pushState({view:"page",type},"",paths[type]);
  window.scrollTo({top:0,behavior:"auto"});
 }
+
 function routeFromLocation(){
  const path=location.pathname.replace(/\/+$/,"")||"/";
- if(path.startsWith("/articles/")){openArticleById(path.slice("/articles/".length),false);return;}
+
+ if(path.startsWith("/articles/")){
+  const slug=path.slice("/articles/".length);
+  openArticleById(slug,false);
+  return;
+ }
+
  const routes={"/privacy-policy":"privacy","/terms-of-service":"terms","/about":"about","/contact":"contact","/disclaimer":"disclaimer"};
- if(routes[path]){showPage(routes[path],false);return;}
- showView("home");setMeta();
+ if(routes[path]){
+  showPage(routes[path],false);
+  return;
+ }
+
+ showView("home");
+ setMeta();
  if(location.hash==="#latest")setTimeout(()=>$("#latest").scrollIntoView(),0);
 }
+
 document.addEventListener("click",e=>{
  const a=e.target.closest("a[data-article]");
- if(a&&!e.ctrlKey&&!e.metaKey&&!e.shiftKey&&!e.altKey&&e.button===0){e.preventDefault();openArticleById(a.dataset.article,true);return;}
+ if(a&&!e.ctrlKey&&!e.metaKey&&!e.shiftKey&&!e.altKey&&e.button===0){
+  e.preventDefault();
+  openArticleById(a.dataset.article,true);
+  return;
+ }
+
  const link=e.target.closest("a");
  if(!link||e.ctrlKey||e.metaKey||e.shiftKey||e.altKey||e.button!==0)return;
+
  const url=new URL(link.href,location.href);
  if(url.origin!==location.origin)return;
- if(url.pathname==="/#latest"||link.getAttribute("href")==="/#latest"){e.preventDefault();showHome(true,"#latest");return;}
- if(url.pathname==="/"&&!url.hash){e.preventDefault();showHome(true);return;}
+
+ if(url.pathname==="/#latest"||link.getAttribute("href")==="/#latest"){
+  e.preventDefault();
+  showHome(true,"#latest");
+  return;
+ }
+
+ if(url.pathname==="/"&&!url.hash){
+  e.preventDefault();
+  showHome(true);
+  return;
+ }
+
  const pathToType={"/privacy-policy":"privacy","/terms-of-service":"terms","/about":"about","/contact":"contact","/disclaimer":"disclaimer"};
- if(pathToType[url.pathname]){e.preventDefault();showPage(pathToType[url.pathname],true);}
+ if(pathToType[url.pathname]){
+  e.preventDefault();
+  showPage(pathToType[url.pathname],true);
+ }
 });
+
 window.addEventListener("popstate",routeFromLocation);
 $("#searchInput").addEventListener("input",renderArticles);
 $("#categoryFilter").addEventListener("change",renderArticles);
@@ -296,12 +462,27 @@ $("#year").textContent=new Date().getFullYear();
 
 async function loadArticles(){
  const endpoint=SUPABASE_URL+"/rest/v1/articles?select=id,title,slug,ticker,category,excerpt,content,image_url,status,created_at&status=eq.published&order=created_at.desc";
+
  try{
-  const r=await fetch(endpoint,{headers:{apikey:SUPABASE_KEY,Authorization:"Bearer "+SUPABASE_KEY,Accept:"application/json"}});
+  const r=await fetch(endpoint,{
+   headers:{
+    apikey:SUPABASE_KEY,
+    Authorization:"Bearer "+SUPABASE_KEY,
+    Accept:"application/json"
+   }
+  });
+
   if(!r.ok)throw new Error("Supabase HTTP "+r.status+" "+(await r.text()).slice(0,150));
-  const rows=await r.json();if(!Array.isArray(rows))throw new Error("Unexpected article response");
+
+  const rows=await r.json();
+  if(!Array.isArray(rows))throw new Error("Unexpected article response");
+
   articles=rows.map(toArticle);
-  renderCategories();renderFeatured();renderArticles();routeFromLocation();
+
+  renderCategories();
+  renderFeatured();
+  renderArticles();
+  routeFromLocation();
  }catch(err){
   console.error("Satisfynex loading error:",err);
   $("#featuredGrid").innerHTML='<div class="notice">Unable to load published research. Please try again later.</div>';
@@ -310,6 +491,7 @@ async function loadArticles(){
   routeFromLocation();
  }
 }
+
 loadArticles();
 </script>
 </body>
