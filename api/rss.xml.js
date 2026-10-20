@@ -4,8 +4,9 @@ export default async function handler(req, res) {
   const SITE_URL = "https://www.satisfynex.com";
 
   try {
+    // Ambil 20 artikel terbaru dari Supabase REST API
     const response = await fetch(
-      `${SUPABASE_URL}/rest/v1/articles?select=title,slug,excerpt,created_at&status=eq.published&order=created_at.desc&limit=20`,
+      `${SUPABASE_URL}/rest/v1/articles?select=title,slug,excerpt,created_at,status&order=created_at.desc&limit=20`,
       {
         headers: {
           'apikey': SUPABASE_KEY,
@@ -18,9 +19,12 @@ export default async function handler(req, res) {
       throw new Error(`Supabase error: ${response.statusText}`);
     }
 
-    const articles = await response.json();
+    const allArticles = await response.json();
+    
+    // Filter artikel yang published (toleransi huruf besar/kecil)
+    const articles = (allArticles || []).filter(a => !a.status || a.status.toLowerCase() === 'published');
 
-    const itemsXml = (articles || []).map(article => `
+    const itemsXml = articles.map(article => `
     <item>
       <title><![CDATA[${article.title || ''}]]></title>
       <link>${SITE_URL}/articles/${article.slug}</link>
@@ -43,7 +47,8 @@ export default async function handler(req, res) {
 </rss>`;
 
     res.setHeader('Content-Type', 'text/xml; charset=utf-8');
-    res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate');
+    // UBAH: Matikan Cache Vercel agar RSS selalu menyajikan data paling gres dari Supabase
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     return res.status(200).send(rssXml);
   } catch (err) {
     console.error("RSS Error:", err);
