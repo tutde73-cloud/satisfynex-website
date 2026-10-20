@@ -1,4 +1,4 @@
-const SITE_URL = "https://satisfynex.com"; // Disamakan dengan robots.txt (tanpa www)
+const SITE_URL = "https://www.satisfynex.com";
 const SUPABASE_URL = "https://ngysrsypmieuvucqupgd.supabase.co";
 const SUPABASE_KEY = "sb_publishable_U05M_WQFKioCZ1LNSfyNbQ_jUoJTQvd";
 
@@ -79,7 +79,7 @@ export default async function handler(req, res) {
       urls.join("\n") +
       "\n</urlset>";
 
-    // Mencegah simpanan cache di Vercel/Browser agar selalu realtime
+    // Mencegah simpanan cache agar selalu realtime
     res.statusCode = 200;
     res.setHeader("Content-Type", "application/xml; charset=UTF-8");
     res.setHeader("Cache-Control", "s-maxage=0, max-age=0, must-revalidate, no-cache, no-store");
