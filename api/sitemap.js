@@ -1,4 +1,4 @@
-const SITE_URL = "https://www.satisfynex.com";
+const SITE_URL = "https://satisfynex.com"; // Disamakan dengan robots.txt (tanpa www)
 const SUPABASE_URL = "https://ngysrsypmieuvucqupgd.supabase.co";
 const SUPABASE_KEY = "sb_publishable_U05M_WQFKioCZ1LNSfyNbQ_jUoJTQvd";
 
@@ -31,16 +31,24 @@ export default async function handler(req, res) {
     const seen = new Set();
     const urls = [];
 
-    // Homepage
+    // Tentukan tanggal update terbaru untuk Homepage dari artikel paling baru
+    const latestArticleDate = articles.length > 0 ? (articles[0].updated_at || articles[0].created_at) : new Date().toISOString();
+    const homepageLastMod = latestArticleDate && !Number.isNaN(Date.parse(latestArticleDate))
+      ? `\n    <lastmod>${new Date(latestArticleDate).toISOString()}</lastmod>`
+      : "";
+
+    // 1. Homepage dengan lastmod dinamis
     urls.push(`
   <url>
-    <loc>${SITE_URL}/</loc>
+    <loc>${SITE_URL}/</loc>${homepageLastMod}
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
   </url>`);
 
+    // 2. Daftar Artikel
     for (const article of articles) {
       if (!article.slug) continue;
 
-      // Bersihkan slug dari karakter tak terduga
       let cleanSlug = String(article.slug)
         .trim()
         .replace(/^\/+|\/+$/g, "")
@@ -60,6 +68,8 @@ export default async function handler(req, res) {
       urls.push(`
   <url>
     <loc>${escapeXml(loc)}</loc>${lastmod}
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>`);
     }
 
@@ -69,9 +79,10 @@ export default async function handler(req, res) {
       urls.join("\n") +
       "\n</urlset>";
 
+    // Mencegah simpanan cache di Vercel/Browser agar selalu realtime
     res.statusCode = 200;
     res.setHeader("Content-Type", "application/xml; charset=UTF-8");
-    res.setHeader("Cache-Control", "no-store, max-age=0");
+    res.setHeader("Cache-Control", "s-maxage=0, max-age=0, must-revalidate, no-cache, no-store");
 
     return res.end(xml);
   } catch (error) {
