@@ -1,7 +1,10 @@
-
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
+    {
+      "source": "/rss.xml",
+      "destination": "/api/rss.xml"
+    },
     {
       "source": "/sitemap.xml",
       "destination": "/api/sitemap"
