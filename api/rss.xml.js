@@ -1,25 +1,28 @@
-import { createClient } from '@supabase/supabase-js';
-
-const SUPABASE_URL = process.env.SUPABASE_URL || "https://ngysrsypmieuvucqupgd.supabase.co";
-const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY || "sb_publishable_U05M_WQFKioCZ1LNSfyNbQ_jUoJTQvd";
-const SITE_URL = "https://www.satisfynex.com";
-
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-
 export default async function handler(req, res) {
-  try {
-    const { data: articles, error } = await supabase
-      .from('articles')
-      .select('title, slug, excerpt, created_at')
-      .eq('status', 'published')
-      .order('created_at', { ascending: false })
-      .limit(20);
+  const SUPABASE_URL = "https://ngysrsypmieuvucqupgd.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_U05M_WQFKioCZ1LNSfyNbQ_jUoJTQvd";
+  const SITE_URL = "https://www.satisfynex.com";
 
-    if (error) throw error;
+  try {
+    const response = await fetch(
+      `${SUPABASE_URL}/rest/v1/articles?select=title,slug,excerpt,created_at&status=eq.published&order=created_at.desc&limit=20`,
+      {
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`
+        }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Supabase error: ${response.statusText}`);
+    }
+
+    const articles = await response.json();
 
     const itemsXml = (articles || []).map(article => `
     <item>
-      <title><![CDATA[${article.title}]]></title>
+      <title><![CDATA[${article.title || ''}]]></title>
       <link>${SITE_URL}/articles/${article.slug}</link>
       <guid isPermaLink="true">${SITE_URL}/articles/${article.slug}</guid>
       <pubDate>${new Date(article.created_at).toUTCString()}</pubDate>
@@ -43,7 +46,7 @@ export default async function handler(req, res) {
     res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate');
     return res.status(200).send(rssXml);
   } catch (err) {
-    console.error("RSS generation error:", err);
-    return res.status(500).send("Error generating RSS feed");
+    console.error("RSS Error:", err);
+    return res.status(500).send("Error generating RSS feed: " + err.message);
   }
 }
