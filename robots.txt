@@ -1,0 +1,5 @@
+
+User-agent: *
+Allow: /
+
+Sitemap: https://satisfynex-website-768x.vercel.app/sitemap.xml
