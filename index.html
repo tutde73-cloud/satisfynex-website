@@ -88,6 +88,14 @@ h1,h2,h3,p{margin-top:0}
 .footer{border-top:1px solid var(--line);padding:35px 0;color:var(--muted);font-size:12px}
 .footer-row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:24px}
 .footer-links{max-width:600px;align-items:flex-start}
+
+/* Stylings Pagination Navigasi */
+.pagination{display:flex;justify-content:center;align-items:center;gap:12px;margin-top:35px}
+.pagination button{background:var(--panel);color:var(--text);border:1px solid var(--line);padding:10px 18px;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px;transition:background .15s,border-color .15s}
+.pagination button:hover:not(:disabled){background:#1c2636;border-color:var(--accent)}
+.pagination button:disabled{opacity:0.4;cursor:not-allowed}
+.pagination span{color:var(--muted);font-size:13px}
+
 @media(max-width:850px){.featured-grid{grid-template-columns:1fr}.article-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.article-layout{grid-template-columns:1fr}.sidebar{position:static}}
 @media(max-width:580px){.container{width:calc(100% - 28px)}.nav{min-height:65px}.brand{font-size:22px}.navlinks{gap:12px;font-size:12px}.hero{padding:45px 0 35px}.hero h1{letter-spacing:-1px}.article-grid{grid-template-columns:1fr}.side-story{grid-template-columns:90px minmax(0,1fr)}.section,.article-page{padding:30px 0}}
 </style>
@@ -126,6 +134,8 @@ h1,h2,h3,p{margin-top:0}
    <select id="categoryFilter" aria-label="Filter by category"><option value="">All categories</option></select>
   </div>
   <div id="articleGrid" class="article-grid"><div class="notice">Loading articles...</div></div>
+  <!-- Tempat tombol pagination Previous & Next -->
+  <div id="paginationContainer"></div>
  </div></section>
 </div>
 
@@ -164,6 +174,9 @@ const CONTACT_EMAIL="Satisfynex@gmail.com";
 const FALLBACK_IMAGE="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80";
 
 let articles=[];
+let currentPage=1;
+const ARTICLES_PER_PAGE=20;
+
 const $=s=>document.querySelector(s);
 
 function escapeHTML(v){
@@ -179,10 +192,9 @@ function slugify(v){
 }
 
 /*
- * FIX UTAMA:
+ * FIX UTAMA (Sama persis dengan milik Anda):
  * Normalisasi slug harus menghapus domain dan prefix /articles/
  * sebelum slug dipakai untuk membentuk tautan.
- * URL penuh tidak boleh digabungkan dengan SITE_URL.
  */
 function normalizeSlug(value){
  if(value===null||value===undefined)return "";
@@ -190,7 +202,6 @@ function normalizeSlug(value){
  let raw=String(value).trim();
  if(!raw)return "";
 
- // Jika nilai merupakan URL penuh, ambil pathname saja.
  if(/^https?:\/\//i.test(raw)){
   try{
    raw=new URL(raw).pathname;
@@ -199,7 +210,6 @@ function normalizeSlug(value){
   }
  }
 
- // Bersihkan query string, hash, domain, dan prefix artikel.
  raw=raw.split(/[?#]/)[0].trim();
  raw=raw.replace(/^https?:\/\/[^/]+/i,"");
  raw=raw.replace(/^\/+/,"");
@@ -208,7 +218,6 @@ function normalizeSlug(value){
  raw=raw.replace(/^articles\//i,"");
  raw=raw.replace(/\/+$/,"");
 
- // Bila masih terdapat segmen path, gunakan slug terakhir.
  raw=raw.split("/").filter(Boolean).pop()||"";
 
  try{
@@ -249,9 +258,6 @@ function contentToText(content){
 function toArticle(row){
  const content=contentToText(row.content);
  const words=content.trim().split(/\s+/).filter(Boolean).length;
-
- // Utamakan slug database. Jika slug berisi URL lengkap, normalizeSlug
- // hanya mengambil bagian slug dan mengabaikan domain.
  const id=normalizeSlug(row.slug)||slugify(row.title)||String(row.id);
 
  return {
@@ -307,8 +313,36 @@ function renderArticles(){
  const search=($("#searchInput").value||"").trim().toLowerCase();
  const cat=$("#categoryFilter").value;
  const filtered=articles.filter(a=>(!search||[a.title,a.ticker,a.category,a.excerpt,a.content].join(" ").toLowerCase().includes(search))&&(!cat||a.category===cat));
+ 
+ // Hitung total halaman berdasarkan batasan 20 per halaman
+ const totalPages=Math.ceil(filtered.length/ARTICLES_PER_PAGE)||1;
+ if(currentPage>totalPages)currentPage=totalPages;
+ if(currentPage<1)currentPage=1;
+
+ const start=(currentPage-1)*ARTICLES_PER_PAGE;
+ const paginated=filtered.slice(start,start+ARTICLES_PER_PAGE);
+
  $("#articleCount").textContent=filtered.length+(filtered.length===1?" article":" articles");
- $("#articleGrid").innerHTML=filtered.length?filtered.map(cardMarkup).join(""):'<div class="empty" style="grid-column:1/-1">No matching articles found.</div>';
+ $("#articleGrid").innerHTML=paginated.length?paginated.map(cardMarkup).join(""):'<div class="empty" style="grid-column:1/-1">No matching articles found.</div>';
+
+ // Render Tombol Navigasi Pagination
+ const pagContainer=$("#paginationContainer");
+ if(totalPages>1){
+  pagContainer.innerHTML=`<div class="pagination">
+   <button id="prevPageBtn" ${currentPage===1?"disabled":""}>← Previous</button>
+   <span>Page ${currentPage} of ${totalPages}</span>
+   <button id="nextPageBtn" ${currentPage===totalPages?"disabled":""}>Next →</button>
+  </div>`;
+
+  $("#prevPageBtn")?.addEventListener("click",()=>{
+   if(currentPage>1){currentPage--;renderArticles();$("#latest").scrollIntoView({behavior:"smooth"});}
+  });
+  $("#nextPageBtn")?.addEventListener("click",()=>{
+   if(currentPage<totalPages){currentPage++;renderArticles();$("#latest").scrollIntoView({behavior:"smooth"});}
+  });
+ }else{
+  pagContainer.innerHTML="";
+ }
 }
 
 function setMeta(article=null,pageTitle=null){
@@ -326,8 +360,6 @@ function setMeta(article=null,pageTitle=null){
   document.head.appendChild(c);
  }
 
- // Gunakan satu domain kanonis. location.pathname tidak pernah ditambah
- // ke domain yang mungkin sudah ada di slug.
  c.href=SITE_URL+(location.pathname.replace(/\/+$/,"")||"/");
 
  let og=document.querySelector('meta[property="og:title"]');
@@ -375,7 +407,6 @@ function openArticleById(id,push=true){
 
  setMeta(article);
 
- // URL riwayat juga dibentuk dari slug yang sudah dibersihkan.
  if(push)history.pushState({view:"article",id:article.id},"",articleUrl(article.id));
 
  window.scrollTo({top:0,behavior:"auto"});
@@ -456,8 +487,8 @@ document.addEventListener("click",e=>{
 });
 
 window.addEventListener("popstate",routeFromLocation);
-$("#searchInput").addEventListener("input",renderArticles);
-$("#categoryFilter").addEventListener("change",renderArticles);
+$("#searchInput").addEventListener("input",()=>{currentPage=1;renderArticles();});
+$("#categoryFilter").addEventListener("change",()=>{currentPage=1;renderArticles();});
 $("#year").textContent=new Date().getFullYear();
 
 async function loadArticles(){
