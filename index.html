@@ -55,7 +55,7 @@ h1,h2,h3,p{margin-top:0}
 .hero p{max-width:680px;color:var(--muted);font-size:17px;min-height:65px}
 .hero-note{display:inline-block;border:1px solid var(--line);border-radius:30px;padding:7px 13px;color:var(--muted);font-size:12px}
 
-/* Widget Container Styles */
+/* Widget Panel Styles */
 .screener-section{padding:30px 0 20px;border-top:1px solid var(--line)}
 .screener-panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:0 10px 25px -5px rgba(0,0,0,0.3)}
 
@@ -202,74 +202,30 @@ h1,h2,h3,p{margin-top:0}
   <div id="paginationContainer"></div>
  </div></section>
 
- <!-- WIDGET 1: Stock Market Hot Lists (Active, Gainers, Losers dengan Grafik Mini) -->
+ <!-- WIDGET 1: Market Data (Indices, Futures, Bonds, Forex) -->
  <section class="screener-section"><div class="container">
   <div class="screener-panel">
    <div style="padding: 10px 10px 15px;">
-    <div class="eyebrow">Stock Market Monitor</div>
-    <h2 style="font-size: 22px; margin: 4px 0 0 0;">Top Gainers, Losers & Active US Equities</h2>
+    <div class="eyebrow">Market Quotes Data</div>
+    <h2 style="font-size: 22px; margin: 4px 0 0 0;">Global Markets Overview & Sectors</h2>
    </div>
-   <div class="tradingview-widget-container" style="height: 500px; width: 100%;">
-    <div class="tradingview-widget-container__widget" style="height: calc(100% - 32px); width: 100%;"></div>
-    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-hot-lists.js" async>
-    {
-      "colorTheme": "dark",
-      "dateRange": "12M",
-      "exchange": "US",
-      "showChart": true,
-      "locale": "en",
-      "largeChartUrl": "",
-      "isTransparent": true,
-      "showSymbolLogo": true,
-      "showFloatingTooltip": true,
-      "width": "100%",
-      "height": "100%"
-    }
-    </script>
+   <div style="padding: 0 10px 10px;">
+    <script type="module" src="https://widgets.tradingview-widget.com/w/en/tv-market-data.js"></script>
+    <tv-market-data symbol-sectors='[{"sectionName":"Indices","symbols":["FOREXCOM:SPXUSD","FOREXCOM:NSXUSD","FOREXCOM:DJI","INDEX:NKY","INDEX:DEU40","FOREXCOM:UKXGBP"]},{"sectionName":"Futures","symbols":["BMFBOVESPA:ISP1!","BMFBOVESPA:EUR1!","CMCMARKETS:GOLD","TVC:USOIL","BMFBOVESPA:CCM1!"]},{"sectionName":"Bonds","symbols":["EUREX:FGBL1!","EUREX:FBTP1!","EUREX:FGBM1!"]},{"sectionName":"Forex","symbols":["FX:EURUSD","FX:GBPUSD","FX:USDJPY","FX:USDCHF","FX:AUDUSD","FX:USDCAD"]}]'></tv-market-data>
    </div>
   </div>
  </div></section>
 
- <!-- WIDGET 2: Market Quotes Data (Tabel Indeks & Komoditas Global) -->
+ <!-- WIDGET 2: Market Overview (Market Movers) -->
  <section class="screener-section" style="padding-top: 10px;"><div class="container">
   <div class="screener-panel">
    <div style="padding: 10px 10px 15px;">
-    <div class="eyebrow">Market Quotes Data</div>
-    <h2 style="font-size: 22px; margin: 4px 0 0 0;">Global Markets Overview & Price Changes</h2>
+    <div class="eyebrow">Market Movers</div>
+    <h2 style="font-size: 22px; margin: 4px 0 0 0;">Active Equities & Performance Overview</h2>
    </div>
-   <div class="tradingview-widget-container" style="height: 480px; width: 100%;">
-    <div class="tradingview-widget-container__widget" style="height: calc(100% - 32px); width: 100%;"></div>
-    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
-    {
-      "width": "100%",
-      "height": "100%",
-      "symbolsGroups": [
-        {
-          "name": "Indices",
-          "symbols": [
-            { "name": "FOREXCOM:SPXUSD", "displayName": "S&P 500" },
-            { "name": "FOREXCOM:NSXUSD", "displayName": "Nasdaq 100" },
-            { "name": "FOREXCOM:DJI", "displayName": "Dow 30" },
-            { "name": "INDEX:RUT", "displayName": "Russell 2000" },
-            { "name": "INDEX:VIX", "displayName": "VIX Volatility" }
-          ]
-        },
-        {
-          "name": "Commodities & Forex",
-          "symbols": [
-            { "name": "TVC:GOLD", "displayName": "Gold" },
-            { "name": "TVC:SILVER", "displayName": "Silver" },
-            { "name": "TVC:USOIL", "displayName": "Crude Oil" },
-            { "name": "CAPITALCOM:NATURALGAS", "displayName": "Natural Gas" },
-            { "name": "CAPITALCOM:DXY", "displayName": "US Dollar Index" }
-          ]
-        }
-      ],
-      "colorTheme": "dark",
-      "locale": "en",
-      "isTransparent": true
-    }
-    </script>
+   <div style="padding: 0 10px 10px;">
+    <script type="module" src="https://widgets.tradingview-widget.com/w/en/tv-market-overview.js"></script>
+    <tv-market-overview mode="market-movers"></tv-market-overview>
    </div>
   </div>
  </div></section>
