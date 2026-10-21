@@ -9,11 +9,11 @@ def fetch_ratings():
         print("Error: API_KEY environment variable is not set!")
         return
 
-    # Endpoint resmi FMP untuk Wall Street upgrades & downgrades RSS feed
-    url = f"https://financialmodelingprep.com/api/v4/upgrades-downgrades-rss-feed?page=0&apikey={API_KEY}"
+    # Menggunakan endpoint v3 upgrades-downgrades yang lebih stabil
+    url = f"https://financialmodelingprep.com/api/v3/upgrades-downgrades?limit=50&apikey={API_KEY}"
     
     try:
-        print("Fetching data from FMP API...")
+        print("Fetching data from FMP API v3 endpoint...")
         response = requests.get(url, timeout=15)
         print(f"FMP API Response Status Code: {response.status_code}")
         
@@ -29,15 +29,15 @@ def fetch_ratings():
             return
 
         formatted_ratings = []
-        for item in data[:60]: # Ambil 60 data terbaru
-            # Ekstraksi field murni dari FMP
-            symbol = item.get("symbol") or item.get("ticker") or "-"
+        for item in data[:50]: # Ambil 50 data terbaru
+            symbol = item.get("symbol") or "-"
             company = item.get("companyName") or symbol
-            institution = item.get("gradingCompany") or item.get("institution") or "-"
-            action = item.get("action") or item.get("actionType") or "-"
-            new_grade = item.get("newGrade") or item.get("new_rating") or "-"
-            prev_grade = item.get("previousGrade") or item.get("previous_rating") or "-"
-            date_str = item.get("publishedDate") or item.get("date") or "-"
+            institution = item.get("gradingCompany") or "-"
+            action = item.get("action") or "-"
+            new_grade = item.get("newGrade") or "-"
+            prev_grade = item.get("previousGrade") or "-"
+            date_str = item.get("publishedDate") or "-"
+            
             if date_str != "-":
                 date_str = date_str[:10]
 
@@ -56,7 +56,7 @@ def fetch_ratings():
         with open("data/ratings.json", "w", encoding="utf-8") as f:
             json.dump(formatted_ratings, f, indent=2)
             
-        print(f"Successfully saved {len(formatted_ratings)} real FMP items to data/ratings.json")
+        print(f"Successfully saved {len(formatted_ratings)} items to data/ratings.json")
 
     except Exception as e:
         print(f"An exception occurred during FMP fetch: {e}")
