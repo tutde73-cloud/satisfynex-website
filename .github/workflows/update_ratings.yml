@@ -4,17 +4,20 @@ on:
   schedule:
     # Berjalan otomatis setiap hari jam 06:00 UTC (14:00 WITA)
     - cron: '0 6 * * *'
-  workflow_dispatch: # Memunculkan tombol 'Run workflow' manual di tab Actions
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   update-ratings:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 
