@@ -647,46 +647,52 @@ $("#searchInput").addEventListener("input",()=>{currentPage=1;renderArticles();}
 $("#categoryFilter").addEventListener("change",()=>{currentPage=1;renderArticles();});
 $("#year").textContent=new Date().getFullYear();
 
-// Fetch and Render Wall Street Analyst Ratings Standby Feed
+// Fetch and Render Wall Street Analyst Ratings Standby Feed (Anti-Cache & Dynamic Keys)
 async function loadAnalystRatings() {
   const tableBody = document.getElementById('ratings-table-body');
-  try {
-    const response = await fetch('./data/ratings.json');
-    if (!response.ok) throw new Error('Failed to load ratings data');
-    const data = await response.json();
+  const pathsToTry = ['data/ratings.json', '/data/ratings.json', './data/ratings.json'];
+  let data = null;
 
-    if (!data || data.length === 0) {
-      tableBody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--muted); padding: 20px;">No analyst updates available at the moment.</td></tr>`;
-      return;
+  for (const path of pathsToTry) {
+    try {
+      const response = await fetch(`${path}?v=${new Date().getTime()}`);
+      if (response.ok) {
+        data = await response.json();
+        if (data && data.length > 0) break;
+      }
+    } catch (e) {
+      console.warn(`Attempt failed for ${path}:`, e);
+    }
+  }
+
+  if (!data || !Array.isArray(data) || data.length === 0) {
+    tableBody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--muted); padding: 25px;">No analyst updates available at the moment.</td></tr>`;
+    return;
+  }
+
+  tableBody.innerHTML = '';
+  data.forEach(item => {
+    const actionText = (item.action || item.gradingCompany || '').toLowerCase();
+    let badgeClass = 'action-default';
+    if (actionText.includes('upgrade') || actionText.includes('buy') || actionText.includes('outperform')) {
+      badgeClass = 'action-upgrade';
+    } else if (actionText.includes('downgrade') || actionText.includes('sell') || actionText.includes('underperform')) {
+      badgeClass = 'action-downgrade';
     }
 
-    tableBody.innerHTML = '';
-    data.forEach(item => {
-      const actionText = (item.action || '').toLowerCase();
-      let badgeClass = 'action-default';
-      if (actionText.includes('upgrade') || actionText.includes('buy') || actionText.includes('outperform')) {
-        badgeClass = 'action-upgrade';
-      } else if (actionText.includes('downgrade') || actionText.includes('sell') || actionText.includes('underperform')) {
-        badgeClass = 'action-downgrade';
-      }
-
-      const row = `
-        <tr>
-          <td><span class="ticker-col">${escapeHTML(item.ticker || '-')}</span></td>
-          <td>${escapeHTML(item.company_name || '-')}</td>
-          <td>${escapeHTML(item.institution || '-')}</td>
-          <td><span class="action-badge ${badgeClass}">${escapeHTML(item.action || '-')}</span></td>
-          <td><strong>${escapeHTML(item.new_rating || '-')}</strong></td>
-          <td style="color: var(--muted);">${escapeHTML(item.previous_rating || '-')}</td>
-          <td style="color: var(--muted);">${escapeHTML(item.date_updated || '-')}</td>
-        </tr>
-      `;
-      tableBody.innerHTML += row;
-    });
-  } catch (error) {
-    console.error('Error fetching analyst ratings:', error);
-    tableBody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--muted); padding: 20px;">Standby feed will populate automatically once the updater runs.</td></tr>`;
-  }
+    const row = `
+      <tr>
+        <td><span class="ticker-col">${escapeHTML(item.ticker || item.symbol || '-')}</span></td>
+        <td>${escapeHTML(item.company_name || item.companyName || item.symbol || '-')}</td>
+        <td>${escapeHTML(item.institution || item.gradingCompany || '-')}</td>
+        <td><span class="action-badge ${badgeClass}">${escapeHTML(item.action || item.actionType || '-')}</span></td>
+        <td><strong>${escapeHTML(item.new_rating || item.newGrade || '-')}</strong></td>
+        <td style="color: var(--muted);">${escapeHTML(item.previous_rating || item.previousGrade || '-')}</td>
+        <td style="color: var(--muted);">${escapeHTML(item.date_updated || item.date || '-')}</td>
+      </tr>
+    `;
+    tableBody.innerHTML += row;
+  });
 }
 
 async function loadArticles(){
