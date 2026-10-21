@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -201,14 +202,14 @@ h1,h2,h3,p{margin-top:0}
   <div id="paginationContainer"></div>
  </div></section>
 
- <!-- TradingView Real-Time Screener Widget (Overview & Tanpa Technical Rating) -->
+ <!-- TradingView Real-Time Screener Widget -->
  <section class="screener-section"><div class="container">
   <div class="screener-panel">
    <div style="padding: 10px 10px 15px;">
     <div class="eyebrow">Real-Time Market Screener</div>
     <h2 style="font-size: 22px; margin: 4px 0 0 0;">Live Wall Street Active Equities</h2>
    </div>
-   <div class="tradingview-widget-container" style="height: 650px; width: 100%;">
+   <div class="tradingview-widget-container" id="tvScreenerBox" style="height: 650px; width: 100%;">
     <div class="tradingview-widget-container__widget" style="height: calc(100% - 32px); width: 100%;"></div>
     <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-screener.js" async>
     {
@@ -292,6 +293,27 @@ function initTextRotator() {
     }, 600);
 
   }, 3800);
+}
+
+function hideTechnicalRatingColumn() {
+  const checkFrame = setInterval(() => {
+    const iframe = document.querySelector("#tvScreenerBox iframe");
+    if (iframe && iframe.contentDocument) {
+      try {
+        const style = document.createElement('style');
+        style.innerHTML = `
+          th[data-field="recommendation_mark"], 
+          td[data-field="recommendation_mark"] {
+            display: none !important;
+          }
+        `;
+        iframe.contentDocument.head.appendChild(style);
+        clearInterval(checkFrame);
+      } catch (e) {
+        // Cross-origin iframe fallback
+      }
+    }
+  }, 500);
 }
 
 function escapeHTML(v){
@@ -621,7 +643,7 @@ async function loadArticles(){
 
 loadArticles();
 initTextRotator();
+hideTechnicalRatingColumn();
 </script>
 </body>
 </html>
-
