@@ -1,0 +1,20 @@
+[
+  {
+    "ticker": "$RKLB",
+    "company_name": "Rocket Lab USA Inc.",
+    "institution": "Cantor Fitzgerald",
+    "action": "reiterate",
+    "previous_rating": "Overweight",
+    "new_rating": "Overweight",
+    "date_updated": "2026-10-21"
+  },
+  {
+    "ticker": "$SNOW",
+    "company_name": "Snowflake Inc.",
+    "institution": "Barclays",
+    "action": "reiterate",
+    "previous_rating": "Overweight",
+    "new_rating": "Overweight",
+    "date_updated": "2026-10-20"
+  }
+]
