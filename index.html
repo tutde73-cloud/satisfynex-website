@@ -1,3 +1,8 @@
+Berikut adalah kode full copas file index.html lengkap.
+Di versi ini:
+ * TradingView Stock Screener Widget (Tabel Otomatis & Real-Time) telah dipasang di paling bawah, persis di bawah navigasi halaman artikel (Page 1, 2, dst).
+ * Ticker, nama saham, harga, dan pergerakannya 100% otomatis ditarik dari server TradingView tanpa perlu Anda update manual lagi.
+Silakan copy seluruh kode di bawah ini dan paste menggantikan seluruh isi file index.html di repositori GitHub Anda:
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -55,21 +60,9 @@ h1,h2,h3,p{margin-top:0}
 .hero p{max-width:680px;color:var(--muted);font-size:17px;min-height:65px}
 .hero-note{display:inline-block;border:1px solid var(--line);border-radius:30px;padding:7px 13px;color:var(--muted);font-size:12px}
 
-/* Hot Analyst Ratings Section Styles (TradingView Style) */
-.ratings-section{padding:10px 0 40px;border-bottom:1px solid var(--line)}
-.ratings-panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:24px;box-shadow:0 10px 25px -5px rgba(0,0,0,0.3)}
-.ratings-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:18px}
-.ratings-badge{font-size:11px;background:#183e35;color:var(--accent);border:1px solid #2d6a59;padding:4px 10px;border-radius:20px;text-transform:uppercase;font-weight:800;letter-spacing:.7px}
-.ratings-table-container{width:100%;overflow-x:auto}
-.ratings-table{width:100%;border-collapse:collapse;text-align:left;font-size:13px}
-.ratings-table th{background:#0c1017;color:var(--muted);font-weight:700;text-transform:uppercase;font-size:11px;letter-spacing:.7px;padding:12px 14px;border-bottom:1px solid var(--line)}
-.ratings-table td{padding:12px 14px;border-bottom:1px solid var(--line);color:var(--text)}
-.ratings-table tr:last-child td{border-bottom:none}
-.ratings-table tr:hover td{background:rgba(255,255,255,0.015)}
-.action-badge{display:inline-block;padding:3px 8px;border-radius:5px;font-size:11px;font-weight:800;text-transform:capitalize}
-.action-upgrade{background:#166534;color:#4ade80}
-.action-downgrade{background:#991b1b;color:#fca5a5}
-.action-default{background:#854d0e;color:#fde047}
+/* TradingView Screener Panel Styles */
+.screener-section{padding:30px 0 40px;border-top:1px solid var(--line)}
+.screener-panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:0 10px 25px -5px rgba(0,0,0,0.3)}
 
 .section,.article-page{padding:42px 0}
 .section-heading{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:22px}
@@ -149,65 +142,26 @@ h1,h2,h3,p{margin-top:0}
 
 <body>
 <header class="topbar">
- <!-- TradingView Extended Ticker Tape (Indices + Commodities + Macro) -->
+ <!-- TradingView Extended Ticker Tape -->
  <div class="ticker-tape-container">
   <div class="tradingview-widget-container">
    <div class="tradingview-widget-container__widget"></div>
    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
    {
    "symbols": [
-     {
-       "proName": "FOREXCOM:SPXUSD",
-       "title": "S&P 500"
-     },
-     {
-       "proName": "FOREXCOM:NSXUSD",
-       "title": "Nasdaq 100"
-     },
-     {
-       "proName": "FOREXCOM:DJI",
-       "title": "Dow 30"
-     },
-     {
-       "proName": "INDEX:RUT",
-       "title": "Russell 2000"
-     },
-     {
-       "proName": "INDEX:VIX",
-       "title": "VIX"
-     },
-     {
-       "proName": "TVC:GOLD",
-       "title": "Gold"
-     },
-     {
-       "proName": "TVC:SILVER",
-       "title": "Silver"
-     },
-     {
-       "proName": "TVC:USOIL",
-       "title": "Crude Oil (WTI)"
-     },
-     {
-       "proName": "TVC:UKOIL",
-       "title": "Brent Oil"
-     },
-     {
-       "proName": "CAPITALCOM:NATURALGAS",
-       "title": "Natural Gas"
-     },
-     {
-       "proName": "TVC:US10Y",
-       "title": "US 10Y Yield"
-     },
-     {
-       "proName": "CAPITALCOM:DXY",
-       "title": "Dollar Index (DXY)"
-     },
-     {
-       "proName": "BITSTAMP:BTCUSD",
-       "title": "Bitcoin"
-     }
+     { "proName": "FOREXCOM:SPXUSD", "title": "S&P 500" },
+     { "proName": "FOREXCOM:NSXUSD", "title": "Nasdaq 100" },
+     { "proName": "FOREXCOM:DJI", "title": "Dow 30" },
+     { "proName": "INDEX:RUT", "title": "Russell 2000" },
+     { "proName": "INDEX:VIX", "title": "VIX" },
+     { "proName": "TVC:GOLD", "title": "Gold" },
+     { "proName": "TVC:SILVER", "title": "Silver" },
+     { "proName": "TVC:USOIL", "title": "Crude Oil (WTI)" },
+     { "proName": "TVC:UKOIL", "title": "Brent Oil" },
+     { "proName": "CAPITALCOM:NATURALGAS", "title": "Natural Gas" },
+     { "proName": "TVC:US10Y", "title": "US 10Y Yield" },
+     { "proName": "CAPITALCOM:DXY", "title": "Dollar Index (DXY)" },
+     { "proName": "BITSTAMP:BTCUSD", "title": "Bitcoin" }
    ],
    "showSymbolLogo": true,
    "isTransparent": true,
@@ -238,38 +192,6 @@ h1,h2,h3,p{margin-top:0}
   <div class="hero-note">Research and education · Not financial advice</div>
  </div></section>
 
- <!-- Hot Analyst Ratings Section (TradingView Style) -->
- <section class="ratings-section"><div class="container">
-  <div class="ratings-panel">
-   <div class="ratings-header">
-    <div>
-     <div class="eyebrow">Hot Analyst Ratings</div>
-     <h2 style="font-size: 22px; margin: 4px 0 0 0;">Wall Street Consensus & Price Targets</h2>
-    </div>
-    <span class="ratings-badge">● Live Feed</span>
-   </div>
-   <div class="ratings-table-container">
-    <table class="ratings-table">
-     <thead>
-      <tr>
-       <th>Company</th>
-       <th>Rating</th>
-       <th>Firm</th>
-       <th style="text-align: right;">Price</th>
-       <th style="text-align: right;">Price Target</th>
-       <th style="text-align: right;">Upside / Downside</th>
-      </tr>
-     </thead>
-     <tbody id="ratings-table-body">
-      <tr>
-       <td colspan="6" style="text-align: center; color: var(--muted); padding: 25px;">Loading ratings...</td>
-      </tr>
-     </tbody>
-    </table>
-   </div>
-  </div>
- </div></section>
-
  <section class="section"><div class="container">
   <div class="section-heading"><div><div class="eyebrow">Editor's selection</div><h2>Featured research</h2></div></div>
   <div id="featuredGrid" class="featured-grid"><div class="notice">Loading published research...</div></div>
@@ -283,6 +205,32 @@ h1,h2,h3,p{margin-top:0}
   </div>
   <div id="articleGrid" class="article-grid"><div class="notice">Loading articles...</div></div>
   <div id="paginationContainer"></div>
+ </div></section>
+
+ <!-- TradingView Real-Time Screener Widget (Ditaruh Paling Bawah di Bawah Pagination) -->
+ <section class="screener-section"><div class="container">
+  <div class="screener-panel">
+   <div style="padding: 10px 10px 15px;">
+    <div class="eyebrow">Real-Time Market Screener</div>
+    <h2 style="font-size: 22px; margin: 4px 0 0 0;">Live Wall Street Active Equities</h2>
+   </div>
+   <div class="tradingview-widget-container" style="height: 520px; width: 100%;">
+    <div class="tradingview-widget-container__widget" style="height: calc(100% - 32px); width: 100%;"></div>
+    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-screener.js" async>
+    {
+      "width": "100%",
+      "height": "100%",
+      "defaultColumn": "overview",
+      "defaultScreen": "most_capitalized",
+      "market": "america",
+      "showToolbar": true,
+      "colorTheme": "dark",
+      "locale": "en",
+      "isTransparent": true
+    }
+    </script>
+   </div>
+  </div>
  </div></section>
 </div>
 
@@ -645,54 +593,6 @@ $("#searchInput").addEventListener("input",()=>{currentPage=1;renderArticles();}
 $("#categoryFilter").addEventListener("change",()=>{currentPage=1;renderArticles();});
 $("#year").textContent=new Date().getFullYear();
 
-// Load Hot Analyst Ratings (TradingView Style)
-async function loadAnalystRatings() {
-  const tableBody = document.getElementById('ratings-table-body');
-  
-  const tvRatingsData = [
-    { ticker: "TRNS", name: "Transcat", rating: "Buy", firm: "Northland", price: "81.71", target: "95.00", upside: "+16.3%" },
-    { ticker: "OTF", name: "Blue Owl Technology", rating: "Buy", firm: "Clear Street", price: "8.90", target: "12.00", upside: "+34.8%" },
-    { ticker: "RWAY", name: "Runway Growth Finance", rating: "Buy", firm: "Clear Street", price: "6.26", target: "7.50", upside: "+19.8%" },
-    { ticker: "CLH", name: "Clean Harbors", rating: "Buy", firm: "UBS", price: "316.28", target: "375.00", upside: "+18.6%" },
-    { ticker: "PLD", name: "Prologis", rating: "Buy", firm: "Raymond James", price: "127.47", target: "163.00", upside: "+27.9%" },
-    { ticker: "NOC", name: "Northrop Grumman", rating: "Buy", firm: "Baird", price: "534.00", target: "675.00", upside: "+26.4%" },
-    { ticker: "ZM", name: "Zoom Communications", rating: "Buy", firm: "Oppenheimer", price: "97.46", target: "130.00", upside: "+33.4%" },
-    { ticker: "DOCN", name: "DigitalOcean", rating: "Buy", firm: "Piper Sandler", price: "99.48", target: "126.00", upside: "+26.7%" },
-    { ticker: "MYGN", name: "Myriad Genetics", rating: "Hold", firm: "Piper Sandler", price: "5.54", target: "5.00", upside: "-9.8%" },
-    { ticker: "HR", name: "Healthcare Realty Trust", rating: "Buy", firm: "Deutsche Bank", price: "17.76", target: "23.00", upside: "+29.5%" },
-    { ticker: "AEP", name: "American Electric Power", rating: "Buy", firm: "BTIG", price: "127.22", target: "147.00", upside: "+15.6%" },
-    { ticker: "TKO", name: "TKO Holdings", rating: "Buy", firm: "Arete", price: "179.64", target: "208.00", upside: "+15.8%" },
-    { ticker: "AKAM", name: "Akamai Technologies", rating: "Buy", firm: "Raymond James", price: "89.63", target: "170.00", upside: "+89.7%" },
-    { ticker: "ARHS", name: "Arhaus", rating: "Buy", firm: "Piper Sandler", price: "10.73", target: "13.00", upside: "+21.2%" },
-    { ticker: "LBTYA", name: "Liberty Global", rating: "Buy", firm: "New Street Research", price: "7.98", target: "14.00", upside: "+75.4%" },
-    { ticker: "BLK", name: "BlackRock", rating: "Buy", firm: "TD Cowen", price: "1128.68", target: "1405.00", upside: "+24.5%" },
-    { ticker: "TREX", name: "Trex Company", rating: "Buy", firm: "Stifel", price: "48.79", target: "55.00", upside: "+12.7%" }
-  ];
-
-  tableBody.innerHTML = '';
-  tvRatingsData.forEach(item => {
-    const isBuy = item.rating.toLowerCase() === 'buy';
-    const badgeClass = isBuy ? 'action-upgrade' : 'action-default';
-    const isNegative = item.upside.startsWith('-');
-    const upsideColor = isNegative ? '#fca5a5' : 'var(--accent)';
-
-    const row = `
-      <tr>
-        <td>
-          <div style="font-weight: 800; color: var(--accent);">${escapeHTML(item.ticker)}</div>
-          <div style="font-size: 11px; color: var(--muted);">${escapeHTML(item.name)}</div>
-        </td>
-        <td><span class="action-badge ${badgeClass}">${escapeHTML(item.rating)}</span></td>
-        <td>${escapeHTML(item.firm)}</td>
-        <td style="text-align: right; font-variant-numeric: tabular-nums;">${escapeHTML(item.price)}</td>
-        <td style="text-align: right; font-variant-numeric: tabular-nums; font-weight: 700;">${escapeHTML(item.target)}</td>
-        <td style="text-align: right; font-variant-numeric: tabular-nums; color: ${upsideColor}; font-weight: 700;">${escapeHTML(item.upside)}</td>
-      </tr>
-    `;
-    tableBody.innerHTML += row;
-  });
-}
-
 async function loadArticles(){
  const endpoint=SUPABASE_URL+"/rest/v1/articles?select=id,title,slug,ticker,category,excerpt,content,image_url,status,created_at&status=eq.published&order=created_at.desc";
 
@@ -726,7 +626,6 @@ async function loadArticles(){
 }
 
 loadArticles();
-loadAnalystRatings();
 initTextRotator();
 </script>
 </body>
