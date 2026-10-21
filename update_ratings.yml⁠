@@ -1,16 +1,16 @@
-name: Update Analyst Ratings Data
+name: Auto Update Analyst Ratings
 
 on:
   schedule:
-    # Berjalan otomatis setiap hari jam 06:00 UTC (13:00 WITA)
+    # Berjalan otomatis setiap hari jam 06:00 UTC (14:00 WITA)
     - cron: '0 6 * * *'
-  workflow_dispatch: # Memungkinkan untuk di-run manual kapan saja dari tab Actions
+  workflow_dispatch: # Memungkinkan tombol 'Run workflow' manual kapan saja
 
 jobs:
-  update-data:
+  update-ratings:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Set up Python
@@ -18,17 +18,17 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install requests
 
-      - name: Run Fetch Ratings Script
+      - name: Run fetch script
         env:
-          FMP_API_KEY: ${{ secrets.FMP_API_KEY }}
+          API_KEY: ${{ secrets.FMP_API_KEY }}
         run: python fetch_ratings.py
 
-      - name: Commit and Push Changes
+      - name: Commit and push updated ratings
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
