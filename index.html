@@ -621,8 +621,11 @@ function openArticleById(id,push=true){
 
  const paragraphs=article.paragraphs.map(p=>`<p>${escapeHTML(p).replace(/\n/g,"<br>")}</p>`).join("");
 
- // Fetch 3 Related Articles (Excluding current article)
- const relatedArticles = articles.filter(a => a.id !== article.id).slice(0, 3);
+ // Logika Related Research: Prioritaskan kategori sama, lalu lengkapi dengan artikel terbaru lainnya
+ const sameCategoryArticles = articles.filter(a => a.id !== article.id && a.category === article.category);
+ const otherArticles = articles.filter(a => a.id !== article.id && a.category !== article.category);
+ const relatedArticles = [...sameCategoryArticles, ...otherArticles].slice(0, 3);
+
  const relatedHtml = relatedArticles.length > 0 ? `
  <div class="related-research-section">
    <div class="eyebrow" style="margin-bottom: 4px;">Keep Researching</div>
