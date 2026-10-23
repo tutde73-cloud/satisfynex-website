@@ -2,16 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="index,follow">
-<meta name="theme-color" content="#0c1017">
-<meta name="description" content="Independent US stock research, company fundamentals, earnings, technical charts and investing education.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Satisfynex — Independent US Stock Research</title>
-<link rel="canonical" href="https://www.satisfynex.com/">
+<meta name="description" content="Independent research on US stocks, company fundamentals, technical charts and market trends.">
 
-<!-- Favicon / Logo Setup -->
-<link rel="icon" type="image/jpeg" href="/IMG_1015.jpeg">
-<link rel="shortcut icon" href="/IMG_1015.jpeg">
 <link rel="apple-touch-icon" href="/IMG_1015.jpeg">
 
 <meta property="og:site_name" content="Satisfynex">
@@ -591,7 +585,27 @@ function openArticleById(id,push=true){
 
  $("#articleDetail").innerHTML=`<article><header class="article-header"><span class="tag">${escapeHTML(article.category)}</span><h1>${escapeHTML(article.title)}</h1><p class="article-lead">${escapeHTML(article.excerpt)}</p><div class="meta"><span>${escapeHTML(article.ticker)}</span><span>${escapeHTML(article.date)}</span><span>${escapeHTML(article.read)}</span></div></header>
  <img class="article-hero" src="${escapeHTML(article.image)}" alt="${escapeHTML(article.title)}">
- <div class="article-layout"><div class="article-content">${paragraphs||"<p>Full analysis coming soon.</p>"}<hr style="border:0;border-top:1px solid var(--line);margin:35px 0"><p class="muted small">This article is provided for informational and educational purposes only. It is not a recommendation to buy or sell any security.</p></div>
+ <div class="article-layout"><div class="article-content">
+ ${paragraphs||"<p>Full analysis coming soon.</p>"}
+
+ <!-- TAMBAHKAN AUTHOR BOX DI SINI (YMYL & E-E-A-T Compliant) -->
+ <div class="satisfynex-author-card" itemscope itemtype="https://schema.org/Person" style="margin: 30px 0 20px 0; padding: 20px; background-color: var(--panel); border: 1px solid var(--line); border-radius: 12px; display: flex; gap: 16px; align-items: flex-start; color: var(--text);">
+   <div style="flex-shrink: 0;">
+     <img src="/IMG_1015.jpeg" alt="SatisfyNex Research Team" itemprop="image" style="width: 50px; height: 50px; border-radius: 50%; border: 1px solid var(--line); object-fit: cover; background: #0c1017;" />
+   </div>
+   <div style="display: flex; flex-direction: column; gap: 4px;">
+     <span style="font-size: 0.7rem; font-weight: 800; letter-spacing: 0.8px; color: var(--accent); text-transform: uppercase;">WRITTEN BY</span>
+     <h4 style="margin: 0; font-size: 1.05rem; font-weight: 600; color: var(--text);" itemprop="name">SatisfyNex Research Team</h4>
+     <p style="margin: 4px 0 0; font-size: 0.85rem; line-height: 1.45; color: var(--muted);" itemprop="description">
+       Independent Market Research Analysts specializing in global equities, fundamental business metrics, and technical market structures.
+     </p>
+     <div style="margin-top: 6px; font-size: 0.8rem; color: var(--muted);">
+       <span itemprop="jobTitle">Financial Research Analyst</span> • <a href="/about" style="color: var(--accent); text-decoration: underline;">Learn about our research methodology &rarr;</a>
+     </div>
+   </div>
+ </div>
+
+ <hr style="border:0;border-top:1px solid var(--line);margin:35px 0"><p class="muted small">This article is provided for informational and educational purposes only. It is not a recommendation to buy or sell any security.</p></div>
  <aside class="sidebar"><div class="panel"><h3>About this research</h3><p>Satisfynex explores company fundamentals, market developments, technical evidence, and investment risks.</p></div><div class="panel"><h3>Explore more</h3><a class="read-more" href="/#latest">Browse all articles →</a></div></aside></div></article>`;
 
  setMeta(article);
