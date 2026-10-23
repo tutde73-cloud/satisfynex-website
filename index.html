@@ -280,46 +280,69 @@ document.addEventListener("contextmenu", function(e) {
 });
 
 /* ========================================================
-   KEAMANAN: 2. OTOMATIS WATERMARK DENGAN CANVAS (AUTO WATERMARK)
+   KEAMANAN: 2. AUTO WATERMARK DI TENGAH & SAMAR (ANTI-CROP)
    ======================================================== */
 function applyWatermark(imgElement) {
   if (!imgElement || imgElement.dataset.watermarked === "true") return;
+
+  if (!imgElement.complete || imgElement.naturalWidth === 0) {
+    imgElement.onload = () => applyWatermark(imgElement);
+    return;
+  }
 
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
 
   const img = new Image();
   img.crossOrigin = "anonymous";
-  img.src = imgElement.src;
 
   img.onload = () => {
-    canvas.width = img.naturalWidth;
-    canvas.height = img.naturalHeight;
+    try {
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
 
-    // Render Gambar Asli
-    ctx.drawImage(img, 0, 0);
+      // 1. Render Gambar Asli
+      ctx.drawImage(img, 0, 0);
 
-    // Pengaturan Teks Watermark Adaptif
-    const fontSize = Math.max(16, Math.floor(canvas.width * 0.035));
-    ctx.font = `bold ${fontSize}px Inter, sans-serif`;
-    ctx.fillStyle = "rgba(255, 255, 255, 0.45)";
-    ctx.textAlign = "right";
-    ctx.textBaseline = "bottom";
+      // 2. Ukuran Teks Proporsional
+      const fontSize = Math.max(22, Math.floor(canvas.width * 0.065)); 
+      ctx.font = `bold ${fontSize}px Inter, sans-serif`;
+      
+      // 3. Warna Samar / Transparan (Opacity 25%)
+      ctx.fillStyle = "rgba(255, 255, 255, 0.25)"; 
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
 
-    // Efek Shadow/Bayangan
-    ctx.shadowColor = "rgba(0, 0, 0, 0.7)";
-    ctx.shadowBlur = 6;
-    ctx.shadowOffsetX = 2;
-    ctx.shadowOffsetY = 2;
+      // 4. Efek Bayangan Tipis
+      ctx.shadowColor = "rgba(0, 0, 0, 0.4)";
+      ctx.shadowBlur = 10;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 0;
 
-    // Gambar Teks ke Pojok Kanan Bawah
-    const padding = fontSize * 0.8;
-    ctx.fillText("satisfynex.com", canvas.width - padding, canvas.height - padding);
+      // 5. Posisi Tepat di TENGAH Gambar
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      ctx.fillText("satisfynex.com", centerX, centerY);
 
-    // Timpa Sumber Gambar dengan Hasil Canvas
-    imgElement.src = canvas.toDataURL("image/png");
-    imgElement.dataset.watermarked = "true";
+      // Timpa Sumber Gambar
+      imgElement.src = canvas.toDataURL("image/png");
+      imgElement.dataset.watermarked = "true";
+    } catch (err) {
+      console.warn("Watermark terhalang isu CORS Supabase:", err);
+    }
   };
+
+  img.onerror = () => {
+    console.warn("Gagal memuat gambar untuk watermark.");
+  };
+
+  if (imgElement.src.startsWith("data:")) return;
+  img.src = imgElement.src + (imgElement.src.includes("?") ? "&" : "?") + "cors=1";
+}
+
+function processAllImages() {
+  const images = document.querySelectorAll("img.cover, img.article-hero, .article-content img, .side-story img");
+  images.forEach(img => applyWatermark(img));
 }
 
 const SUPABASE_URL="https://ngysrsypmieuvucqupgd.supabase.co";
@@ -464,6 +487,8 @@ function renderFeatured(){
  <div class="meta"><span>${escapeHTML(main.ticker)}</span><span>${escapeHTML(main.date)}</span><span>${escapeHTML(main.read)}</span></div>
  <p class="excerpt">${escapeHTML(main.excerpt)}</p><a class="read-more" href="${escapeHTML(mainUrl)}" data-article="${escapeHTML(main.id)}">Read full analysis →</a></div></article>
  <div class="feature-side">${side.length?side.map(a=>`<article class="side-story"><a href="${escapeHTML(articleUrl(a.id))}" data-article="${escapeHTML(a.id)}"><img src="${escapeHTML(a.image)}" alt="${escapeHTML(a.title)}" loading="lazy"></a><div><span class="tag">${escapeHTML(a.category)}</span><h3><a href="${escapeHTML(articleUrl(a.id))}" data-article="${escapeHTML(a.id)}">${escapeHTML(a.title)}</a></h3><div class="meta">${escapeHTML(a.date)}</div></div></article>`).join(""):'<div class="notice">More research coming soon.</div>'}</div>`;
+ 
+ setTimeout(processAllImages, 300);
 }
 
 function renderCategories(){
@@ -487,6 +512,8 @@ function renderArticles(){
 
  $("#articleCount").textContent=filtered.length+(filtered.length===1?" article":" articles");
  $("#articleGrid").innerHTML=paginated.length?paginated.map(cardMarkup).join(""):'<div class="empty" style="grid-column:1/-1">No matching articles found.</div>';
+
+ setTimeout(processAllImages, 300);
 
  const pagContainer=$("#paginationContainer");
  if(totalPages>1){
@@ -569,14 +596,7 @@ function openArticleById(id,push=true){
 
  setMeta(article);
 
- /* PANGGIL WATERMARK OTOMATIS SAAT ARTIKEL DIBUKA */
- setTimeout(() => {
-  const heroImg = document.querySelector(".article-hero");
-  if (heroImg) applyWatermark(heroImg);
-
-  const contentImgs = document.querySelectorAll(".article-content img");
-  contentImgs.forEach(img => applyWatermark(img));
- }, 150);
+ setTimeout(processAllImages, 300);
 
  if(push)history.pushState({view:"article",id:article.id},"",articleUrl(article.id));
 
@@ -584,11 +604,11 @@ function openArticleById(id,push=true){
 }
 
 const pages={
- privacy:{title:"Privacy Policy",body:`<p><strong>Last updated: October 20, 2026</strong></p><p>This Privacy Policy explains how Satisfynex handles information when you visit our website.</p>21<h2>Information we may collect</h2><p>Our hosting and website services may process technical information such as IP address, browser type, device information, and request logs to operate and secure the website.</p>21<h2>Contacting us</h2><p>If you email us, we receive the information you choose to include and use it to respond.</p>21<h2>Cookies and advertising</h2><p>If analytics or advertising services are enabled, those services may use cookies or similar technologies under their own policies. Actual use depends on the services enabled on this website.</p>21<h2>Third-party services</h2><p>Hosting, database, analytics, and advertising providers may process information under their own policies.</p>21<h2>Your choices</h2><p>Depending on applicable law, you may request access to, correction of, or deletion of personal information.</p>21<h2>Contact</h2><p>Privacy questions: <a href="mailto:Satisfynex@gmail.com">Satisfynex@gmail.com</a>.</p>`},
- terms:{title:"Terms of Service",body:`<p><strong>Last updated: October 20, 2026</strong></p><p>By using Satisfynex, you agree to these terms.</p>21<h2>Purpose</h2><p>Satisfynex publishes general information and educational research about US-listed companies, financial results, industries, and markets.</p>21<h2>No investment advice</h2><p>Content is not personalized financial, legal, or tax advice and is not an offer to buy or sell securities. You are responsible for your decisions.</p>21<h2>Accuracy and risks</h2><p>We do not guarantee content is complete, current, or error-free. Investing involves risk, including the possible loss of capital. Past performance does not guarantee future results.</p>21<h2>Intellectual property</h2><p>Do not republish substantial original content commercially without permission from the relevant rights holder.</p>21<h2>Third-party links</h2><p>We are not responsible for external websites or services.</p>21<h2>Contact</h2><p><a href="mailto:Satisfynex@gmail.com">Satisfynex@gmail.com</a></p>`},
- about:{title:"About Us",body:`<p>Satisfynex is an independently operated research and investing education website focused on US-listed companies, fundamentals, earnings, industries, technical charts, and market developments.</p>21<h2>Our mission</h2><p>We aim to help readers look beyond a ticker and understand the business, evidence, opportunities, and risks behind an investment thesis.</p>21<h2>Our approach</h2><p>Our research may examine company disclosures, financial performance, industry trends, competition, market developments, and technical evidence. Readers should verify important facts independently.</p>21<h2>Who is behind Satisfynex?</h2><p>Satisfynex is an independently operated research project. We do not claim to be a licensed investment adviser, broker-dealer, or financial institution. Content is not personalized financial advice.</p>21<h2>Contact</h2><p><a href="mailto:Satisfynex@gmail.com">Satisfynex@gmail.com</a></p>`},
- contact:{title:"Contact Us",body:`<p>We welcome reader feedback, questions about published research, and correction requests.</p><div class="contact-card"><div class="eyebrow">Email</div>21<h2>Get in touch with Satisfynex</h2><p>Include the article title or URL if your inquiry concerns a specific publication.</p><p><a class="email-link" href="mailto:Satisfynex@gmail.com">Satisfynex@gmail.com</a></p><a class="button-link" href="mailto:Satisfynex@gmail.com?subject=Satisfynex%20Website%20Inquiry">Email Satisfynex →</a></div><p>Please do not send passwords, payment details, or other sensitive information. We do not provide individualized investment recommendations by email.</p>`},
- disclaimer:{title:"Investment Disclaimer",body:`<p><strong>Last updated: October 20, 2026</strong></p><p>All articles, charts, commentary, and materials published by Satisfynex are for general informational and educational purposes only.</p>21<h2>Not financial advice</h2><p>Nothing on this website is personalized investment advice or a recommendation to buy, hold, or sell any security.</p>21<h2>Investment risk</h2><p>Investments can lose value, including the loss of some or all of your capital. Historical performance does not guarantee future results.</p>21<h2>Independent verification</h2><p>Information may be incomplete, delayed, or outdated. Consult official company filings and reliable sources before making decisions.</p>21<h2>Contact</h2><p><a href="mailto:Satisfynex@gmail.com">Satisfynex@gmail.com</a></p>`}
+ privacy:{title:"Privacy Policy",body:`<p><strong>Last updated: October 20, 2026</strong></p><p>This Privacy Policy explains how Satisfynex handles information when you visit our website.</p><h2>Information we may collect</h2><p>Our hosting and website services may process technical information such as IP address, browser type, device information, and request logs to operate and secure the website.</p><h2>Contacting us</h2><p>If you email us, we receive the information you choose to include and use it to respond.</p><h2>Cookies and advertising</h2><p>If analytics or advertising services are enabled, those services may use cookies or similar technologies under their own policies. Actual use depends on the services enabled on this website.</p><h2>Third-party services</h2><p>Hosting, database, analytics, and advertising providers may process information under their own policies.</p><h2>Your choices</h2><p>Depending on applicable law, you may request access to, correction of, or deletion of personal information.</p><h2>Contact</h2><p>Privacy questions: <a href="mailto:Satisfynex@gmail.com">Satisfynex@gmail.com</a>.</p>`},
+ terms:{title:"Terms of Service",body:`<p><strong>Last updated: October 20, 2026</strong></p><p>By using Satisfynex, you agree to these terms.</p><h2>Purpose</h2><p>Satisfynex publishes general information and educational research about US-listed companies, financial results, industries, and markets.</p><h2>No investment advice</h2><p>Content is not personalized financial, legal, or tax advice and is not an offer to buy or sell securities. You are responsible for your decisions.</p><h2>Accuracy and risks</h2><p>We do not guarantee content is complete, current, or error-free. Investing involves risk, including the possible loss of capital. Past performance does not guarantee future results.</p><h2>Intellectual property</h2><p>Do not republish substantial original content commercially without permission from the relevant rights holder.</p><h2>Third-party links</h2><p>We are not responsible for external websites or services.</p><h2>Contact</h2><p><a href="mailto:Satisfynex@gmail.com">Satisfynex@gmail.com</a></p>`},
+ about:{title:"About Us",body:`<p>Satisfynex is an independently operated research and investing education website focused on US-listed companies, fundamentals, earnings, industries, technical charts, and market developments.</p><h2>Our mission</h2><p>We aim to help readers look beyond a ticker and understand the business, evidence, opportunities, and risks behind an investment thesis.</p><h2>Our approach</h2><p>Our research may examine company disclosures, financial performance, industry trends, competition, market developments, and technical evidence. Readers should verify important facts independently.</p><h2>Who is behind Satisfynex?</h2><p>Satisfynex is an independently operated research project. We do not claim to be a licensed investment adviser, broker-dealer, or financial institution. Content is not personalized financial advice.</p><h2>Contact</h2><p><a href="mailto:Satisfynex@gmail.com">Satisfynex@gmail.com</a></p>`},
+ contact:{title:"Contact Us",body:`<p>We welcome reader feedback, questions about published research, and correction requests.</p><div class="contact-card"><div class="eyebrow">Email</div><h2>Get in touch with Satisfynex</h2><p>Include the article title or URL if your inquiry concerns a specific publication.</p><p><a class="email-link" href="mailto:Satisfynex@gmail.com">Satisfynex@gmail.com</a></p><a class="button-link" href="mailto:Satisfynex@gmail.com?subject=Satisfynex%20Website%20Inquiry">Email Satisfynex →</a></div><p>Please do not send passwords, payment details, or other sensitive information. We do not provide individualized investment recommendations by email.</p>`},
+ disclaimer:{title:"Investment Disclaimer",body:`<p><strong>Last updated: October 20, 2026</strong></p><p>All articles, charts, commentary, and materials published by Satisfynex are for general informational and educational purposes only.</p><h2>Not financial advice</h2><p>Nothing on this website is personalized investment advice or a recommendation to buy, hold, or sell any security.</p><h2>Investment risk</h2><p>Investments can lose value, including the loss of some or all of your capital. Historical performance does not guarantee future results.</p><h2>Independent verification</h2><p>Information may be incomplete, delayed, or outdated. Consult official company filings and reliable sources before making decisions.</p><h2>Contact</h2><p><a href="mailto:Satisfynex@gmail.com">Satisfynex@gmail.com</a></p>`}
 };
 
 function showPage(type,push=true){
