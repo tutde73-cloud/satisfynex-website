@@ -170,8 +170,28 @@ h1,h2,h3,p{margin-top:0}
   .nav{min-height:60px}
   .brand{font-size:22px}
   .navlinks{gap:12px;font-size:12px}
-  .hero{padding:40px 0 25px;background: linear-gradient(180deg, rgba(12, 16, 23, 0.95) 0%, rgba(12, 16, 23, 0.8) 100%), url('/IMG_1210.jpeg');background-size: cover;}
-  .hero h1{letter-spacing:-1px}
+  
+  /* Optimalisasi Hero Section untuk HP */
+  .hero{
+    padding: 50px 0 40px;
+    background: linear-gradient(180deg, rgba(12, 16, 23, 0.94) 0%, rgba(12, 16, 23, 0.86) 65%, rgba(12, 16, 23, 0.7) 100%), url('/IMG_1210.jpeg');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    min-height: 360px;
+  }
+  .hero h1{
+    font-size: 28px;
+    line-height: 1.2;
+    letter-spacing: -0.8px;
+    margin: 12px 0;
+  }
+  .hero p{
+    font-size: 14px;
+    min-height: auto;
+    line-height: 1.6;
+  }
+
   .article-grid{grid-template-columns:1fr}
   .side-story{grid-template-columns:90px minmax(0,1fr)}
   .section,.article-page{padding:30px 0}
