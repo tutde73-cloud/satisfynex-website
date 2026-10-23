@@ -35,6 +35,14 @@ button:disabled{opacity:.5}
 .article-title{font-weight:700;overflow-wrap:anywhere}
 .meta{font-size:12px;color:var(--muted);margin:4px 0 9px}
 .preview{display:block;width:100%;max-height:240px;object-fit:contain;margin-top:12px;border-radius:8px;background:#080c12}
+
+/* Styling Pagination Admin */
+.admin-pagination{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:18px;padding-top:12px;border-top:1px solid var(--line)}
+.admin-pagination button{background:#1a2535;color:var(--text);border:1px solid var(--line);padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600}
+.admin-pagination button:hover:not(:disabled){background:#243248;border-color:var(--accent)}
+.admin-pagination button:disabled{opacity:0.4;cursor:not-allowed}
+.admin-pagination span{color:var(--muted);font-size:12px}
+
 @media(max-width:760px){.grid{grid-template-columns:1fr}header{padding:15px}}
 </style>
 </head>
@@ -125,12 +133,12 @@ button:disabled{opacity:.5}
         <button id="refreshBtn" class="small" type="button">Refresh</button>
       </div>
       <div id="articleList">Sign in to load articles.</div>
+      <div id="adminPaginationContainer"></div>
     </aside>
   </div>
 </section>
 </main>
 
-<!-- Load Supabase after the page content is rendered -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (() => {
@@ -152,6 +160,11 @@ button:disabled{opacity:.5}
   let imageUrl = "";
   let removeImage = false;
   let busy = false;
+  
+  // Variabel Pagination Admin
+  let adminArticles = [];
+  let adminCurrentPage = 1;
+  const ADMIN_ARTICLES_PER_PAGE = 20;
 
   function status(id, message, error = false) {
     $(id).textContent = message;
@@ -341,20 +354,35 @@ button:disabled{opacity:.5}
     $("articleList").textContent = "Loading articles…";
     const { data, error } = await db.from("articles")
       .select("id,title,slug,ticker,category,status,created_at")
-      .order("created_at", { ascending: false }).limit(100);
+      .order("created_at", { ascending: false });
 
     if (error) {
       $("articleList").textContent = "Could not load articles: " + error.message;
       return;
     }
 
-    $("articleList").replaceChildren();
-    if (!data.length) {
-      $("articleList").textContent = "No articles yet. Create your first article.";
+    adminArticles = data || [];
+    renderAdminArticles();
+  }
+
+  function renderAdminArticles() {
+    const totalPages = Math.ceil(adminArticles.length / ADMIN_ARTICLES_PER_PAGE) || 1;
+    if (adminCurrentPage > totalPages) adminCurrentPage = totalPages;
+    if (adminCurrentPage < 1) adminCurrentPage = 1;
+
+    const start = (adminCurrentPage - 1) * ADMIN_ARTICLES_PER_PAGE;
+    const paginated = adminArticles.slice(start, start + ADMIN_ARTICLES_PER_PAGE);
+
+    const listContainer = $("articleList");
+    listContainer.replaceChildren();
+
+    if (!paginated.length) {
+      listContainer.textContent = "No articles yet. Create your first article.";
+      $("adminPaginationContainer").innerHTML = "";
       return;
     }
 
-    data.forEach(article => {
+    paginated.forEach(article => {
       const wrapper = document.createElement("div");
       wrapper.className = "article";
       const title = document.createElement("div");
@@ -372,8 +400,33 @@ button:disabled{opacity:.5}
       edit.textContent = "Edit";
       edit.addEventListener("click", () => editArticle(article.id));
       wrapper.append(title, meta, edit);
-      $("articleList").append(wrapper);
+      listContainer.append(wrapper);
     });
+
+    // Render Pagination Controls di Panel Kanan
+    const pagContainer = $("adminPaginationContainer");
+    if (totalPages > 1) {
+      pagContainer.innerHTML = `<div class="admin-pagination">
+        <button id="adminPrevBtn" ${adminCurrentPage === 1 ? "disabled" : ""}>← Prev</button>
+        <span>Page ${adminCurrentPage} of ${totalPages}</span>
+        <button id="adminNextBtn" ${adminCurrentPage === totalPages ? "disabled" : ""}>Next →</button>
+      </div>`;
+
+      $("adminPrevBtn")?.addEventListener("click", () => {
+        if (adminCurrentPage > 1) {
+          adminCurrentPage--;
+          renderAdminArticles();
+        }
+      });
+      $("adminNextBtn")?.addEventListener("click", () => {
+        if (adminCurrentPage < totalPages) {
+          adminCurrentPage++;
+          renderAdminArticles();
+        }
+      });
+    } else {
+      pagContainer.innerHTML = "";
+    }
   }
 
   async function editArticle(id) {
