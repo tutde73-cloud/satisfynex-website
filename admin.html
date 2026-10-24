@@ -126,10 +126,10 @@ button:disabled{opacity:.5}
           <button id="publishBtn" type="button" class="primary">Publish article</button>
         </div>
 
-        <!-- Dua Tombol Terpisah untuk X / Twitter -->
+        <!-- Dua Tombol Terpisah untuk Teks & Watermarked Image -->
         <div class="row" style="margin-top:10px; border-top:1px solid var(--line); padding-top:15px;">
           <button id="copyTextBtn" type="button" class="twitter-btn">📋 Copy Tweet Text</button>
-          <button id="downloadImgBtn" type="button" class="twitter-btn">🖼️ Download Image</button>
+          <button id="downloadImgBtn" type="button" class="twitter-btn">🖼️ Download Watermarked Image</button>
         </div>
 
         <div id="saveStatus" class="status" role="status"></div>
@@ -317,8 +317,8 @@ button:disabled{opacity:.5}
     });
   });
 
-  // Tombol 2: Download Gambar Original Langsung (Aman dari CORS/Stuck)
-  $("downloadImgBtn").addEventListener("click", () => {
+  // Tombol 2: Download Gambar dengan Watermark (Menggunakan Blob Fetch aman dari CORS)
+  $("downloadImgBtn").addEventListener("click", async () => {
     const fileInput = $("imageFile").files[0];
     const targetUrl = fileInput ? URL.createObjectURL(fileInput) : imageUrl;
 
@@ -326,13 +326,54 @@ button:disabled{opacity:.5}
       return status("saveStatus", "No image/chart attached to download.", true);
     }
 
-    const a = document.createElement("a");
-    a.href = targetUrl;
-    a.download = `satisfynex-${Date.now()}.png`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    status("saveStatus", "🖼️ Chart image downloaded successfully to your device!");
+    status("saveStatus", "Processing watermarked image…");
+
+    try {
+      // Fetch image to safe local blob to bypass CORS block
+      const response = await fetch(targetUrl);
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.naturalWidth || img.width;
+        canvas.height = img.naturalHeight || img.height;
+        const ctx = canvas.getContext("2d");
+        
+        ctx.drawImage(img, 0, 0);
+
+        // Watermark styling
+        const fontSize = Math.max(22, Math.floor(canvas.width * 0.028));
+        ctx.font = `bold ${fontSize}px system-ui, -apple-system, sans-serif`;
+        ctx.fillStyle = "rgba(139, 224, 192, 0.9)"; // Accent theme color
+        ctx.shadowColor = "rgba(0, 0, 0, 0.85)";
+        ctx.shadowBlur = 6;
+        ctx.textAlign = "right";
+
+        const padding = fontSize * 1.2;
+        ctx.fillText("SatisfyNex Global Research", canvas.width - padding, canvas.height - padding);
+
+        canvas.toBlob(finalBlob => {
+          const finalUrl = URL.createObjectURL(finalBlob);
+          const a = document.createElement("a");
+          a.href = finalUrl;
+          a.download = `satisfynex-${Date.now()}.png`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(finalUrl);
+          URL.revokeObjectURL(blobUrl);
+          status("saveStatus", "🖼️ Watermarked image downloaded successfully!");
+        }, "image/png");
+      };
+      img.onerror = () => {
+        status("saveStatus", "Failed to process image canvas.", true);
+      };
+      img.src = blobUrl;
+    } catch (err) {
+      status("saveStatus", "Error processing image: " + err.message, true);
+    }
   });
 
   async function save(statusValue) {
