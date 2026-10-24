@@ -270,11 +270,12 @@ button:disabled{opacity:.5}
       return status("saveStatus", "Unsupported image type.", true);
     }
     
-    // Gunakan window.URL secara eksplisit
-    const createUrlFunc = window.URL || window.webkitURL;
-    if (createUrlFunc && createUrlFunc.createObjectURL) {
-      $("imagePreview").src = createUrlFunc.createObjectURL(file);
-    }
+    const reader = new FileReader();
+    reader.onload = e => {
+      $("imagePreview").src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+
     $("imagePreview").hidden = false;
     $("removeImageBtn").hidden = false;
     $("imageStatus").textContent = "Ready to upload: " + file.name;
@@ -321,24 +322,22 @@ button:disabled{opacity:.5}
     });
   });
 
-  // Fungsi Watermark Murni Menggunakan DataURL (Tanpa createObjectURL)
+  // Tombol Download Watermarked Image (Murni Base64 DataURL, Aman 100% dari redirect domain luar)
   $("downloadImgBtn").addEventListener("click", () => {
     const fileInput = $("imageFile").files[0];
-    let sourceSrc = "";
 
     if (fileInput) {
       const reader = new FileReader();
-      reader.onload = e => processImageAndDownload(e.target.result);
+      reader.onload = e => processAndDownload(e.target.result);
       reader.readAsDataURL(fileInput);
     } else if (imageUrl) {
-      // Untuk gambar dari Supabase, gunakan proxy canvas crossOrigin murni
-      processImageAndDownload(imageUrl);
+      processAndDownload(imageUrl);
     } else {
       status("saveStatus", "No image/chart attached to download.", true);
     }
   });
 
-  function processImageAndDownload(src) {
+  function processAndDownload(src) {
     status("saveStatus", "Processing watermarked image…");
     const img = new Image();
     img.crossOrigin = "anonymous";
@@ -362,8 +361,9 @@ button:disabled{opacity:.5}
         const padding = fontSize * 1.2;
         ctx.fillText("SatisfyNex Global Research", canvas.width - padding, canvas.height - padding);
 
-        // Gunakan toDataURL murni (Aman 100% untuk iPadOS Safari)
+        // Buat data URL murni
         const dataUrl = canvas.toDataURL("image/png");
+        
         const a = document.createElement("a");
         a.href = dataUrl;
         a.download = `satisfynex-${Date.now()}.png`;
