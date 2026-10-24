@@ -14,11 +14,8 @@ export default async function handler(req, res) {
 
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
-    // Menggunakan RSS publik yang stabil dan ramah serverless
     const rssRes = await fetch('https://www.coindesk.com/arc/outboundfeeds/rss/', {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-      }
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
     });
 
     if (!rssRes.ok) {
@@ -47,15 +44,22 @@ export default async function handler(req, res) {
 
       if (!link || !title) continue;
 
+      // Buat slug unik dari judul
+      const slug = title.toLowerCase().trim()
+        .normalize("NFKD").replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")
+        .slice(0, 180) + "-" + Date.now().toString().slice(-4);
+
+      // Cek duplikasi di tabel articles berdasarkan sumber/link di excerpt atau title
       const { data: existing } = await supabase
-        .from('news')
+        .from('articles')
         .select('id')
-        .eq('source_url', link)
+        .eq('title', title)
         .maybeSingle();
 
       if (existing) continue;
 
-      const prompt = `Rewrite this financial/market news into short Indonesian JSON format with keys: title, summary, analysis, category, search_query. No markdown.\nTitle: ${title}\nContent: ${description.slice(0, 300)}`;
+      const prompt = `Rewrite this financial news into short Indonesian JSON format with keys: title, summary, analysis, category, search_query. No markdown.\nTitle: ${title}\nContent: ${description.slice(0, 300)}`;
       
       const geminiRes = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`,
@@ -99,16 +103,18 @@ export default async function handler(req, res) {
         } catch (e) {}
       }
 
-      const { error: insertErr } = await supabase.from('news').insert([
+      // Simpan langsung ke tabel 'articles' agar otomatis tampil di website utama
+      const { error: insertErr } = await supabase.from('articles').insert([
         {
           title: aiContent.title || title,
-          summary: aiContent.summary || description,
-          analysis: aiContent.analysis || '',
+          slug: slug,
+          excerpt: aiContent.summary || description,
+          content: (aiContent.analysis || description) + `\n\nSource: ${link}`,
           category: aiContent.category || 'Market Insights',
           image_url: imageUrl,
-          source_url: link,
-          source_name: 'Global Financial News',
-          created_at: new Date().toISOString()
+          status: 'published',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
         }
       ]);
 
@@ -117,7 +123,7 @@ export default async function handler(req, res) {
       }
     }
 
-    return res.status(200).json({ success: true, message: `Berhasil menambahkan ${insertedCount} berita baru.` });
+    return res.status(200).json({ success: true, message: `Berhasil menambahkan ${insertedCount} berita otomatis ke artikel.` });
 
   } catch (err) {
     return res.status(500).json({ success: false, error: "Runtime Crash: " + (err.message || String(err)) });
