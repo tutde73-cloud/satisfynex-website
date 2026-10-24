@@ -129,7 +129,7 @@ button:disabled{opacity:.5}
         <!-- Dua Tombol Terpisah untuk X / Twitter -->
         <div class="row" style="margin-top:10px; border-top:1px solid var(--line); padding-top:15px;">
           <button id="copyTextBtn" type="button" class="twitter-btn">📋 Copy Tweet Text</button>
-          <button id="downloadImgBtn" type="button" class="twitter-btn">🖼️ Download Watermarked Image</button>
+          <button id="downloadImgBtn" type="button" class="twitter-btn">🖼️ Download Image</button>
         </div>
 
         <div id="saveStatus" class="status" role="status"></div>
@@ -317,50 +317,22 @@ button:disabled{opacity:.5}
     });
   });
 
-  // Tombol 2: Download Gambar dengan Watermark
+  // Tombol 2: Download Gambar Original Langsung (Aman dari CORS/Stuck)
   $("downloadImgBtn").addEventListener("click", () => {
-    const activeImg = $("imageFile").files[0] ? URL.createObjectURL($("imageFile").files[0]) : imageUrl;
-    if (!activeImg) {
+    const fileInput = $("imageFile").files[0];
+    const targetUrl = fileInput ? URL.createObjectURL(fileInput) : imageUrl;
+
+    if (!targetUrl) {
       return status("saveStatus", "No image/chart attached to download.", true);
     }
 
-    status("saveStatus", "Processing watermarked image…");
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.onload = () => {
-      const canvas = document.createElement("canvas");
-      canvas.width = img.naturalWidth || img.width;
-      canvas.height = img.naturalHeight || img.height;
-      const ctx = canvas.getContext("2d");
-      
-      ctx.drawImage(img, 0, 0);
-
-      const fontSize = Math.max(24, Math.floor(canvas.width * 0.03));
-      ctx.font = `bold ${fontSize}px system-ui, -apple-system, sans-serif`;
-      ctx.fillStyle = "rgba(139, 224, 192, 0.85)";
-      ctx.shadowColor = "rgba(0, 0, 0, 0.8)";
-      ctx.shadowBlur = 6;
-      ctx.textAlign = "right";
-
-      const padding = fontSize * 1.2;
-      ctx.fillText("SatisfyNex Global Research", canvas.width - padding, canvas.height - padding);
-
-      canvas.toBlob(blob => {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `satisfynex-${Date.now()}.png`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        status("saveStatus", "🖼️ Watermarked chart downloaded to your device!");
-      }, "image/png");
-    };
-    img.onerror = () => {
-      status("saveStatus", "Failed to load image for watermarking.", true);
-    };
-    img.src = activeImg;
+    const a = document.createElement("a");
+    a.href = targetUrl;
+    a.download = `satisfynex-${Date.now()}.png`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    status("saveStatus", "🖼️ Chart image downloaded successfully to your device!");
   });
 
   async function save(statusValue) {
