@@ -355,30 +355,24 @@ function applyWatermark(imgElement) {
       canvas.width = img.naturalWidth;
       canvas.height = img.naturalHeight;
 
-      // 1. Render Gambar Asli
       ctx.drawImage(img, 0, 0);
 
-      // 2. Ukuran Teks Proporsional
       const fontSize = Math.max(22, Math.floor(canvas.width * 0.065)); 
       ctx.font = `bold ${fontSize}px Inter, sans-serif`;
       
-      // 3. Warna Samar / Transparan (Opacity 25%)
       ctx.fillStyle = "rgba(255, 255, 255, 0.25)"; 
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
 
-      // 4. Efek Bayangan Tipis
       ctx.shadowColor = "rgba(0, 0, 0, 0.4)";
       ctx.shadowBlur = 10;
       ctx.shadowOffsetX = 0;
       ctx.shadowOffsetY = 0;
 
-      // 5. Posisi Tepat di TENGAH Gambar
       const centerX = canvas.width / 2;
       const centerY = canvas.height / 2;
       ctx.fillText("satisfynex.com", centerX, centerY);
 
-      // Timpa Sumber Gambar
       imgElement.src = canvas.toDataURL("image/png");
       imgElement.dataset.watermarked = "true";
     } catch (err) {
@@ -681,7 +675,7 @@ function openArticleById(id,push=true){
  <!-- AUTHOR BOX (E-E-A-T Compliant) -->
  <div class="satisfynex-author-card" itemscope itemtype="https://schema.org/Person" style="margin: 30px 0 20px 0; padding: 20px; background-color: var(--panel); border: 1px solid var(--line); border-radius: 12px; display: flex; gap: 16px; align-items: flex-start; color: var(--text);">
    <div style="flex-shrink: 0;">
-     <img src="/IMG_1015.jpeg" alt="SatisfyNex Research Team" itemprop="image" style="width: 50px; height: 50px; border-radius: 50%; border: 1px solid var(--line); object-fit: cover; background: #0c1017;" />
+     <img src="/Icon.png" alt="SatisfyNex Research Team" itemprop="image" style="width: 50px; height: 50px; border-radius: 50%; border: 1px solid var(--line); object-fit: cover; background: #0c1017;" />
    </div>
    <div style="display: flex; flex-direction: column; gap: 4px;">
      <span style="font-size: 0.7rem; font-weight: 800; letter-spacing: 0.8px; color: var(--accent); text-transform: uppercase;">WRITTEN BY</span>
@@ -710,7 +704,14 @@ function openArticleById(id,push=true){
 
  if(push)history.pushState({view:"article",id:article.id},"",articleUrl(article.id));
 
- window.scrollTo({top:0,behavior:"auto"});
+ // Mencegah layar tertahan di bagian bawah saat membuka artikel
+ window.scrollTo(0, 0);
+ document.documentElement.scrollTop = 0;
+ document.body.scrollTop = 0;
+
+ setTimeout(() => {
+   window.scrollTo({top: 0, behavior: "instant"});
+ }, 50);
 }
 
 const pages={
@@ -732,7 +733,7 @@ function showPage(type,push=true){
 
  const paths={privacy:"/privacy-policy",terms:"/terms-of-service",about:"/about",contact:"/contact",disclaimer:"/disclaimer"};
  if(push)history.pushState({view:"page",type},"",paths[type]);
- window.scrollTo({top:0,behavior:"auto"});
+ window.scrollTo(0, 0);
 }
 
 function routeFromLocation(){
