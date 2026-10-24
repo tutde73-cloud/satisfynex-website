@@ -126,10 +126,10 @@ button:disabled{opacity:.5}
           <button id="publishBtn" type="button" class="primary">Publish article</button>
         </div>
 
-        <!-- Twitter Generator Action Buttons -->
+        <!-- Dua Tombol Terpisah untuk X / Twitter -->
         <div class="row" style="margin-top:10px; border-top:1px solid var(--line); padding-top:15px;">
-          <button id="copyTweetBtn" type="button" class="twitter-btn">🐦 Generate &amp; Copy Tweet</button>
-          <button id="postTweetBtn" type="button" class="twitter-btn">🚀 Direct Post to X</button>
+          <button id="copyTextBtn" type="button" class="twitter-btn">📋 Copy Tweet Text</button>
+          <button id="downloadImgBtn" type="button" class="twitter-btn">🖼️ Download Watermarked Image</button>
         </div>
 
         <div id="saveStatus" class="status" role="status"></div>
@@ -170,7 +170,6 @@ button:disabled{opacity:.5}
   let removeImage = false;
   let busy = false;
   
-  // Variabel Pagination Admin
   let adminArticles = [];
   let adminCurrentPage = 1;
   const ADMIN_ARTICLES_PER_PAGE = 20;
@@ -290,10 +289,9 @@ button:disabled{opacity:.5}
     return db.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
   }
 
-  // Helper to build the tweet text dynamically from current inputs
-  function buildTweetContent() {
+  // Builder untuk Teks Tweet
+  function getTweetTextData() {
     const title = $("title").value.trim();
-    const excerpt = $("excerpt").value.trim();
     const slug = slugify($("slug").value);
     const ticker = $("ticker").value.trim().toUpperCase();
 
@@ -302,32 +300,67 @@ button:disabled{opacity:.5}
       return null;
     }
 
-    const tickerTag = ticker ? `[$${ticker}] ` : "";
-    const summaryText = excerpt ? `\n\n${excerpt}` : "";
+    const tickerTag = ticker ? `$${ticker} ` : "";
     const researchUrl = `https://satisfynex.com/research/${slug}`;
-
-    return `[NEW RESEARCH] ${tickerTag}${title}${summaryText}\n\nRead full report 👇\n${researchUrl}\n\n#SatisfyNex #StockMarket #Investing #USStocks`;
+    return `[NEW RESEARCH] ${tickerTag}${title}\n\nRead the full report 👇\n${researchUrl}\n\n#SatisfyNex #StockMarket #Investing`;
   }
 
-  // Generate & Copy Tweet Button Action
-  $("copyTweetBtn").addEventListener("click", () => {
-    const tweet = buildTweetContent();
-    if (!tweet) return;
+  // Tombol 1: Copy Teks Saja
+  $("copyTextBtn").addEventListener("click", () => {
+    const tweetText = getTweetTextData();
+    if (!tweetText) return;
 
-    navigator.clipboard.writeText(tweet).then(() => {
-      status("saveStatus", "🐦 Tweet draft copied to clipboard successfully!");
+    navigator.clipboard.writeText(tweetText).then(() => {
+      status("saveStatus", "📋 Tweet text copied to clipboard successfully!");
     }).catch(err => {
-      status("saveStatus", "Failed to copy tweet text.", true);
+      status("saveStatus", "Failed to copy text: " + err.message, true);
     });
   });
 
-  // Direct Post to X Button Action (Opens X Intent)
-  $("postTweetBtn").addEventListener("click", () => {
-    const tweet = buildTweetContent();
-    if (!tweet) return;
+  // Tombol 2: Download Gambar dengan Watermark
+  $("downloadImgBtn").addEventListener("click", () => {
+    const activeImg = $("imageFile").files[0] ? URL.createObjectURL($("imageFile").files[0]) : imageUrl;
+    if (!activeImg) {
+      return status("saveStatus", "No image/chart attached to download.", true);
+    }
 
-    const twitterIntentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweet)}`;
-    window.open(twitterIntentUrl, '_blank');
+    status("saveStatus", "Processing watermarked image…");
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = img.naturalWidth || img.width;
+      canvas.height = img.naturalHeight || img.height;
+      const ctx = canvas.getContext("2d");
+      
+      ctx.drawImage(img, 0, 0);
+
+      const fontSize = Math.max(24, Math.floor(canvas.width * 0.03));
+      ctx.font = `bold ${fontSize}px system-ui, -apple-system, sans-serif`;
+      ctx.fillStyle = "rgba(139, 224, 192, 0.85)";
+      ctx.shadowColor = "rgba(0, 0, 0, 0.8)";
+      ctx.shadowBlur = 6;
+      ctx.textAlign = "right";
+
+      const padding = fontSize * 1.2;
+      ctx.fillText("SatisfyNex Global Research", canvas.width - padding, canvas.height - padding);
+
+      canvas.toBlob(blob => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `satisfynex-${Date.now()}.png`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        status("saveStatus", "🖼️ Watermarked chart downloaded to your device!");
+      }, "image/png");
+    };
+    img.onerror = () => {
+      status("saveStatus", "Failed to load image for watermarking.", true);
+    };
+    img.src = activeImg;
   });
 
   async function save(statusValue) {
@@ -452,7 +485,6 @@ button:disabled{opacity:.5}
       listContainer.append(wrapper);
     });
 
-    // Render Pagination Controls di Panel Kanan
     const pagContainer = $("adminPaginationContainer");
     if (totalPages > 1) {
       pagContainer.innerHTML = `<div class="admin-pagination">
