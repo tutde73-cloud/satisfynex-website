@@ -14,7 +14,7 @@ export default async function handler(req, res) {
 
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
-    // Menggunakan Public Proxy (AllOrigins) agar lolos dari proteksi anti-bot Yahoo/CNBC
+    // Mengambil RSS Yahoo Finance melalui AllOrigins Proxy
     const targetRssUrl = 'https://finance.yahoo.com/news/rssindex';
     const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetRssUrl)}`;
 
@@ -24,16 +24,22 @@ export default async function handler(req, res) {
     }
     
     const proxyData = await proxyRes.json();
-    const rssText = proxyData.contents;
+    // AllOrigins menyimpan teks RSS di dalam properti .contents
+    let rssText = proxyData.contents;
     
-    if (!rssText || rssText.length < 50) {
-      return res.status(500).json({ success: false, error: "Konten RSS kosong dari proxy." });
+    if (!rssText) {
+      return res.status(500).json({ success: false, error: "Konten RSS dari proxy kosong." });
+    }
+
+    // Jika contents berupa string JSON yang terenkripsi/ter-escape, parsing dulu jika perlu
+    if (typeof rssText === 'string' && rssText.startsWith('"') && rssText.endsWith('"')) {
+      try { rssText = JSON.parse(rssText); } catch(e) {}
     }
 
     const itemMatches = rssText.match(/<item>([\s\S]*?)<\/item>/g) || [];
     
     if (itemMatches.length === 0) {
-      return res.status(500).json({ success: false, error: "Format item RSS tidak ditemukan." });
+      return res.status(500).json({ success: false, error: "Format item RSS tidak ditemukan dalam teks proxy." });
     }
 
     const latestItems = itemMatches.slice(0, 3); // Ambil 3 berita teratas
