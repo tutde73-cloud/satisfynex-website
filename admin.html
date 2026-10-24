@@ -322,8 +322,8 @@ button:disabled{opacity:.5}
     });
   });
 
-  // Tombol Download Watermarked Image (Murni Base64 DataURL, Aman 100% dari redirect domain luar)
-  $("downloadImgBtn").addEventListener("click", () => {
+  // Tombol Download Watermarked Image (Menggunakan Fetch Blob Aman untuk iPadOS)
+  $("downloadImgBtn").addEventListener("click", async () => {
     const fileInput = $("imageFile").files[0];
 
     if (fileInput) {
@@ -331,7 +331,17 @@ button:disabled{opacity:.5}
       reader.onload = e => processAndDownload(e.target.result);
       reader.readAsDataURL(fileInput);
     } else if (imageUrl) {
-      processAndDownload(imageUrl);
+      // Ambil data gambar via fetch blob
+      try {
+        status("saveStatus", "Fetching chart image…");
+        const res = await fetch(imageUrl);
+        const blob = await res.blob();
+        const reader = new FileReader();
+        reader.onload = e => processAndDownload(e.target.result);
+        reader.readAsDataURL(blob);
+      } catch (err) {
+        processAndDownload(imageUrl);
+      }
     } else {
       status("saveStatus", "No image/chart attached to download.", true);
     }
@@ -361,17 +371,22 @@ button:disabled{opacity:.5}
         const padding = fontSize * 1.2;
         ctx.fillText("SatisfyNex Global Research", canvas.width - padding, canvas.height - padding);
 
-        // Buat data URL murni
-        const dataUrl = canvas.toDataURL("image/png");
-        
-        const a = document.createElement("a");
-        a.href = dataUrl;
-        a.download = `satisfynex-${Date.now()}.png`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        
-        status("saveStatus", "🖼️ Watermarked image downloaded successfully!");
+        // Konversi Canvas ke Blob murni agar Safari iPadOS langsung menyimpannya
+        canvas.toBlob(blob => {
+          if (!blob) {
+            status("saveStatus", "Failed to generate image blob.", true);
+            return;
+          }
+          const blobUrl = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = blobUrl;
+          a.download = `satisfynex-${Date.now()}.png`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
+          status("saveStatus", "🖼️ Watermarked image downloaded successfully!");
+        }, "image/png");
       } catch (err) {
         status("saveStatus", "Error applying watermark: " + err.message, true);
       }
