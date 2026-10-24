@@ -588,6 +588,16 @@ function renderArticles(){
  }
 }
 
+function updateDynamicCanonical() {
+  let c = document.querySelector('link[rel="canonical"]');
+  if (!c) {
+    c = document.createElement("link");
+    c.rel = "canonical";
+    document.head.appendChild(c);
+  }
+  c.href = window.location.origin + window.location.pathname;
+}
+
 function setMeta(article=null,pageTitle=null){
  const title=article?`${article.title} | Satisfynex`:pageTitle?`${pageTitle} | Satisfynex`:"Satisfynex — Independent US Stock Research";
  const description=String(article?.excerpt||"Independent US stock analysis, company research, technical charts, and investing education.").replace(/\s+/g," ").slice(0,155);
@@ -596,21 +606,14 @@ function setMeta(article=null,pageTitle=null){
  let d=document.querySelector('meta[name="description"]');
  if(d)d.content=description;
 
- let c=document.querySelector('link[rel="canonical"]');
- if(!c){
-  c=document.createElement("link");
-  c.rel="canonical";
-  document.head.appendChild(c);
- }
-
- c.href=SITE_URL+(location.pathname.replace(/\/+$/,"")||"/");
+ updateDynamicCanonical();
 
  let og=document.querySelector('meta[property="og:title"]');
  if(og)og.content=title;
  og=document.querySelector('meta[property="og:description"]');
  if(og)og.content=description;
  og=document.querySelector('meta[property="og:url"]');
- if(og)og.content=c.href;
+ if(og)og.content=document.querySelector('link[rel="canonical"]').href;
 }
 
 function showView(view){
@@ -622,6 +625,7 @@ function showView(view){
 function showHome(push=true,hash=""){
  showView("home");
  setMeta();
+ updateDynamicCanonical();
  if(push)history.pushState({view:"home"},"","/"+hash);
  if(hash==="#latest")setTimeout(()=>$("#latest").scrollIntoView({behavior:"smooth"}),0);
  else window.scrollTo({top:0,behavior:"auto"});
@@ -634,6 +638,7 @@ function openArticleById(id,push=true){
  if(!article){
   showView("home");
   setMeta();
+  updateDynamicCanonical();
   $("#articleGrid").insertAdjacentHTML("afterbegin",'<div class="notice" style="grid-column:1/-1">This article could not be found. Check that its published slug matches the URL.</div>');
   if(push)history.pushState({view:"home"},"","/");
   return;
@@ -643,7 +648,6 @@ function openArticleById(id,push=true){
 
  const paragraphs=article.paragraphs.map(p=>`<p>${escapeHTML(p).replace(/\n/g,"<br>")}</p>`).join("");
 
- // Logika Related Research: Prioritaskan kategori sama, lalu lengkapi dengan artikel terbaru lainnya
  const sameCategoryArticles = articles.filter(a => a.id !== article.id && a.category === article.category);
  const otherArticles = articles.filter(a => a.id !== article.id && a.category !== article.category);
  const relatedArticles = [...sameCategoryArticles, ...otherArticles].slice(0, 3);
@@ -700,6 +704,7 @@ function openArticleById(id,push=true){
  <aside class="sidebar"><div class="panel"><h3>About this research</h3><p>Satisfynex explores company fundamentals, market developments, technical evidence, and investment risks.</p></div><div class="panel"><h3>Explore more</h3><a class="read-more" href="/#latest">Browse all articles →</a></div></aside></div></article>`;
 
  setMeta(article);
+ updateDynamicCanonical();
 
  setTimeout(processAllImages, 300);
 
@@ -723,6 +728,7 @@ function showPage(type,push=true){
  showView("page");
  $("#pageDetail").innerHTML=`<h1>${escapeHTML(p.title)}</h1>${p.body}`;
  setMeta(null,p.title);
+ updateDynamicCanonical();
 
  const paths={privacy:"/privacy-policy",terms:"/terms-of-service",about:"/about",contact:"/contact",disclaimer:"/disclaimer"};
  if(push)history.pushState({view:"page",type},"",paths[type]);
@@ -746,6 +752,7 @@ function routeFromLocation(){
 
  showView("home");
  setMeta();
+ updateDynamicCanonical();
  if(location.hash==="#latest")setTimeout(()=>$("#latest").scrollIntoView(),0);
 }
 
