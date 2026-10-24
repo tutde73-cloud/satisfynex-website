@@ -14,35 +14,25 @@ export default async function handler(req, res) {
 
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
-    // Mengambil RSS Yahoo Finance melalui AllOrigins Proxy
-    const targetRssUrl = 'https://finance.yahoo.com/news/rssindex';
-    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetRssUrl)}`;
+    // Menggunakan RSS publik yang stabil dan ramah serverless
+    const rssRes = await fetch('https://www.coindesk.com/arc/outboundfeeds/rss/', {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+      }
+    });
 
-    const proxyRes = await fetch(proxyUrl);
-    if (!proxyRes.ok) {
-      return res.status(500).json({ success: false, error: `Gagal mengakses Proxy RSS: HTTP ${proxyRes.status}` });
+    if (!rssRes.ok) {
+      return res.status(500).json({ success: false, error: `Gagal ambil RSS: HTTP ${rssRes.status}` });
     }
     
-    const proxyData = await proxyRes.json();
-    // AllOrigins menyimpan teks RSS di dalam properti .contents
-    let rssText = proxyData.contents;
-    
-    if (!rssText) {
-      return res.status(500).json({ success: false, error: "Konten RSS dari proxy kosong." });
-    }
-
-    // Jika contents berupa string JSON yang terenkripsi/ter-escape, parsing dulu jika perlu
-    if (typeof rssText === 'string' && rssText.startsWith('"') && rssText.endsWith('"')) {
-      try { rssText = JSON.parse(rssText); } catch(e) {}
-    }
-
+    const rssText = await rssRes.text();
     const itemMatches = rssText.match(/<item>([\s\S]*?)<\/item>/g) || [];
     
     if (itemMatches.length === 0) {
-      return res.status(500).json({ success: false, error: "Format item RSS tidak ditemukan dalam teks proxy." });
+      return res.status(500).json({ success: false, error: "Format item RSS tidak ditemukan." });
     }
 
-    const latestItems = itemMatches.slice(0, 3); // Ambil 3 berita teratas
+    const latestItems = itemMatches.slice(0, 3);
     let insertedCount = 0;
 
     for (const rawItem of latestItems) {
@@ -57,7 +47,6 @@ export default async function handler(req, res) {
 
       if (!link || !title) continue;
 
-      // Cek duplikasi di Supabase
       const { data: existing } = await supabase
         .from('news')
         .select('id')
@@ -66,8 +55,7 @@ export default async function handler(req, res) {
 
       if (existing) continue;
 
-      // Panggil Gemini AI
-      const prompt = `Rewrite this financial news into short Indonesian JSON format with keys: title, summary, analysis, category, search_query. No markdown.\nTitle: ${title}\nContent: ${description.slice(0, 300)}`;
+      const prompt = `Rewrite this financial/market news into short Indonesian JSON format with keys: title, summary, analysis, category, search_query. No markdown.\nTitle: ${title}\nContent: ${description.slice(0, 300)}`;
       
       const geminiRes = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`,
@@ -87,7 +75,7 @@ export default async function handler(req, res) {
         summary: description || "Market update.",
         analysis: "Market impact analysis.",
         category: "Market Insights",
-        search_query: "stock market"
+        search_query: "financial markets"
       };
 
       try {
@@ -99,7 +87,6 @@ export default async function handler(req, res) {
         }
       } catch (e) {}
 
-      // Ambil gambar Unsplash jika ada tokennya
       let imageUrl = 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=800&q=80';
       if (process.env.UNSPLASH_ACCESS) {
         try {
@@ -112,7 +99,6 @@ export default async function handler(req, res) {
         } catch (e) {}
       }
 
-      // Simpan ke Supabase tabel 'news'
       const { error: insertErr } = await supabase.from('news').insert([
         {
           title: aiContent.title || title,
@@ -121,7 +107,7 @@ export default async function handler(req, res) {
           category: aiContent.category || 'Market Insights',
           image_url: imageUrl,
           source_url: link,
-          source_name: 'Yahoo Finance',
+          source_name: 'Global Financial News',
           created_at: new Date().toISOString()
         }
       ]);
