@@ -1,41 +1,60 @@
 import { createClient } from '@supabase/supabase-js';
-import Parser from 'rss-parser';
 
 const supabaseUrl = 'https://ngysrsypmieuvucqupgd.supabase.co';
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE;
-const supabase = createClient(supabaseUrl, supabaseServiceKey);
-
-const parser = new Parser();
 
 export default async function handler(req, res) {
   res.setHeader('Content-Type', 'application/json');
 
   try {
-    const feed = await parser.parseURL('https://search.cnbc.com/rs/search/combined/rss/cnbcnews?id=15839069');
-    const latestItems = feed.items.slice(0, 3);
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE;
+    const geminiKey = process.env.GEMINI_API;
+
+    if (!supabaseServiceKey || !geminiKey) {
+      throw new Error("Missing SUPABASE_SERVICE_ROLE or GEMINI_API environment variables in Vercel.");
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    // Ambil RSS CNBC secara langsung menggunakan fetch standar (Tanpa parser eksternal)
+    const rssRes = await fetch('https://search.cnbc.com/rs/search/combined/rss/cnbcnews?id=15839069');
+    const rssText = await rssRes.text();
+
+    // Ekstraksi sederhana item XML menggunakan string splitting/regex aman
+    const itemMatches = rssText.match(/<item>([\s\S]*?)<\/item>/g) || [];
+    const latestItems = itemMatches.slice(0, 3);
     let insertedCount = 0;
 
-    for (const item of latestItems) {
+    for (const rawItem of latestItems) {
       try {
-        const itemLink = item.link || '';
-        if (!itemLink) continue;
+        const getTagContent = (xml, tag) => {
+          const match = xml.match(new RegExp(`<${tag}[^>]*>([\\s\\S]*?)<\/${tag}>`, 'i'));
+          if (!match) return '';
+          return match[1].replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1').trim();
+        };
 
+        const title = getTagContent(rawItem, 'title');
+        const link = getTagContent(rawItem, 'link');
+        const description = getTagContent(rawItem, 'description');
+
+        if (!link || !title) continue;
+
+        // Cek duplikasi di Supabase
         const { data: existing } = await supabase
           .from('news')
           .select('id')
-          .eq('source_url', itemLink)
+          .eq('source_url', link)
           .maybeSingle();
 
         if (existing) continue;
 
         const geminiPrompt = `Rewrite this financial news into short Indonesian JSON. 
-Title: ${item.title || ''}
-Content: ${item.contentSnippet || item.content || ''}
+Title: ${title}
+Content: ${description.slice(0, 400)}
 
 Output ONLY valid JSON keys: title, summary, analysis, category, search_query. No markdown.`;
 
         const geminiRes = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API}`,
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`,
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -48,10 +67,9 @@ Output ONLY valid JSON keys: title, summary, analysis, category, search_query. N
         const geminiData = await geminiRes.json();
         const rawText = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text || '';
 
-        // Parsing JSON tanpa Regex sama sekali (Aman dari error pattern)
         let aiContent = {
-          title: item.title,
-          summary: item.contentSnippet || "Market update summary.",
+          title: title,
+          summary: description || "Market update summary.",
           analysis: "Financial market impact analysis.",
           category: "Market Insights",
           search_query: "stock market trading"
@@ -60,18 +78,14 @@ Output ONLY valid JSON keys: title, summary, analysis, category, search_query. N
         if (rawText) {
           try {
             let cleanText = rawText.trim();
-            // Bersihkan pembungkus markdown menggunakan indeks string standar
             const firstBrace = cleanText.indexOf('{');
             const lastBrace = cleanText.lastIndexOf('}');
             
             if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
               cleanText = cleanText.substring(firstBrace, lastBrace + 1);
             }
-            
             aiContent = JSON.parse(cleanText);
-          } catch (jsonErr) {
-            // Jika gagal parse, gunakan fallback default di atas
-          }
+          } catch (e) {}
         }
 
         let imageUrl = 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=800&q=80';
@@ -88,12 +102,12 @@ Output ONLY valid JSON keys: title, summary, analysis, category, search_query. N
 
         const { error: insertError } = await supabase.from('news').insert([
           {
-            title: aiContent.title || item.title,
-            summary: aiContent.summary || item.contentSnippet,
+            title: aiContent.title || title,
+            summary: aiContent.summary || description,
             analysis: aiContent.analysis || '',
             category: aiContent.category || 'Market Insights',
             image_url: imageUrl,
-            source_url: itemLink,
+            source_url: link,
             source_name: 'CNBC Financial',
             created_at: new Date().toISOString()
           }
