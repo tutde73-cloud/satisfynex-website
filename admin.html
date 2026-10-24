@@ -38,7 +38,6 @@ button:disabled{opacity:.5}
 .meta{font-size:12px;color:var(--muted);margin:4px 0 9px}
 .preview{display:block;width:100%;max-height:240px;object-fit:contain;margin-top:12px;border-radius:8px;background:#080c12}
 
-/* Styling Pagination Admin */
 .admin-pagination{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:18px;padding-top:12px;border-top:1px solid var(--line)}
 .admin-pagination button{background:#1a2535;color:var(--text);border:1px solid var(--line);padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600}
 .admin-pagination button:hover:not(:disabled){background:#243248;border-color:var(--accent)}
@@ -126,7 +125,7 @@ button:disabled{opacity:.5}
           <button id="publishBtn" type="button" class="primary">Publish article</button>
         </div>
 
-        <!-- Dua Tombol Terpisah untuk Teks & Watermarked Image -->
+        <!-- Tombol Teks & Watermarked Image yang Aman -->
         <div class="row" style="margin-top:10px; border-top:1px solid var(--line); padding-top:15px;">
           <button id="copyTextBtn" type="button" class="twitter-btn">📋 Copy Tweet Text</button>
           <button id="downloadImgBtn" type="button" class="twitter-btn">🖼️ Download Watermarked Image</button>
@@ -289,11 +288,12 @@ button:disabled{opacity:.5}
     return db.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
   }
 
-  // Builder untuk Teks Tweet (Diperbarui menggunakan struktur /articles/ dan bersih dari simbol dolar ganda)
+  // Builder Teks Tweet (Format /articles/ dan $TICKER bersih)
   function getTweetTextData() {
     const title = $("title").value.trim();
     const slug = slugify($("slug").value);
-    const ticker = $("ticker").value.trim().toUpperCase();
+    let ticker = $("ticker").value.trim().toUpperCase();
+    ticker = ticker.replace(/^\$+/, '');
 
     if (!title || !slug) {
       alert("Please fill in at least the Title and Slug first!");
@@ -305,7 +305,6 @@ button:disabled{opacity:.5}
     return `[NEW RESEARCH] ${tickerTag}${title}\n\nRead the full report 👇\n${researchUrl}\n\n#SatisfyNex #StockMarket #Investing`;
   }
 
-  // Tombol 1: Copy Teks Saja
   $("copyTextBtn").addEventListener("click", () => {
     const tweetText = getTweetTextData();
     if (!tweetText) return;
@@ -317,57 +316,71 @@ button:disabled{opacity:.5}
     });
   });
 
-  // Tombol 2: Download Gambar dengan Watermark
-  $("downloadImgBtn").addEventListener("click", () => {
+  // Fungsi Watermark Aman dengan Fetch Blob (Menghindari CORS Stuck di iPadOS)
+  $("downloadImgBtn").addEventListener("click", async () => {
     const fileInput = $("imageFile").files[0];
-    let sourceSource = fileInput ? URL.createObjectURL(fileInput) : imageUrl;
+    const targetUrl = fileInput ? URL.createObjectURL(fileInput) : imageUrl;
 
-    if (!sourceSource) {
+    if (!targetUrl) {
       return status("saveStatus", "No image/chart attached to download.", true);
     }
 
     status("saveStatus", "Processing watermarked image…");
 
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.onload = () => {
-      const canvas = document.createElement("canvas");
-      canvas.width = img.naturalWidth || img.width;
-      canvas.height = img.naturalHeight || img.height;
-      const ctx = canvas.getContext("2d");
-      
-      ctx.drawImage(img, 0, 0);
+    try {
+      // Ambil data gambar secara aman via fetch blob untuk bypass proteksi CORS
+      const response = await fetch(targetUrl);
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
 
-      const fontSize = Math.max(22, Math.floor(canvas.width * 0.028));
-      ctx.font = `bold ${fontSize}px system-ui, -apple-system, sans-serif`;
-      ctx.fillStyle = "rgba(139, 224, 192, 0.9)";
-      ctx.shadowColor = "rgba(0, 0, 0, 0.85)";
-      ctx.shadowBlur = 6;
-      ctx.textAlign = "right";
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.naturalWidth || img.width;
+        canvas.height = img.naturalHeight || img.height;
+        const ctx = canvas.getContext("2d");
+        
+        ctx.drawImage(img, 0, 0);
 
-      const padding = fontSize * 1.2;
-      ctx.fillText("SatisfyNex Global Research", canvas.width - padding, canvas.height - padding);
+        // Styling Watermark Teks
+        const fontSize = Math.max(22, Math.floor(canvas.width * 0.028));
+        ctx.font = `bold ${fontSize}px system-ui, -apple-system, sans-serif`;
+        ctx.fillStyle = "rgba(139, 224, 192, 0.9)";
+        ctx.shadowColor = "rgba(0, 0, 0, 0.85)";
+        ctx.shadowBlur = 6;
+        ctx.textAlign = "right";
 
-      canvas.toBlob(blob => {
-        if (!blob) {
-          status("saveStatus", "Failed to create image blob.", true);
-          return;
-        }
-        const blobUrl = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = blobUrl;
-        a.download = `satisfynex-${Date.now()}.png`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
-        status("saveStatus", "🖼️ Watermarked image downloaded successfully!");
-      }, "image/png");
-    };
-    img.onerror = () => {
-      status("saveStatus", "Failed to load image for watermarking.", true);
-    };
-    img.src = sourceSource;
+        const padding = fontSize * 1.2;
+        ctx.fillText("SatisfyNex Global Research", canvas.width - padding, canvas.height - padding);
+
+        canvas.toBlob(finalBlob => {
+          if (!finalBlob) {
+            status("saveStatus", "Failed to generate watermarked image.", true);
+            return;
+          }
+          const finalUrl = URL.createObjectURL(finalBlob);
+          const a = document.createElement("a");
+          a.href = finalUrl;
+          a.download = `satisfynex-${Date.now()}.png`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(() => {
+            URL.revokeObjectURL(blobUrl);
+            URL.revokeObjectURL(finalUrl);
+          }, 1000);
+          status("saveStatus", "🖼️ Watermarked image downloaded successfully!");
+        }, "image/png");
+      };
+
+      img.onerror = () => {
+        status("saveStatus", "Failed to load image into canvas.", true);
+      };
+
+      img.src = blobUrl;
+    } catch (err) {
+      status("saveStatus", "Error processing watermark: " + err.message, true);
+    }
   });
 
   async function save(statusValue) {
