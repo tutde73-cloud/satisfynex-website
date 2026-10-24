@@ -289,7 +289,7 @@ button:disabled{opacity:.5}
     return db.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
   }
 
-  // Builder untuk Teks Tweet
+  // Builder untuk Teks Tweet (Diperbaiki agar hanya menggunakan satu simbol dolar $TICKER)
   function getTweetTextData() {
     const title = $("title").value.trim();
     const slug = slugify($("slug").value);
@@ -317,7 +317,7 @@ button:disabled{opacity:.5}
     });
   });
 
-  // Tombol 2: Download Gambar dengan Watermark (Menggunakan teknik Blob aman untuk Safari/iPadOS)
+  // Tombol 2: Download Gambar dengan Watermark
   $("downloadImgBtn").addEventListener("click", () => {
     const fileInput = $("imageFile").files[0];
     let sourceSource = fileInput ? URL.createObjectURL(fileInput) : imageUrl;
@@ -338,7 +338,6 @@ button:disabled{opacity:.5}
       
       ctx.drawImage(img, 0, 0);
 
-      // Watermark styling
       const fontSize = Math.max(22, Math.floor(canvas.width * 0.028));
       ctx.font = `bold ${fontSize}px system-ui, -apple-system, sans-serif`;
       ctx.fillStyle = "rgba(139, 224, 192, 0.9)";
@@ -349,7 +348,6 @@ button:disabled{opacity:.5}
       const padding = fontSize * 1.2;
       ctx.fillText("SatisfyNex Global Research", canvas.width - padding, canvas.height - padding);
 
-      // Konversi canvas ke Blob agar Safari langsung mendownload filenya
       canvas.toBlob(blob => {
         if (!blob) {
           status("saveStatus", "Failed to create image blob.", true);
