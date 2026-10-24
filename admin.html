@@ -218,12 +218,12 @@ button:disabled{opacity:.5}
   $("loginForm").addEventListener("submit", async event => {
     event.preventDefault();
     status("loginStatus", "Signing in…");
-    const { data, error } = await db.auth.signInWithPassword({
+    const dataAuth = await db.auth.signInWithPassword({
       email: $("email").value.trim(),
       password: $("password").value
     });
-    if (error) return status("loginStatus", error.message, true);
-    await enter(data.user);
+    if (dataAuth.error) return status("loginStatus", dataAuth.error.message, true);
+    await enter(dataAuth.data.user);
   });
 
   $("logoutBtn").addEventListener("click", async () => {
@@ -317,7 +317,7 @@ button:disabled{opacity:.5}
     });
   });
 
-  // Tombol 2: Download Gambar dengan Watermark (Aman untuk iPadOS & Supabase)
+  // Tombol 2: Download Gambar dengan Watermark (Menggunakan teknik Blob aman untuk Safari/iPadOS)
   $("downloadImgBtn").addEventListener("click", () => {
     const fileInput = $("imageFile").files[0];
     let sourceSource = fileInput ? URL.createObjectURL(fileInput) : imageUrl;
@@ -349,19 +349,22 @@ button:disabled{opacity:.5}
       const padding = fontSize * 1.2;
       ctx.fillText("SatisfyNex Global Research", canvas.width - padding, canvas.height - padding);
 
-      // Gunakan toDataURL agar kompatibel penuh di semua versi Safari/iPadOS tanpa kendala blob createObjectURL
-      try {
-        const dataURL = canvas.toDataURL("image/png");
+      // Konversi canvas ke Blob agar Safari langsung mendownload filenya
+      canvas.toBlob(blob => {
+        if (!blob) {
+          status("saveStatus", "Failed to create image blob.", true);
+          return;
+        }
+        const blobUrl = URL.createObjectURL(blob);
         const a = document.createElement("a");
-        a.href = dataURL;
+        a.href = blobUrl;
         a.download = `satisfynex-${Date.now()}.png`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
         status("saveStatus", "🖼️ Watermarked image downloaded successfully!");
-      } catch (err) {
-        status("saveStatus", "Canvas export error: " + err.message, true);
-      }
+      }, "image/png");
     };
     img.onerror = () => {
       status("saveStatus", "Failed to load image for watermarking.", true);
