@@ -491,9 +491,15 @@ function contentToText(content){
 }
 
 function toArticle(row){
- const content=contentToText(row.content);
+ const content=contentToText(row.content || row.summary || row.analysis);
  const words=content.trim().split(/\s+/).filter(Boolean).length;
  const id=normalizeSlug(row.slug)||slugify(row.title)||String(row.id);
+ 
+ // Penanganan konten gabungan jika artikel berasal dari tabel 'news' otomatis
+ let fullContent = content;
+ if(row.summary && row.analysis) {
+   fullContent = `${row.summary}\n\nKey Market Analysis:\n${row.analysis}`;
+ }
 
  return {
   id,
@@ -501,11 +507,12 @@ function toArticle(row){
   ticker:row.ticker||"",
   category:row.category||"Market Insights",
   date:formatDate(row.created_at),
+  created_at: row.created_at,
   image:safeImage(row.image_url),
   read:Math.max(1,Math.ceil(words/200))+" min read",
-  excerpt:row.excerpt||content.slice(0,220)||"Read the latest Satisfynex research.",
-  content,
-  paragraphs:content.replace(/\r\n/g,"\n").split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean)
+  excerpt:row.excerpt||row.summary||content.slice(0,220)||"Read the latest Satisfynex research.",
+  content: fullContent,
+  paragraphs:fullContent.replace(/\r\n/g,"\n").split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean)
  };
 }
 
@@ -704,7 +711,6 @@ function openArticleById(id,push=true){
 
  if(push)history.pushState({view:"article",id:article.id},"",articleUrl(article.id));
 
- // Mencegah layar tertahan di bagian bawah saat membuka artikel
  window.scrollTo(0, 0);
  document.documentElement.scrollTop = 0;
  document.body.scrollTop = 0;
@@ -795,24 +801,39 @@ $("#searchInput").addEventListener("input",()=>{currentPage=1;renderArticles();}
 $("#categoryFilter").addEventListener("change",()=>{currentPage=1;renderArticles();});
 $("#year").textContent=new Date().getFullYear();
 
+// Mengambil Data Artikel Manual & News Otomatis dari Supabase Lalu Menyatukannya
 async function loadArticles(){
- const endpoint=SUPABASE_URL+"/rest/v1/articles?select=id,title,slug,ticker,category,excerpt,content,image_url,status,created_at&status=eq.published&order=created_at.desc";
+ const headers = {
+   apikey: SUPABASE_KEY,
+   Authorization: "Bearer " + SUPABASE_KEY,
+   Accept: "application/json"
+ };
+
+ const articlesEndpoint = SUPABASE_URL + "/rest/v1/articles?select=id,title,slug,ticker,category,excerpt,content,image_url,status,created_at&status=eq.published&order=created_at.desc";
+ const newsEndpoint = SUPABASE_URL + "/rest/v1/news?select=id,title,summary,analysis,category,image_url,created_at&order=created_at.desc";
 
  try{
-  const r=await fetch(endpoint,{
-   headers:{
-    apikey:SUPABASE_KEY,
-    Authorization:"Bearer "+SUPABASE_KEY,
-    Accept:"application/json"
-   }
-  });
+  const [resArticles, resNews] = await Promise.all([
+    fetch(articlesEndpoint, { headers }),
+    fetch(newsEndpoint, { headers })
+  ]);
 
-  if(!r.ok)throw new Error("Supabase HTTP "+r.status+" "+(await r.text()).slice(0,150));
+  let combinedRows = [];
 
-  const rows=await r.json();
-  if(!Array.isArray(rows))throw new Error("Unexpected article response");
+  if (resArticles.ok) {
+    const manualArticles = await resArticles.json();
+    if (Array.isArray(manualArticles)) combinedRows.push(...manualArticles);
+  }
 
-  articles=rows.map(toArticle);
+  if (resNews.ok) {
+    const autoNews = await resNews.json();
+    if (Array.isArray(autoNews)) combinedRows.push(...autoNews);
+  }
+
+  // Mengurutkan seluruh konten gabungan berdasarkan tanggal rilis paling baru
+  combinedRows.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+  articles = combinedRows.map(toArticle);
 
   renderCategories();
   renderFeatured();
