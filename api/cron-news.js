@@ -8,41 +8,31 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey);
 const parser = new Parser();
 
 export default async function handler(req, res) {
-  try {
-    // Set header agar respons dipastikan selalu berformat JSON
-    res.setHeader('Content-Type', 'application/json');
+  res.setHeader('Content-Type', 'application/json');
 
-    // 1. Ambil Feed RSS CNBC
+  try {
     const feed = await parser.parseURL('https://search.cnbc.com/rs/search/combined/rss/cnbcnews?id=15839069');
     const latestItems = feed.items.slice(0, 3);
     let insertedCount = 0;
 
     for (const item of latestItems) {
       try {
-        // Cek duplikasi berdasarkan URL asli
+        const itemLink = item.link || '';
+        if (!itemLink) continue;
+
         const { data: existing } = await supabase
           .from('news')
           .select('id')
-          .eq('source_url', item.link)
-          .single();
+          .eq('source_url', itemLink)
+          .maybeSingle();
 
         if (existing) continue;
 
-        // 2. Kirim Prompt ke Gemini API tanpa paksaan ketat MIME type agar tidak memicu error parser Vercel
-        const geminiPrompt = `
-Rewrite this financial news into a structured JSON object in Indonesian.
-Title: ${item.title}
-Content: ${item.contentSnippet || item.content}
+        const geminiPrompt = `Rewrite this financial news into short Indonesian JSON. 
+Title: ${item.title || ''}
+Content: ${item.contentSnippet || item.content || ''}
 
-Return ONLY valid JSON format like this, with no markdown code blocks:
-{
-  "title": "Judul berita menarik dalam Bahasa Indonesia",
-  "summary": "Ringkasan singkat berita dalam Bahasa Indonesia",
-  "analysis": "Analisis dampak pasar keuangan",
-  "category": "Market Insights",
-  "search_query": "stock market chart"
-}
-        `;
+Output ONLY valid JSON keys: title, summary, analysis, category, search_query. No markdown.`;
 
         const geminiRes = await fetch(
           `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API}`,
@@ -56,38 +46,46 @@ Return ONLY valid JSON format like this, with no markdown code blocks:
         );
 
         const geminiData = await geminiRes.json();
-        
-        if (!geminiData.candidates || !geminiData.candidates[0]?.content?.parts[0]?.text) {
-          continue;
-        }
+        const rawText = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text || '';
 
-        let rawText = geminiData.candidates[0].content.parts[0].text;
-        
-        // Bersihkan pembungkus markdown jika ada
-        rawText = rawText.replace(/```json/gi, "").replace(/```/g, "").trim();
-        const jsonMatch = rawText.match(/\{[\s\S]*\}/);
-        
-        if (!jsonMatch) continue;
+        // Parsing JSON tanpa Regex sama sekali (Aman dari error pattern)
+        let aiContent = {
+          title: item.title,
+          summary: item.contentSnippet || "Market update summary.",
+          analysis: "Financial market impact analysis.",
+          category: "Market Insights",
+          search_query: "stock market trading"
+        };
 
-        let aiContent = JSON.parse(jsonMatch[0]);
-
-        // 3. Ambil Gambar dari Unsplash (Gunakan Fallback jika gagal)
-        let imageUrl = 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=800&q=80';
-        if (process.env.UNSPLASH_ACCESS && aiContent.search_query) {
+        if (rawText) {
           try {
-            const unsplashRes = await fetch(
-              `https://api.unsplash.com/search/photos?page=1&query=${encodeURIComponent(aiContent.search_query)}&client_id=${process.env.UNSPLASH_ACCESS}`
-            );
-            const unsplashData = await unsplashRes.json();
-            if (unsplashData.results && unsplashData.results.length > 0) {
-              imageUrl = unsplashData.results[0].urls.regular;
+            let cleanText = rawText.trim();
+            // Bersihkan pembungkus markdown menggunakan indeks string standar
+            const firstBrace = cleanText.indexOf('{');
+            const lastBrace = cleanText.lastIndexOf('}');
+            
+            if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+              cleanText = cleanText.substring(firstBrace, lastBrace + 1);
             }
-          } catch (e) {
-            // Abaikan jika Unsplash gagal, gunakan fallback image
+            
+            aiContent = JSON.parse(cleanText);
+          } catch (jsonErr) {
+            // Jika gagal parse, gunakan fallback default di atas
           }
         }
 
-        // 4. Simpan ke Supabase
+        let imageUrl = 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=800&q=80';
+        if (process.env.UNSPLASH_ACCESS) {
+          try {
+            const query = encodeURIComponent(aiContent.search_query || 'finance stock');
+            const unsplashRes = await fetch(`https://api.unsplash.com/search/photos?page=1&query=${query}&client_id=${process.env.UNSPLASH_ACCESS}`);
+            const unsplashData = await unsplashRes.json();
+            if (unsplashData?.results?.[0]?.urls?.regular) {
+              imageUrl = unsplashData.results[0].urls.regular;
+            }
+          } catch (e) {}
+        }
+
         const { error: insertError } = await supabase.from('news').insert([
           {
             title: aiContent.title || item.title,
@@ -95,7 +93,7 @@ Return ONLY valid JSON format like this, with no markdown code blocks:
             analysis: aiContent.analysis || '',
             category: aiContent.category || 'Market Insights',
             image_url: imageUrl,
-            source_url: item.link,
+            source_url: itemLink,
             source_name: 'CNBC Financial',
             created_at: new Date().toISOString()
           }
@@ -103,8 +101,8 @@ Return ONLY valid JSON format like this, with no markdown code blocks:
 
         if (!insertError) insertedCount++;
 
-      } catch (itemErr) {
-        console.error("Skipping item due to error:", itemErr.message);
+      } catch (innerErr) {
+        console.error("Item loop error:", innerErr);
       }
     }
 
@@ -114,7 +112,6 @@ Return ONLY valid JSON format like this, with no markdown code blocks:
     });
 
   } catch (error) {
-    console.error('Fatal error in cron handler:', error);
-    return res.status(500).json({ error: error.message });
+    return res.status(500).json({ success: false, error: error.message || "Server error" });
   }
 }
