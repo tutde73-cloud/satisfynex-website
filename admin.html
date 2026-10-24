@@ -125,7 +125,7 @@ button:disabled{opacity:.5}
           <button id="publishBtn" type="button" class="primary">Publish article</button>
         </div>
 
-        <!-- Tombol Teks & Watermarked Image yang Aman -->
+        <!-- Tombol Teks & Watermarked Image -->
         <div class="row" style="margin-top:10px; border-top:1px solid var(--line); padding-top:15px;">
           <button id="copyTextBtn" type="button" class="twitter-btn">📋 Copy Tweet Text</button>
           <button id="downloadImgBtn" type="button" class="twitter-btn">🖼️ Download Watermarked Image</button>
@@ -269,7 +269,12 @@ button:disabled{opacity:.5}
       $("imageFile").value = "";
       return status("saveStatus", "Unsupported image type.", true);
     }
-    $("imagePreview").src = URL.createObjectURL(file);
+    
+    // Gunakan window.URL secara eksplisit
+    const createUrlFunc = window.URL || window.webkitURL;
+    if (createUrlFunc && createUrlFunc.createObjectURL) {
+      $("imagePreview").src = createUrlFunc.createObjectURL(file);
+    }
     $("imagePreview").hidden = false;
     $("removeImageBtn").hidden = false;
     $("imageStatus").textContent = "Ready to upload: " + file.name;
@@ -316,25 +321,29 @@ button:disabled{opacity:.5}
     });
   });
 
-  // Fungsi Watermark Aman dengan Fetch Blob (Menghindari CORS Stuck di iPadOS)
-  $("downloadImgBtn").addEventListener("click", async () => {
+  // Fungsi Watermark Murni Menggunakan DataURL (Tanpa createObjectURL)
+  $("downloadImgBtn").addEventListener("click", () => {
     const fileInput = $("imageFile").files[0];
-    const targetUrl = fileInput ? URL.createObjectURL(fileInput) : imageUrl;
+    let sourceSrc = "";
 
-    if (!targetUrl) {
-      return status("saveStatus", "No image/chart attached to download.", true);
+    if (fileInput) {
+      const reader = new FileReader();
+      reader.onload = e => processImageAndDownload(e.target.result);
+      reader.readAsDataURL(fileInput);
+    } else if (imageUrl) {
+      // Untuk gambar dari Supabase, gunakan proxy canvas crossOrigin murni
+      processImageAndDownload(imageUrl);
+    } else {
+      status("saveStatus", "No image/chart attached to download.", true);
     }
+  });
 
+  function processImageAndDownload(src) {
     status("saveStatus", "Processing watermarked image…");
-
-    try {
-      // Ambil data gambar secara aman via fetch blob untuk bypass proteksi CORS
-      const response = await fetch(targetUrl);
-      const blob = await response.blob();
-      const blobUrl = URL.createObjectURL(blob);
-
-      const img = new Image();
-      img.onload = () => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      try {
         const canvas = document.createElement("canvas");
         canvas.width = img.naturalWidth || img.width;
         canvas.height = img.naturalHeight || img.height;
@@ -342,7 +351,7 @@ button:disabled{opacity:.5}
         
         ctx.drawImage(img, 0, 0);
 
-        // Styling Watermark Teks
+        // Watermark styling
         const fontSize = Math.max(22, Math.floor(canvas.width * 0.028));
         ctx.font = `bold ${fontSize}px system-ui, -apple-system, sans-serif`;
         ctx.fillStyle = "rgba(139, 224, 192, 0.9)";
@@ -353,35 +362,25 @@ button:disabled{opacity:.5}
         const padding = fontSize * 1.2;
         ctx.fillText("SatisfyNex Global Research", canvas.width - padding, canvas.height - padding);
 
-        canvas.toBlob(finalBlob => {
-          if (!finalBlob) {
-            status("saveStatus", "Failed to generate watermarked image.", true);
-            return;
-          }
-          const finalUrl = URL.createObjectURL(finalBlob);
-          const a = document.createElement("a");
-          a.href = finalUrl;
-          a.download = `satisfynex-${Date.now()}.png`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          setTimeout(() => {
-            URL.revokeObjectURL(blobUrl);
-            URL.revokeObjectURL(finalUrl);
-          }, 1000);
-          status("saveStatus", "🖼️ Watermarked image downloaded successfully!");
-        }, "image/png");
-      };
-
-      img.onerror = () => {
-        status("saveStatus", "Failed to load image into canvas.", true);
-      };
-
-      img.src = blobUrl;
-    } catch (err) {
-      status("saveStatus", "Error processing watermark: " + err.message, true);
-    }
-  });
+        // Gunakan toDataURL murni (Aman 100% untuk iPadOS Safari)
+        const dataUrl = canvas.toDataURL("image/png");
+        const a = document.createElement("a");
+        a.href = dataUrl;
+        a.download = `satisfynex-${Date.now()}.png`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        
+        status("saveStatus", "🖼️ Watermarked image downloaded successfully!");
+      } catch (err) {
+        status("saveStatus", "Error applying watermark: " + err.message, true);
+      }
+    };
+    img.onerror = () => {
+      status("saveStatus", "Failed to load image for watermarking.", true);
+    };
+    img.src = src;
+  }
 
   async function save(statusValue) {
     if (busy) return;
