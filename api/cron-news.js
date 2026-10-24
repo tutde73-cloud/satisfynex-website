@@ -14,22 +14,22 @@ export default async function handler(req, res) {
 
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
-    // Ambil data RSS CNBC dengan User-Agent agar tidak diblokir (Error 503)
-    const rssRes = await fetch('https://search.cnbc.com/rs/search/combined/rss/cnbcnews?id=15839069', {
+    // Menggunakan RSS Yahoo Finance yang ramah serverless & tidak memblokir Vercel
+    const rssRes = await fetch('https://finance.yahoo.com/news/rssindex', {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
       }
     });
 
     if (!rssRes.ok) {
-      return res.status(500).json({ success: false, error: `Gagal ambil RSS CNBC: HTTP ${rssRes.status}` });
+      return res.status(500).json({ success: false, error: `Gagal ambil RSS Yahoo Finance: HTTP ${rssRes.status}` });
     }
     
     const rssText = await rssRes.text();
     const itemMatches = rssText.match(/<item>([\s\S]*?)<\/item>/g) || [];
     
     if (itemMatches.length === 0) {
-      return res.status(500).json({ success: false, error: "Format RSS CNBC kosong atau tidak valid." });
+      return res.status(500).json({ success: false, error: "Format RSS kosong atau tidak valid." });
     }
 
     const latestItems = itemMatches.slice(0, 3); // Ambil 3 berita teratas
@@ -111,7 +111,7 @@ export default async function handler(req, res) {
           category: aiContent.category || 'Market Insights',
           image_url: imageUrl,
           source_url: link,
-          source_name: 'CNBC Financial',
+          source_name: 'Yahoo Finance',
           created_at: new Date().toISOString()
         }
       ]);
