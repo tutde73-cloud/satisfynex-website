@@ -1,39 +1,33 @@
 import { createClient } from '@supabase/supabase-js';
 import Parser from 'rss-parser';
 
-// Inisialisasi Supabase Client dengan Service Role Key Anda
 const supabaseUrl = 'https://ngysrsypmieuvucqupgd.supabase.co';
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE; // Menggunakan nama variabel Anda
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE;
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 const parser = new Parser();
 
 export default async function handler(req, res) {
   try {
-    // 1. Ambil Feed RSS Pasar Keuangan (Contoh: CNBC Market RSS)
     const feed = await parser.parseURL('https://search.cnbc.com/rs/search/combined/rss/cnbcnews?id=15839069');
-    
-    // Ambil 3 berita terbaru
     const latestItems = feed.items.slice(0, 3);
     let insertedCount = 0;
 
     for (const item of latestItems) {
-      // Cek apakah berita sudah ada berdasarkan link asli
       const { data: existing } = await supabase
         .from('news')
         .select('id')
         .eq('source_url', item.link)
         .single();
 
-      if (existing) continue; // Skip jika berita sudah tersimpan sebelumnya
+      if (existing) continue;
 
-      // 2. Olah konten dengan Gemini API
       const geminiPrompt = `
         Rewrite the following financial news item into a high-engaging, SEO-optimized summary in Indonesian.
         Title: ${item.title}
         Content: ${item.contentSnippet || item.content}
         
-        Provide JSON output with keys:
+        Provide valid JSON output ONLY with these exact keys:
         - "title": catchy title in Indonesian
         - "summary": concise summary paragraph in Indonesian
         - "analysis": key financial takeaway or market impact analysis
@@ -54,11 +48,26 @@ export default async function handler(req, res) {
       );
 
       const geminiData = await geminiRes.json();
-      const aiContent = JSON.parse(geminiData.candidates[0].content.parts[0].text);
+      
+      if (!geminiData.candidates || !geminiData.candidates[0].content) {
+        throw new Error("Invalid response from Gemini API");
+      }
 
-      // 3. Cari Gambar di Unsplash
-      let imageUrl = 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=800&q=80'; // Fallback
-      if (process.env.UNSPLASH_ACCESS) {
+      let rawText = geminiData.candidates[0].content.parts[0].text;
+      
+      // Membersihkan markdown code blocks jika AI masih menyertakannya
+      rawText = rawText.replace(/```json/g, "").replace(/```/g, "").trim();
+
+      let aiContent;
+      try {
+        aiContent = JSON.parse(rawText);
+      } catch (parseErr) {
+        console.error("Failed to parse Gemini JSON:", rawText);
+        continue; // Lewati item ini jika gagal parsing, lanjut ke berita berikutnya
+      }
+
+      let imageUrl = 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=800&q=80';
+      if (process.env.UNSPLASH_ACCESS && aiContent.search_query) {
         const unsplashRes = await fetch(
           `https://api.unsplash.com/search/photos?page=1&query=${encodeURIComponent(aiContent.search_query)}&client_id=${process.env.UNSPLASH_ACCESS}`
         );
@@ -68,7 +77,6 @@ export default async function handler(req, res) {
         }
       }
 
-      // 4. Simpan ke Database Supabase
       const { error: insertError } = await supabase.from('news').insert([
         {
           title: aiContent.title,
