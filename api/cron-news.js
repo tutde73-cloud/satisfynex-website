@@ -14,10 +14,15 @@ export default async function handler(req, res) {
 
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
-    // Ambil data RSS CNBC
-    const rssRes = await fetch('https://search.cnbc.com/rs/search/combined/rss/cnbcnews?id=15839069');
+    // Ambil data RSS CNBC dengan User-Agent agar tidak diblokir (Error 503)
+    const rssRes = await fetch('https://search.cnbc.com/rs/search/combined/rss/cnbcnews?id=15839069', {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+      }
+    });
+
     if (!rssRes.ok) {
-      return res.status(500).json({ success: false, error: `Gagal ambil RSS: ${rssRes.status}` });
+      return res.status(500).json({ success: false, error: `Gagal ambil RSS CNBC: HTTP ${rssRes.status}` });
     }
     
     const rssText = await rssRes.text();
