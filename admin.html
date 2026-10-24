@@ -6,7 +6,7 @@
 <title>Satisfynex — Admin</title>
 <meta name="robots" content="noindex,nofollow">
 <style>
-:root{color-scheme:dark;--bg:#090d14;--panel:#111824;--line:#263244;--text:#eef3fb;--muted:#94a3b8;--accent:#8be0c0;--danger:#ff9292}
+:root{color-scheme:dark;--bg:#090d14;--panel:#111824;--line:#263244;--text:#eef3fb;--muted:#94a3b8;--accent:#8be0c0;--danger:#ff9292;--twitter:#1d9bf0}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 system-ui,-apple-system,sans-serif}
 header{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid var(--line);gap:12px}
@@ -23,6 +23,8 @@ textarea{min-height:110px;resize:vertical}#content{min-height:300px}
 input:focus,select:focus,textarea:focus{outline:1px solid var(--accent)}
 button,.link{cursor:pointer;border:1px solid var(--line);border-radius:8px;padding:10px 14px;background:#1a2535;color:var(--text);font:inherit;text-decoration:none}
 button.primary{background:var(--accent);color:#07140f;border-color:var(--accent);font-weight:750}
+button.twitter-btn{background:rgba(29, 155, 240, 0.15);color:#71c9f8;border-color:#1d9bf0;font-weight:600}
+button.twitter-btn:hover{background:rgba(29, 155, 240, 0.25)}
 button:disabled{opacity:.5}
 .row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
 .small{font-size:12px;padding:6px 9px}
@@ -123,6 +125,13 @@ button:disabled{opacity:.5}
           <button id="draftBtn" type="button">Save draft</button>
           <button id="publishBtn" type="button" class="primary">Publish article</button>
         </div>
+
+        <!-- Twitter Generator Action Buttons -->
+        <div class="row" style="margin-top:10px; border-top:1px solid var(--line); padding-top:15px;">
+          <button id="copyTweetBtn" type="button" class="twitter-btn">🐦 Generate &amp; Copy Tweet</button>
+          <button id="postTweetBtn" type="button" class="twitter-btn">🚀 Direct Post to X</button>
+        </div>
+
         <div id="saveStatus" class="status" role="status"></div>
       </form>
     </section>
@@ -280,6 +289,46 @@ button:disabled{opacity:.5}
     if (error) throw error;
     return db.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
   }
+
+  // Helper to build the tweet text dynamically from current inputs
+  function buildTweetContent() {
+    const title = $("title").value.trim();
+    const excerpt = $("excerpt").value.trim();
+    const slug = slugify($("slug").value);
+    const ticker = $("ticker").value.trim().toUpperCase();
+
+    if (!title || !slug) {
+      alert("Please fill in at least the Title and Slug first!");
+      return null;
+    }
+
+    const tickerTag = ticker ? `[$${ticker}] ` : "";
+    const summaryText = excerpt ? `\n\n${excerpt}` : "";
+    const researchUrl = `https://satisfynex.com/research/${slug}`;
+
+    return `[NEW RESEARCH] ${tickerTag}${title}${summaryText}\n\nRead full report 👇\n${researchUrl}\n\n#SatisfyNex #StockMarket #Investing #USStocks`;
+  }
+
+  // Generate & Copy Tweet Button Action
+  $("copyTweetBtn").addEventListener("click", () => {
+    const tweet = buildTweetContent();
+    if (!tweet) return;
+
+    navigator.clipboard.writeText(tweet).then(() => {
+      status("saveStatus", "🐦 Tweet draft copied to clipboard successfully!");
+    }).catch(err => {
+      status("saveStatus", "Failed to copy tweet text.", true);
+    });
+  });
+
+  // Direct Post to X Button Action (Opens X Intent)
+  $("postTweetBtn").addEventListener("click", () => {
+    const tweet = buildTweetContent();
+    if (!tweet) return;
+
+    const twitterIntentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweet)}`;
+    window.open(twitterIntentUrl, '_blank');
+  });
 
   async function save(statusValue) {
     if (busy) return;
