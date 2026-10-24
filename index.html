@@ -491,15 +491,9 @@ function contentToText(content){
 }
 
 function toArticle(row){
- const content=contentToText(row.content || row.summary || row.analysis);
+ const content=contentToText(row.content);
  const words=content.trim().split(/\s+/).filter(Boolean).length;
  const id=normalizeSlug(row.slug)||slugify(row.title)||String(row.id);
- 
- // Penanganan konten gabungan jika artikel berasal dari tabel 'news' otomatis
- let fullContent = content;
- if(row.summary && row.analysis) {
-   fullContent = `${row.summary}\n\nKey Market Analysis:\n${row.analysis}`;
- }
 
  return {
   id,
@@ -507,12 +501,11 @@ function toArticle(row){
   ticker:row.ticker||"",
   category:row.category||"Market Insights",
   date:formatDate(row.created_at),
-  created_at: row.created_at,
   image:safeImage(row.image_url),
   read:Math.max(1,Math.ceil(words/200))+" min read",
-  excerpt:row.excerpt||row.summary||content.slice(0,220)||"Read the latest Satisfynex research.",
-  content: fullContent,
-  paragraphs:fullContent.replace(/\r\n/g,"\n").split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean)
+  excerpt:row.excerpt||content.slice(0,220)||"Read the latest Satisfynex research.",
+  content,
+  paragraphs:content.replace(/\r\n/g,"\n").split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean)
  };
 }
 
@@ -810,7 +803,7 @@ async function loadArticles(){
  };
 
  const articlesEndpoint = SUPABASE_URL + "/rest/v1/articles?select=id,title,slug,ticker,category,excerpt,content,image_url,status,created_at&status=eq.published&order=created_at.desc";
- const newsEndpoint = SUPABASE_URL + "/rest/v1/news?select=id,title,summary,analysis,category,image_url,created_at&order=created_at.desc";
+ const newsEndpoint = SUPABASE_URL + "/rest/v1/news?select=id,title,summary,analysis,category,image_url,source_url,source_name,created_at&order=created_at.desc";
 
  try{
   const [resArticles, resNews] = await Promise.all([
@@ -827,7 +820,21 @@ async function loadArticles(){
 
   if (resNews.ok) {
     const autoNews = await resNews.json();
-    if (Array.isArray(autoNews)) combinedRows.push(...autoNews);
+    if (Array.isArray(autoNews)) {
+      const formattedNews = autoNews.map(item => ({
+        id: "news-" + item.id,
+        title: item.title,
+        slug: "news-" + item.id,
+        ticker: "MARKET",
+        category: item.category || "Market Insights",
+        excerpt: item.summary,
+        content: `${item.summary}\n\nKey Market Analysis:\n${item.analysis}\n\nSource: ${item.source_name || 'CNBC'}`,
+        image_url: item.image_url,
+        status: "published",
+        created_at: item.created_at
+      }));
+      combinedRows.push(...formattedNews);
+    }
   }
 
   // Mengurutkan seluruh konten gabungan berdasarkan tanggal rilis paling baru
