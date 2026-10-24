@@ -289,7 +289,7 @@ button:disabled{opacity:.5}
     return db.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
   }
 
-  // Builder untuk Teks Tweet (Diperbaiki agar hanya menggunakan satu simbol dolar $TICKER)
+  // Builder untuk Teks Tweet (Diperbarui menggunakan struktur /articles/ dan bersih dari simbol dolar ganda)
   function getTweetTextData() {
     const title = $("title").value.trim();
     const slug = slugify($("slug").value);
@@ -301,7 +301,7 @@ button:disabled{opacity:.5}
     }
 
     const tickerTag = ticker ? `$${ticker} ` : "";
-    const researchUrl = `https://satisfynex.com/research/${slug}`;
+    const researchUrl = `https://www.satisfynex.com/articles/${slug}`;
     return `[NEW RESEARCH] ${tickerTag}${title}\n\nRead the full report 👇\n${researchUrl}\n\n#SatisfyNex #StockMarket #Investing`;
   }
 
