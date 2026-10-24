@@ -131,6 +131,14 @@ button:disabled{opacity:.5}
           <button id="downloadImgBtn" type="button" class="twitter-btn">🖼️ Download Watermarked Image</button>
         </div>
 
+        <!-- Tombol Trigger Berita Otomatis AI -->
+        <div class="row" style="margin-top:10px;">
+          <button id="fetchNewsBtn" type="button" class="primary" style="background:#3b82f6; color:#ffffff; border-color:#3b82f6; width:100%;">
+            🔄 Tarik & Proses Berita Otomatis (AI)
+          </button>
+        </div>
+        <div id="fetchNewsStatus" class="status" role="status"></div>
+
         <div id="saveStatus" class="status" role="status"></div>
       </form>
     </section>
@@ -331,7 +339,6 @@ button:disabled{opacity:.5}
       reader.onload = e => processAndDownload(e.target.result);
       reader.readAsDataURL(fileInput);
     } else if (imageUrl) {
-      // Ambil data gambar via fetch blob
       try {
         status("saveStatus", "Fetching chart image…");
         const res = await fetch(imageUrl);
@@ -360,7 +367,6 @@ button:disabled{opacity:.5}
         
         ctx.drawImage(img, 0, 0);
 
-        // Watermark styling
         const fontSize = Math.max(22, Math.floor(canvas.width * 0.028));
         ctx.font = `bold ${fontSize}px system-ui, -apple-system, sans-serif`;
         ctx.fillStyle = "rgba(139, 224, 192, 0.9)";
@@ -371,7 +377,6 @@ button:disabled{opacity:.5}
         const padding = fontSize * 1.2;
         ctx.fillText("SatisfyNex Global Research", canvas.width - padding, canvas.height - padding);
 
-        // Konversi Canvas ke Blob murni agar Safari iPadOS langsung menyimpannya
         canvas.toBlob(blob => {
           if (!blob) {
             status("saveStatus", "Failed to generate image blob.", true);
@@ -396,6 +401,36 @@ button:disabled{opacity:.5}
     };
     img.src = src;
   }
+
+  // Trigger Tombol Tarik Berita Otomatis via API Backend
+  $("fetchNewsBtn").addEventListener("click", async () => {
+    const btn = $("fetchNewsBtn");
+    const statusEl = $("fetchNewsStatus");
+
+    if (busy) return;
+    busy = true;
+    btn.disabled = true;
+    statusEl.textContent = "Sedang menarik RSS, memproses ringkasan AI, dan mengambil gambar Unsplash...";
+    statusEl.classList.remove("error");
+
+    try {
+      const response = await fetch("/api/cron-news");
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Gagal memperbarui berita.");
+      }
+
+      statusEl.textContent = `✅ Sukses! ${result.message}`;
+      await loadArticles();
+    } catch (err) {
+      statusEl.textContent = "❌ Error: " + err.message;
+      statusEl.classList.add("error");
+    } finally {
+      busy = false;
+      btn.disabled = false;
+    }
+  });
 
   async function save(statusValue) {
     if (busy) return;
