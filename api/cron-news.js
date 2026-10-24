@@ -14,22 +14,26 @@ export default async function handler(req, res) {
 
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
-    // Menggunakan RSS Yahoo Finance yang ramah serverless & tidak memblokir Vercel
-    const rssRes = await fetch('https://finance.yahoo.com/news/rssindex', {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-      }
-    });
+    // Menggunakan Public Proxy (AllOrigins) agar lolos dari proteksi anti-bot Yahoo/CNBC
+    const targetRssUrl = 'https://finance.yahoo.com/news/rssindex';
+    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetRssUrl)}`;
 
-    if (!rssRes.ok) {
-      return res.status(500).json({ success: false, error: `Gagal ambil RSS Yahoo Finance: HTTP ${rssRes.status}` });
+    const proxyRes = await fetch(proxyUrl);
+    if (!proxyRes.ok) {
+      return res.status(500).json({ success: false, error: `Gagal mengakses Proxy RSS: HTTP ${proxyRes.status}` });
     }
     
-    const rssText = await rssRes.text();
+    const proxyData = await proxyRes.json();
+    const rssText = proxyData.contents;
+    
+    if (!rssText || rssText.length < 50) {
+      return res.status(500).json({ success: false, error: "Konten RSS kosong dari proxy." });
+    }
+
     const itemMatches = rssText.match(/<item>([\s\S]*?)<\/item>/g) || [];
     
     if (itemMatches.length === 0) {
-      return res.status(500).json({ success: false, error: "Format RSS kosong atau tidak valid." });
+      return res.status(500).json({ success: false, error: "Format item RSS tidak ditemukan." });
     }
 
     const latestItems = itemMatches.slice(0, 3); // Ambil 3 berita teratas
