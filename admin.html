@@ -402,7 +402,7 @@ button:disabled{opacity:.5}
     img.src = src;
   }
 
-  // Trigger Tombol Tarik Berita Otomatis via API Backend
+  // Trigger Tombol Tarik Berita Otomatis via API Backend (Aman terhadap Error Pattern JSON)
   $("fetchNewsBtn").addEventListener("click", async () => {
     const btn = $("fetchNewsBtn");
     const statusEl = $("fetchNewsStatus");
@@ -415,9 +415,16 @@ button:disabled{opacity:.5}
 
     try {
       const response = await fetch("/api/cron-news");
-      const result = await response.json();
+      const textResponse = await response.text();
+      
+      let result;
+      try {
+        result = JSON.parse(textResponse);
+      } catch (e) {
+        throw new Error("Server mengembalikan respons non-JSON: " + textResponse.slice(0, 100));
+      }
 
-      if (!response.ok) {
+      if (!response.ok || !result.success) {
         throw new Error(result.error || "Gagal memperbarui berita.");
       }
 
