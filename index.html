@@ -505,8 +505,7 @@ function toArticle(row){
   image:safeImage(row.image_url),
   read:Math.max(1,Math.ceil(words/200))+" min read",
   excerpt:row.excerpt||content.slice(0,220)||"Read the latest Satisfynex research.",
-  content,
-  paragraphs:content.replace(/\r\n/g,"\n").split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean)
+  content
  };
 }
 
@@ -641,8 +640,8 @@ function openArticleById(id,push=true){
 
  showView("article");
 
- // Menampilkan paragraf artikel secara normal & bersih
- const paragraphs=article.paragraphs.map(p=>`<p>${escapeHTML(p).replace(/\n/g,"<br>")}</p>`).join("");
+ // Langsung merender HTML mentah dari kolom content artikel secara utuh
+ const articleContentHtml = article.content || "<p>Full analysis coming soon.</p>";
 
  const sameCategoryArticles = articles.filter(a => a.id !== article.id && a.category === article.category);
  const otherArticles = articles.filter(a => a.id !== article.id && a.category !== article.category);
@@ -672,7 +671,8 @@ function openArticleById(id,push=true){
  $("#articleDetail").innerHTML=`<article><header class="article-header"><span class="tag">${escapeHTML(article.category)}</span><h1>${escapeHTML(article.title)}</h1><p class="article-lead">${escapeHTML(article.excerpt)}</p><div class="meta"><span>${escapeHTML(article.ticker)}</span><span>${escapeHTML(article.date)}</span><span>${escapeHTML(article.read)}</span></div></header>
  <img class="article-hero" src="${escapeHTML(article.image)}" alt="${escapeHTML(article.title)}">
  <div class="article-layout"><div class="article-content">
- ${paragraphs||"<p>Full analysis coming soon.</p>"}
+ 
+ ${articleContentHtml}
 
  <!-- AUTHOR PROFILE (Pilihan 2 Sesuai Diskusi) -->
  <div class="satisfynex-author-card" itemscope itemtype="https://schema.org/Person" style="margin: 30px 0 20px 0; padding: 20px; background-color: var(--panel); border: 1px solid var(--line); border-radius: 12px; display: flex; gap: 16px; align-items: flex-start; color: var(--text);">
