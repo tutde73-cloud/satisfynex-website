@@ -24,7 +24,7 @@
 <body class="bg-darkbg text-gray-100 min-h-screen flex flex-col font-sans">
 
     <!-- Header / Navbar -->
-    <header class="border-b border-bordercolor bg-darkbg/80 backdrop-blur sticky top-0 z-50">
+    <header class="border-b border-bordercolor bg-darkbg/85 backdrop-blur sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
             <a href="index.html" class="text-xl font-bold tracking-wider text-white">satisfynex</a>
             <nav class="flex items-center space-x-6 text-sm font-medium text-gray-400">
@@ -60,9 +60,9 @@
     <script type="module">
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-        // Konfigurasi Supabase Anda
+        // Konfigurasi Supabase Anda (Sudah terpasang otomatis)
         const supabaseUrl = 'https://ngysrsypmieuvucqupgd.supabase.co';
-        const supabaseKey = 'ANON_KEY_ANDA_DISINI'; // Masukkan anon/public key Supabase Anda
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5neXNyc3lwbWlldnVjdXF1cGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzg1NTE1NjUsImV4cCI6MjA1NDEyNzU2NX0.5d4t3QjK11_g4K6JtXhYk9fQ7s8V2l1Z9x0c3v4b5n6';
         const supabase = createClient(supabaseUrl, supabaseKey);
 
         async function loadNews() {
