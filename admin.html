@@ -124,8 +124,12 @@ button:disabled{opacity:.5}
           <label for="excerpt">Short summary</label>
           <textarea id="excerpt" maxlength="2000" style="min-height:130px" placeholder="A comprehensive summary of the research (up to 2000 characters)."></textarea>
 
-          <label for="content">Article content *</label>
-          <textarea id="content" required placeholder="Write your analysis here. Separate paragraphs with a blank line."></textarea>
+          <div class="row" style="justify-content:space-between; align-items:center; margin-top:14px;">
+            <label for="content" style="margin:0;">Article content *</label>
+            <button type="button" id="formatMarkdownBtn" class="small" style="background:#203a30; color:var(--accent); border-color:#2a5242;">🪄 Convert Copied Text to HTML</button>
+          </div>
+          <div class="hint" style="margin-bottom:6px;">Tip: Copas teks dari hasil Gemini, lalu klik tombol hijau di atas agar otomatis menjadi format HTML (h2, p, ul, li, strong).</div>
+          <textarea id="content" required placeholder="Paste your generated text here..."></textarea>
 
           <label for="imageFile">Cover image / chart</label>
           <input id="imageFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif">
@@ -253,6 +257,70 @@ button:disabled{opacity:.5}
       .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")
       .slice(0, 200);
   }
+
+  /* Fungsi Otomatis Mengubah Copasan Markdown Menjadi HTML Rapi */
+  function convertMarkdownToHtml() {
+    let text = $("content").value;
+    if (!text.trim()) return;
+
+    // Bersihkan karakter aneh
+    text = text.replace(/\r\n/g, "\n");
+
+    let lines = text.split("\n");
+    let htmlOutput = [];
+    let inList = false;
+
+    for (let i = 0; i < lines.length; i++) {
+      let line = lines[i].trim();
+
+      if (!line) {
+        if (inList) {
+          htmlOutput.push("</ul>");
+          inList = false;
+        }
+        continue;
+      }
+
+      // Deteksi Heading (Judul Bagian) -> dijadikan <h2>
+      if (line.startsWith("### ")) {
+        if (inList) { htmlOutput.push("</ul>"); inList = false; }
+        htmlOutput.push(`<h3>${line.replace("### ", "").trim()}</h3>`);
+      } else if (line.startsWith("## ") || (!line.startsWith("- ") && line.length < 60 && !line.endsWith(".") && i < lines.length - 1 && lines[i+1].trim() === "")) {
+        // Deteksi baris pendek tanpa titik as heading
+        if (inList) { htmlOutput.push("</ul>"); inList = false; }
+        let headingText = line.replace(/^##\s*/, "");
+        htmlOutput.push(`<h2>${headingText}</h2>`);
+      } 
+      // Deteksi Bullet Points (* atau -)
+      else if (line.startsWith("- ") || line.startsWith("* ")) {
+        if (!inList) {
+          htmlOutput.push("<ul>");
+          inList = true;
+        }
+        let bulletText = line.replace(/^[-*]\s*/, "");
+        
+        // Bold otomatis teks sebelum titik dua (misal: **Data Center:** -> <strong>Data Center:</strong>)
+        bulletText = bulletText.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+        bulletText = bulletText.replace(/^([A-Za-z\s/]+):/, "<strong>$1:</strong>");
+
+        htmlOutput.push(`<li>${bulletText}</li>`);
+      } 
+      // Paragraf biasa
+      else {
+        if (inList) { htmlOutput.push("</ul>"); inList = false; }
+        let pText = line.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+        htmlOutput.push(`<p>${pText}</p>`);
+      }
+    }
+
+    if (inList) {
+      htmlOutput.push("</ul>");
+    }
+
+    $("content").value = htmlOutput.join("\n");
+  }
+
+  $("formatMarkdownBtn").addEventListener("click", convertMarkdownToHtml);
 
   function preview(url) {
     $("imagePreview").hidden = !url;
@@ -669,6 +737,7 @@ button:disabled{opacity:.5}
     window.scrollTo({top:0,behavior:"smooth"});
   }
 
+  db.auth.getSession().then(() => {});
   db.auth.getSession().then(({data,error}) => {
     if (error) {
       status("loginStatus", error.message, true);
