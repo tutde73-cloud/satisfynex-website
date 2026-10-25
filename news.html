@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News - Satisfynex Global Stock Research</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#0b0f19',
+                        cardbg: '#111827',
+                        bordercolor: '#1f2937'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-darkbg text-gray-100 min-h-screen flex flex-col font-sans">
+
+    <!-- Header / Navbar -->
+    <header class="border-b border-bordercolor bg-darkbg/80 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <a href="index.html" class="text-xl font-bold tracking-wider text-white">satisfynex</a>
+            <nav class="flex items-center space-x-6 text-sm font-medium text-gray-400">
+                <a href="index.html" class="hover:text-white transition">Research</a>
+                <a href="news.html" class="text-white font-semibold transition">News</a>
+                <a href="about.html" class="hover:text-white transition">About</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 max-w-7xl mx-auto px-6 py-12 w-full">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-white tracking-tight">Market News & Insights</h1>
+            <p class="text-gray-400 mt-2 text-sm">Curated and analyzed financial news updates, macroeconomic shifts, and commodity trends.</p>
+        </div>
+
+        <!-- News Grid Container -->
+        <div id="news-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Loading State -->
+            <div class="col-span-full text-center py-12 text-gray-500">
+                Loading latest news...
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-bordercolor py-8 text-center text-xs text-gray-500">
+        <p>&copy; 2026 Satisfynex Global Stock Research. Not financial advice.</p>
+    </footer>
+
+    <!-- Supabase & Rendering Script -->
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+        // Konfigurasi Supabase Anda
+        const supabaseUrl = 'https://ngysrsypmieuvucqupgd.supabase.co';
+        const supabaseKey = 'ANON_KEY_ANDA_DISINI'; // Masukkan anon/public key Supabase Anda
+        const supabase = createClient(supabaseUrl, supabaseKey);
+
+        async function loadNews() {
+            const container = document.getElementById('news-container');
+            
+            const { data, error } = await supabase
+                .from('articles')
+                .select('*')
+                .eq('status', 'published')
+                .order('created_at', { ascending: false });
+
+            if (error || !data || data.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-16 text-gray-500">
+                        <p class="text-base">No news articles published yet.</p>
+                        <p class="text-xs mt-1 text-gray-600">Articles published from your admin panel will appear here automatically.</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = data.map(item => `
+                <article class="bg-cardbg rounded-xl overflow-hidden border border-bordercolor flex flex-col hover:border-gray-700 transition">
+                    <img src="${item.image_url || 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=800&q=80'}" alt="${item.title}" class="w-full h-48 object-cover">
+                    <div class="p-6 flex-1 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between text-xs text-gray-400 mb-2">
+                                <span class="text-blue-400 font-semibold uppercase tracking-wider">${item.category || 'Market Insights'}</span>
+                                <span>${new Date(item.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                            </div>
+                            <h2 class="font-bold text-lg text-white leading-snug line-clamp-2">${item.title}</h2>
+                            <p class="text-gray-400 text-sm mt-3 line-clamp-3 leading-relaxed">${item.excerpt || ''}</p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-bordercolor flex items-center justify-between">
+                            <a href="article.html?slug=${item.slug}" class="text-xs font-semibold text-blue-400 hover:text-blue-300 transition flex items-center gap-1">
+                                Read full analysis &rarr;
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        loadNews();
+    </script>
+</body>
+</html>
