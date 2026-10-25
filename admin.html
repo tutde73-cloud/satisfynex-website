@@ -165,6 +165,7 @@ button:disabled{opacity:.5}
         </div>
         <form id="newsForm">
           <input id="newsId" type="hidden">
+          <input id="newsSlug" type="hidden">
 
           <label for="newsTitle">News Title *</label>
           <input id="newsTitle" maxlength="250" required placeholder="Global market updates and economic shifts...">
@@ -239,7 +240,7 @@ button:disabled{opacity:.5}
 
   const db = window.supabase.createClient(URL, KEY);
   let user = null;
-  let currentTab = "research"; // "research" atau "news"
+  let currentTab = "research";
   
   let imageUrl = "";
   let removeImage = false;
@@ -318,7 +319,6 @@ button:disabled{opacity:.5}
     status("loginStatus", "You have been logged out.");
   });
 
-  // Switch Tab Handler
   $("tabResearchBtn").addEventListener("click", () => {
     currentTab = "research";
     $("tabResearchBtn").classList.add("active");
@@ -363,6 +363,7 @@ button:disabled{opacity:.5}
   function resetNewsEditor() {
     $("newsForm").reset();
     $("newsId").value = "";
+    $("newsSlug").value = "";
     newsImageUrl = "";
     newsRemoveImage = false;
     $("newsImageFile").value = "";
@@ -431,7 +432,6 @@ button:disabled{opacity:.5}
     return db.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
   }
 
-  // --- SAVE RESEARCH ARTICLE ---
   async function save(statusValue) {
     if (busy) return;
     const title = $("title").value.trim();
@@ -494,7 +494,6 @@ button:disabled{opacity:.5}
   $("draftBtn").addEventListener("click", () => save("draft"));
   $("publishBtn").addEventListener("click", () => save("published"));
 
-  // --- SAVE MANUAL NEWS ---
   $("publishNewsBtn").addEventListener("click", async () => {
     if (busy) return;
     const title = $("newsTitle").value.trim();
@@ -504,6 +503,9 @@ button:disabled{opacity:.5}
     if (!title || !summary || !analysis) {
       return status("newsSaveStatus", "Title, summary, and analysis are required.", true);
     }
+
+    const slug = slugify(title);
+    $("newsSlug").value = slug;
 
     busy = true;
     $("publishNewsBtn").disabled = true;
@@ -519,6 +521,7 @@ button:disabled{opacity:.5}
 
       const newsItem = {
         title,
+        slug,
         summary,
         analysis,
         category: $("newsCategory").value,
@@ -558,7 +561,6 @@ button:disabled{opacity:.5}
     if (!user || user.id !== ADMIN_UID) return;
     $("articleList").textContent = "Loading data…";
     
-    // Fetch articles & news secara paralel
     const [resArticles, resNews] = await Promise.all([
       db.from("articles").select("id,title,slug,ticker,category,status,created_at").order("created_at", { ascending: false }),
       db.from("news").select("id,title,category,source_name,created_at").order("created_at", { ascending: false })
@@ -662,6 +664,7 @@ button:disabled{opacity:.5}
     if (error) return status("newsSaveStatus", error.message, true);
 
     $("newsId").value = data.id;
+    $("newsSlug").value = data.slug || "";
     $("newsTitle").value = data.title || "";
     $("newsCategory").value = data.category || "Market Insights";
     $("newsSummary").value = data.summary || "";
