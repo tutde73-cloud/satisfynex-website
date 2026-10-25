@@ -122,7 +122,7 @@ button:disabled{opacity:.5}
           <div class="hint">Generated from the title; editable.</div>
 
           <label for="excerpt">Short summary</label>
-          <textarea id="excerpt" maxlength="500" style="min-height:85px" placeholder="A concise homepage summary."></textarea>
+          <textarea id="excerpt" maxlength="2000" style="min-height:130px" placeholder="A comprehensive summary of the research (up to 2000 characters)."></textarea>
 
           <label for="content">Article content *</label>
           <textarea id="content" required placeholder="Write your analysis here. Separate paragraphs with a blank line."></textarea>
@@ -140,18 +140,6 @@ button:disabled{opacity:.5}
             <button id="draftBtn" type="button">Save draft</button>
             <button id="publishBtn" type="button" class="primary">Publish article</button>
           </div>
-
-          <div class="row" style="margin-top:10px; border-top:1px solid var(--line); padding-top:15px;">
-            <button id="copyTextBtn" type="button" class="twitter-btn">📋 Copy Tweet Text</button>
-            <button id="downloadImgBtn" type="button" class="twitter-btn">🖼️ Download Watermarked Image</button>
-          </div>
-
-          <div class="row" style="margin-top:10px;">
-            <button id="fetchNewsBtn" type="button" class="primary" style="background:#3b82f6; color:#ffffff; border-color:#3b82f6; width:100%;">
-              🔄 Tarik & Proses Berita Otomatis (AI)
-            </button>
-          </div>
-          <div id="fetchNewsStatus" class="status" role="status"></div>
 
           <div id="saveStatus" class="status" role="status"></div>
         </form>
@@ -180,7 +168,7 @@ button:disabled{opacity:.5}
           </select>
 
           <label for="newsSummary">Summary / Short Excerpt *</label>
-          <textarea id="newsSummary" maxlength="400" style="min-height:85px" required placeholder="A brief summary of the news update."></textarea>
+          <textarea id="newsSummary" maxlength="2000" style="min-height:130px" required placeholder="A comprehensive summary of the news update (up to 2000 characters)."></textarea>
 
           <label for="newsAnalysis">News Analysis / Content *</label>
           <textarea id="newsAnalysis" required placeholder="Write your curated news analysis here..."></textarea>
