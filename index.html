@@ -641,7 +641,7 @@ function openArticleById(id,push=true){
 
  showView("article");
 
- // Menampilkan paragraf artikel secara normal & bersih tanpa merusak teks
+ // Menampilkan paragraf artikel secara normal & bersih
  const paragraphs=article.paragraphs.map(p=>`<p>${escapeHTML(p).replace(/\n/g,"<br>")}</p>`).join("");
 
  const sameCategoryArticles = articles.filter(a => a.id !== article.id && a.category === article.category);
@@ -674,7 +674,7 @@ function openArticleById(id,push=true){
  <div class="article-layout"><div class="article-content">
  ${paragraphs||"<p>Full analysis coming soon.</p>"}
 
- <!-- AUTHOR PROFILE (Pilihan 2 Sesuai Diskusi Sebelumnya) -->
+ <!-- AUTHOR PROFILE (Pilihan 2 Sesuai Diskusi) -->
  <div class="satisfynex-author-card" itemscope itemtype="https://schema.org/Person" style="margin: 30px 0 20px 0; padding: 20px; background-color: var(--panel); border: 1px solid var(--line); border-radius: 12px; display: flex; gap: 16px; align-items: flex-start; color: var(--text);">
    <div style="flex-shrink: 0;">
      <img src="/Icon.png" alt="Tutde Ariyasa" itemprop="image" style="width: 50px; height: 50px; border-radius: 50%; border: 1px solid var(--line); object-fit: cover; background: #0c1017;" />
@@ -731,11 +731,14 @@ const pages={
      <p>Satisfynex is an independent financial research platform dedicated to delivering clean, data-driven technical analysis and market insights on US-listed equities, energy sectors, and commodities. Founded in Bali, Indonesia, Satisfynex operates with a clear objective: to cut through market noise and provide retail investors with objective, actionable visual chart breakdowns.</p>
      
      <h2>The Founder's Journey: Self-Taught Discipline & Market Precision</h2>
-     <p>Behind Satisfynex is <strong>Tutde Ariyasa</strong>, a self-taught financial analyst and independent market researcher based in Bali, Indonesia. Starting as an individual investor, Tutde spent years mastering technical analysis, market dynamics, and custom indicator development on TradingView.</p>
-     <p>Rather than seeing a self-taught background as a limitation, it defines the core philosophy of Satisfynex: real market expertise is forged through thousands of hours of screen time, disciplined chart analysis, and strict risk management. Satisfynex transforms independent research into structured, transparent market intelligence for everyday investors.</p>
+     <p>Satisfynex is founded and operated by <strong>Tutde Ariyasa</strong>, an independent financial analyst and self-taught market researcher based in Bali, Indonesia. Starting as an individual investor who spent years studying US stock market dynamics, technical charting workflows, and custom indicator development on TradingView, Tutde built this platform to document rigorous, hands-on market evaluations.</p>
+     <p>Rather than relying on automated generic commentary, real market expertise is forged through thousands of hours of screen time, disciplined chart analysis, and strict risk management. Satisfynex transforms this independent research into structured, transparent market intelligence for everyday investors.</p>
      
-     <h2>Our Commitment to Transparency</h2>
-     <p>At Satisfynex, we believe in radical transparency. Every market breakdown, technical indicator assessment, and macroeconomic review published on this platform is driven by independent research, verifiable data sources, and strict risk-first principles. We are committed to maintaining an authentic, human-led platform built for serious investors.</p>
+     <h2>Our Mission & Approach</h2>
+     <p>Our mission is to serve as an objective research journal, presenting clear technical indicators, fundamental business metrics, and structural chart analysis. We believe in radical transparency: every market commentary is crafted with a risk-first perspective to help readers understand the underlying evidence behind an investment thesis, rather than providing prescriptive signals.</p>
+     
+     <h2>Educational Disclaimer</h2>
+     <p>All articles, charts, commentary, and materials published by Satisfynex are strictly for educational and informational purposes as part of an independent research journal. Nothing on this website constitutes personalized financial advice, legal counsel, or a recommendation to buy, hold, or sell any security. Market investments involve substantial risk, and readers should always perform their own independent verification.</p>
      
      <h2>Contact</h2>
      <p><a href="mailto:research@satisfynex.com">research@satisfynex.com</a></p>
