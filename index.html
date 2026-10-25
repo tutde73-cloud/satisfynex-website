@@ -5,32 +5,32 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Satisfynex — Independent US Stock Research</title>
 <meta name="description" content="Independent research on US stocks, company fundamentals, technical charts and market trends.">
-
+ 
 <!-- Favicon untuk Google Search & Apple Touch Icon -->
 <link rel="icon" href="/Icon.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="/Icon.png">
-
+ 
 <meta property="og:site_name" content="Satisfynex">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Satisfynex — Independent US Stock Research">
 <meta property="og:description" content="Independent research on US stocks, company fundamentals, technical charts and market trends.">
 <meta property="og:url" content="https://www.satisfynex.com/">
-
+ 
 <!-- Google tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-742MNVD8XT"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
+ 
   gtag('config', 'G-742MNVD8XT');
 </script>
-
+ 
 <style>
 :root{--bg:#0c1017;--panel:#131a25;--line:#283344;--text:#f2f5fa;--muted:#9ca9bb;--accent:#8ee0bd;--max:1180px}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:110px}
-
+ 
 /* Proteksi Teks: Mencegah highlight & seleksi teks */
 body{
   margin:0;
@@ -43,21 +43,21 @@ body{
   -ms-user-select: none;
   user-select: none;
 }
-
+ 
 a{color:inherit;text-decoration:none}
 button,input,select{font:inherit}
 .container{width:min(var(--max),calc(100% - 40px));margin:auto}
 .hidden{display:none!important}
-
+ 
 /* Header & Sticky Container */
 .topbar{position:sticky;top:0;z-index:20;background:#0c1017f5;border-bottom:1px solid var(--line)}
 .ticker-tape-container{width:100%;background:#080b10;border-bottom:1px solid var(--line);min-height:46px;overflow:hidden}
-
+ 
 .nav{min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:20px}
 .brand{font-size:25px;font-weight:850;letter-spacing:-1.2px}
 .brand span{color:var(--accent)}
 .navlinks,.footer-links{display:flex;align-items:center;flex-wrap:wrap;gap:18px;color:var(--muted);font-size:13px}
-
+ 
 /* Hero Section dengan Gambar Latar Belakang IMG_1210.jpeg */
 .hero{
   position: relative;
@@ -68,17 +68,17 @@ button,input,select{font:inherit}
   background-repeat: no-repeat;
   border-bottom: 1px solid var(--line);
 }
-
+ 
 .eyebrow{color:var(--accent);font-size:11px;letter-spacing:2px;font-weight:800;text-transform:uppercase}
 h1,h2,h3,p{margin-top:0}
 .hero h1{max-width:780px;margin:16px 0;font-size:clamp(36px,6vw,60px);line-height:1.1;letter-spacing:-1.8px;text-shadow: 0 2px 10px rgba(0,0,0,0.7)}
 .hero p{max-width:640px;color:#d0d9e5;font-size:17px;min-height:65px;text-shadow: 0 1px 5px rgba(0,0,0,0.8)}
 .hero-note{display:inline-block;border:1px solid var(--line);border-radius:30px;padding:7px 13px;color:var(--muted);font-size:12px;background: rgba(12, 16, 23, 0.6);backdrop-filter: blur(4px)}
-
+ 
 /* Widget Panel Styles */
 .screener-section{padding:30px 0 20px;border-top:1px solid var(--line)}
 .screener-panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:0 10px 25px -5px rgba(0,0,0,0.3)}
-
+ 
 .section,.article-page{padding:42px 0}
 .section-heading{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:22px}
 .section-heading h2{font-size:25px;margin:0}
@@ -120,7 +120,7 @@ h1,h2,h3,p{margin-top:0}
 .article-content img{max-width:100%;height:auto;margin:20px auto;border-radius:10px}
 .article-content a,.legal-content a{color:var(--accent);text-decoration:underline}
 .article-content ul,.article-content ol{padding-left:24px}
-
+ 
 .sidebar{position:sticky;top:120px}
 .sidebar .panel{padding:18px;margin-bottom:16px}
 .sidebar p{color:var(--muted);font-size:12px}
@@ -134,7 +134,7 @@ h1,h2,h3,p{margin-top:0}
 .footer{border-top:1px solid var(--line);padding:35px 0;color:var(--muted);font-size:12px}
 .footer-row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:24px}
 .footer-links{max-width:600px;align-items:flex-start}
-
+ 
 /* Related Research Section Grid Styling */
 .related-research-section{margin-top:45px;border-top:1px solid var(--line);padding-top:30px}
 .related-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:20px}
@@ -144,14 +144,14 @@ h1,h2,h3,p{margin-top:0}
 .related-body{padding:12px;display:flex;flex-direction:column;flex:1}
 .related-date{font-size:11px;color:var(--muted);margin-bottom:6px}
 .related-title{font-size:13px;font-weight:600;line-height:1.35;color:var(--text);margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-
+ 
 /* Stylings Pagination Navigasi */
 .pagination{display:flex;justify-content:center;align-items:center;gap:12px;margin-top:35px}
 .pagination button{background:var(--panel);color:var(--text);border:1px solid var(--line);padding:10px 18px;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px;transition:background .15s,border-color .15s}
 .pagination button:hover:not(:disabled){background:#1c2636;border-color:var(--accent)}
 .pagination button:disabled{opacity:0.4;cursor:not-allowed}
 .pagination span{color:var(--muted);font-size:13px}
-
+ 
 /* Smooth Text Rotator Transition */
 .text-rotator {
   opacity: 1;
@@ -160,7 +160,7 @@ h1,h2,h3,p{margin-top:0}
 .text-rotator.fade-out {
   opacity: 0;
 }
-
+ 
 @media(max-width:850px){
   .featured-grid{grid-template-columns:1fr}
   .article-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -173,7 +173,7 @@ h1,h2,h3,p{margin-top:0}
   .nav{min-height:60px}
   .brand{font-size:22px}
   .navlinks{gap:12px;font-size:12px}
-  
+ 
   /* Optimalisasi Hero Section untuk HP */
   .hero{
     padding: 50px 0 40px;
@@ -194,7 +194,7 @@ h1,h2,h3,p{margin-top:0}
     min-height: auto;
     line-height: 1.6;
   }
-
+ 
   .article-grid{grid-template-columns:1fr}
   .side-story{grid-template-columns:90px minmax(0,1fr)}
   .section,.article-page{padding:30px 0}
@@ -202,7 +202,7 @@ h1,h2,h3,p{margin-top:0}
 }
 </style>
 </head>
-
+ 
 <body>
 <header class="topbar">
  <!-- TradingView Extended Ticker Tape -->
@@ -235,7 +235,7 @@ h1,h2,h3,p{margin-top:0}
    </script>
   </div>
  </div>
-
+ 
  <div class="container nav">
   <a class="brand" href="/">satisfy<span>nex</span></a>
   <nav class="navlinks" aria-label="Main navigation">
@@ -245,7 +245,7 @@ h1,h2,h3,p{margin-top:0}
   </nav>
  </div>
 </header>
-
+ 
 <main>
 <div id="homeView">
  <section class="hero"><div class="container">
@@ -254,12 +254,12 @@ h1,h2,h3,p{margin-top:0}
   <p id="dynamicHeroText" class="text-rotator">Satisfynex delivers daily visual chart breakdowns and technical price action research on high-momentum US equities.</p>
   <div class="hero-note">Research and education · Not financial advice</div>
  </div></section>
-
+ 
  <section class="section"><div class="container">
   <div class="section-heading"><div><div class="eyebrow">Editor's selection</div><h2>Featured research</h2></div></div>
   <div id="featuredGrid" class="featured-grid"><div class="notice">Loading published research...</div></div>
  </div></section>
-
+ 
  <section class="section" id="latest"><div class="container">
   <div class="section-heading"><div><div class="eyebrow">Explore the research</div><h2>Latest articles</h2></div><div id="articleCount" class="muted small"></div></div>
   <div class="filters">
@@ -269,7 +269,7 @@ h1,h2,h3,p{margin-top:0}
   <div id="articleGrid" class="article-grid"><div class="notice">Loading articles...</div></div>
   <div id="paginationContainer"></div>
  </div></section>
-
+ 
  <!-- WIDGET 1: Market Data -->
  <section class="screener-section"><div class="container">
   <div class="screener-panel">
@@ -283,7 +283,7 @@ h1,h2,h3,p{margin-top:0}
    </div>
   </div>
  </div></section>
-
+ 
  <!-- WIDGET 2: Market Overview (Market Movers) -->
  <section class="screener-section" style="padding-top: 10px;"><div class="container">
   <div class="screener-panel">
@@ -298,16 +298,16 @@ h1,h2,h3,p{margin-top:0}
   </div>
  </div></section>
 </div>
-
+ 
 <section id="articleView" class="article-page hidden"><div class="container">
  <a class="back-link" href="/">← Back to research</a><div id="articleDetail"></div>
 </div></section>
-
+ 
 <section id="pageView" class="article-page hidden"><div class="container legal-content">
  <a class="back-link" href="/">← Back to research</a><div id="pageDetail"></div>
 </div></section>
 </main>
-
+ 
 <footer class="footer"><div class="container">
  <div class="footer-row"><div>
   <a class="brand" href="/">satisfy<span>nex</span></a>
@@ -323,89 +323,89 @@ h1,h2,h3,p{margin-top:0}
  </nav></div>
  <p>© <span id="year"></span> Satisfynex. All rights reserved. Market analysis is for educational purposes only.</p>
 </div></footer>
-
+ 
 <script>
 "use strict";
-
+ 
 /* ========================================================
    KEAMANAN: 1. MENONAKTIFKAN KLIK KANAN (DISABLE RIGHT CLICK)
    ======================================================== */
 document.addEventListener("contextmenu", function(e) {
   e.preventDefault();
 });
-
+ 
 /* ========================================================
    KEAMANAN: 2. AUTO WATERMARK DI TENGAH & SAMAR (ANTI-CROP)
    ======================================================== */
 function applyWatermark(imgElement) {
   if (!imgElement || imgElement.dataset.watermarked === "true") return;
-
+ 
   if (!imgElement.complete || imgElement.naturalWidth === 0) {
     imgElement.onload = () => applyWatermark(imgElement);
     return;
   }
-
+ 
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
-
+ 
   const img = new Image();
   img.crossOrigin = "anonymous";
-
+ 
   img.onload = () => {
     try {
       canvas.width = img.naturalWidth;
       canvas.height = img.naturalHeight;
-
+ 
       ctx.drawImage(img, 0, 0);
-
+ 
       const fontSize = Math.max(22, Math.floor(canvas.width * 0.065)); 
       ctx.font = `bold ${fontSize}px Inter, sans-serif`;
-      
+ 
       ctx.fillStyle = "rgba(255, 255, 255, 0.25)"; 
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-
+ 
       ctx.shadowColor = "rgba(0, 0, 0, 0.4)";
       ctx.shadowBlur = 10;
       ctx.shadowOffsetX = 0;
       ctx.shadowOffsetY = 0;
-
+ 
       const centerX = canvas.width / 2;
       const centerY = canvas.height / 2;
       ctx.fillText("satisfynex.com", centerX, centerY);
-
+ 
       imgElement.src = canvas.toDataURL("image/png");
       imgElement.dataset.watermarked = "true";
     } catch (err) {
       console.warn("Watermark terhalang isu CORS Supabase:", err);
     }
   };
-
+ 
   img.onerror = () => {
     console.warn("Gagal memuat gambar untuk watermark.");
   };
-
+ 
   if (imgElement.src.startsWith("data:")) return;
   img.src = imgElement.src + (imgElement.src.includes("?") ? "&" : "?") + "cors=1";
 }
-
+ 
 function processAllImages() {
   const images = document.querySelectorAll("img.cover, img.article-hero, .article-content img, .side-story img, .related-thumb");
   images.forEach(img => applyWatermark(img));
 }
-
+ 
 const SUPABASE_URL="https://ngysrsypmieuvucqupgd.supabase.co";
 const SUPABASE_KEY="sb_publishable_U05M_WQFKioCZ1LNSfyNbQ_jUoJTQvd";
 const SITE_URL="https://www.satisfynex.com";
 const CONTACT_EMAIL="research@satisfynex.com";
 const FALLBACK_IMAGE="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80";
-
+ 
 let articles=[];
 let currentPage=1;
 const ARTICLES_PER_PAGE=20;
-
+ 
 const $=s=>document.querySelector(s);
-
+ 
 const rotatingSentences = [
   "Satisfynex delivers daily visual chart breakdowns and technical price action research on high-momentum US equities.",
   "At Satisfynex, we bridge the gap between underlying business fundamentals and technical chart structures for US-listed companies.",
@@ -413,37 +413,37 @@ const rotatingSentences = [
   "Welcome to Satisfynex research, where we highlight key resistance channels, volume expansion, and structural trend levels on US stocks.",
   "Satisfynex tracks daily price action and quarterly earnings momentum to identify critical technical inflection points across US markets."
 ];
-
+ 
 function initTextRotator() {
   const targetElement = $("#dynamicHeroText");
   if (!targetElement) return;
-
+ 
   let currentIndex = 0;
-
+ 
   setInterval(() => {
     targetElement.classList.add("fade-out");
-
+ 
     setTimeout(() => {
       currentIndex = (currentIndex + 1) % rotatingSentences.length;
       targetElement.textContent = rotatingSentences[currentIndex];
       targetElement.classList.remove("fade-out");
     }, 600);
-
+ 
   }, 3800);
 }
-
+ 
 function escapeHTML(v){
  return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 }
-
+ 
 function slugify(v){
  return String(v||"").normalize("NFKD").toLowerCase().trim()
-  .replace(/[̀-ͯ]/g,"")
+  .replace(/[\u0300-\u036f]/g,"")
   .replace(/[^a-z0-9]+/g,"-")
   .replace(/^-+|-+$/g,"")
   .slice(0,180);
 }
-
+ 
 function normalizeSlug(value){
  if(value===null||value===undefined)return "";
  let raw=String(value).trim();
@@ -462,13 +462,13 @@ function normalizeSlug(value){
  try{raw=decodeURIComponent(raw);}catch(e){}
  return slugify(raw);
 }
-
+ 
 function articleUrl(value){
  const slug=normalizeSlug(value);
  if(!slug)return "/";
  return "/articles/"+encodeURIComponent(slug);
 }
-
+ 
 function safeImage(value){
  try{
   const u=new URL(value||FALLBACK_IMAGE,SITE_URL);
@@ -476,28 +476,26 @@ function safeImage(value){
  }catch(e){}
  return FALLBACK_IMAGE;
 }
-
+ 
 function formatDate(value){
  if(!value)return "Research";
  const d=new Date(value);
  if(Number.isNaN(d.getTime()))return "Research";
  return new Intl.DateTimeFormat("en-US",{month:"short",day:"numeric",year:"numeric",timeZone:"UTC"}).format(d);
 }
-
+ 
 function contentToText(content){
  if(Array.isArray(content)){
-  return content.map(x=>typeof x==="string"?x:(x.text||x.content||"")).join("
-
-");
+  return content.map(x=>typeof x==="string"?x:(x.text||x.content||"")).join("\n\n");
  }
  return String(content||"");
 }
-
+ 
 function toArticle(row){
  const content=contentToText(row.content);
  const words=content.trim().split(/\s+/).filter(Boolean).length;
  const id=normalizeSlug(row.slug)||slugify(row.title)||String(row.id);
-
+ 
  return {
   id,
   title:row.title||"Untitled Article",
@@ -510,7 +508,7 @@ function toArticle(row){
   content
  };
 }
-
+ 
 function cardMarkup(a){
  const url=articleUrl(a.id);
  return `<article class="article-card">
@@ -520,17 +518,17 @@ function cardMarkup(a){
  <div class="meta"><span>${escapeHTML(a.ticker)}</span><span>${escapeHTML(a.date)}</span><span>${escapeHTML(a.read)}</span></div>
  <p class="excerpt">${escapeHTML(a.excerpt)}</p><a class="read-more" href="${escapeHTML(url)}" data-article="${escapeHTML(a.id)}">Read analysis →</a></div></article>`;
 }
-
+ 
 function renderFeatured(){
  const target=$("#featuredGrid");
  if(!articles.length){
   target.innerHTML='<div class="notice">No published articles yet. Publish an article through your admin page.</div>';
   return;
  }
-
+ 
  const main=articles[0],side=articles.slice(1,4);
  const mainUrl=articleUrl(main.id);
-
+ 
  target.innerHTML=`<article class="feature-main">
  <a href="${escapeHTML(mainUrl)}" data-article="${escapeHTML(main.id)}"><img class="cover" src="${escapeHTML(main.image)}" alt="${escapeHTML(main.title)}"></a>
  <div class="body"><span class="tag">${escapeHTML(main.category)}</span><h3><a href="${escapeHTML(mainUrl)}" data-article="${escapeHTML(main.id)}">${escapeHTML(main.title)}</a></h3>
@@ -540,14 +538,14 @@ function renderFeatured(){
  
  setTimeout(processAllImages, 300);
 }
-
+ 
 function renderCategories(){
  const s=$("#categoryFilter"),old=s.value;
  const categories=[...new Set(articles.map(a=>a.category))].filter(Boolean).sort();
  s.innerHTML='<option value="">All categories</option>'+categories.map(c=>`<option value="${escapeHTML(c)}">${escapeHTML(c)}</option>`).join("");
  if(categories.includes(old))s.value=old;
 }
-
+ 
 function renderArticles(){
  const search=($("#searchInput").value||"").trim().toLowerCase();
  const cat=$("#categoryFilter").value;
@@ -556,15 +554,15 @@ function renderArticles(){
  const totalPages=Math.ceil(filtered.length/ARTICLES_PER_PAGE)||1;
  if(currentPage>totalPages)currentPage=totalPages;
  if(currentPage<1)currentPage=1;
-
+ 
  const start=(currentPage-1)*ARTICLES_PER_PAGE;
  const paginated=filtered.slice(start,start+ARTICLES_PER_PAGE);
-
+ 
  $("#articleCount").textContent=filtered.length+(filtered.length===1?" article":" articles");
  $("#articleGrid").innerHTML=paginated.length?paginated.map(cardMarkup).join(""):'<div class="empty" style="grid-column:1/-1">No matching articles found.</div>';
-
+ 
  setTimeout(processAllImages, 300);
-
+ 
  const pagContainer=$("#paginationContainer");
  if(totalPages>1){
   pagContainer.innerHTML=`<div class="pagination">
@@ -572,7 +570,7 @@ function renderArticles(){
    <span>Page ${currentPage} of ${totalPages}</span>
    <button id="nextPageBtn" ${currentPage===totalPages?"disabled":""}>Next →</button>
   </div>`;
-
+ 
   $("#prevPageBtn")?.addEventListener("click",()=>{
    if(currentPage>1){currentPage--;renderArticles();$("#latest").scrollIntoView({behavior:"smooth"});}
   });
@@ -583,71 +581,72 @@ function renderArticles(){
   pagContainer.innerHTML="";
  }
 }
-
+ 
+function updateDynamicCanonical() {
+  let c = document.querySelector('link[rel="canonical"]');
+  if (!c) {
+    c = document.createElement("link");
+    c.rel = "canonical";
+    document.head.appendChild(c);
+  }
+  c.href = window.location.origin + window.location.pathname;
+}
+ 
 function setMeta(article=null,pageTitle=null){
  const title=article?`${article.title} | Satisfynex`:pageTitle?`${pageTitle} | Satisfynex`:"Satisfynex — Independent US Stock Research";
  const description=String(article?.excerpt||"Independent US stock analysis, company research, technical charts, and investing education.").replace(/\s+/g," ").slice(0,155);
-
+ 
  document.title=title;
  let d=document.querySelector('meta[name="description"]');
  if(d)d.content=description;
-
- // Perbaikan Struktur Canonical Otomatis Berbasis ID Artikel Resmi (Aman SEO)
- let c = document.querySelector('link[rel="canonical"]');
- if (!c) {
-   c = document.createElement("link");
-   c.rel = "canonical";
-   document.head.appendChild(c);
- }
- if (article) {
-   c.href = SITE_URL + articleUrl(article.id);
- } else {
-   c.href = SITE_URL + location.pathname;
- }
-
+ 
+ updateDynamicCanonical();
+ 
  let og=document.querySelector('meta[property="og:title"]');
  if(og)og.content=title;
  og=document.querySelector('meta[property="og:description"]');
  if(og)og.content=description;
  og=document.querySelector('meta[property="og:url"]');
- if(og)og.content=c.href;
+ if(og)og.content=document.querySelector('link[rel="canonical"]').href;
 }
-
+ 
 function showView(view){
  $("#homeView").classList.toggle("hidden",view!=="home");
  $("#articleView").classList.toggle("hidden",view!=="article");
  $("#pageView").classList.toggle("hidden",view!=="page");
 }
-
+ 
 function showHome(push=true,hash=""){
  showView("home");
  setMeta();
+ updateDynamicCanonical();
  if(push)history.pushState({view:"home"},"","/"+hash);
  if(hash==="#latest")setTimeout(()=>$("#latest").scrollIntoView({behavior:"smooth"}),0);
  else window.scrollTo({top:0,behavior:"auto"});
 }
-
+ 
 function openArticleById(id,push=true){
  const normalized=normalizeSlug(id);
  const article=articles.find(a=>a.id===normalized);
-
+ 
  if(!article){
   showView("home");
   setMeta();
+  updateDynamicCanonical();
   $("#articleGrid").insertAdjacentHTML("afterbegin",'<div class="notice" style="grid-column:1/-1">This article could not be found. Check that its published slug matches the URL.</div>');
   if(push)history.pushState({view:"home"},"","/");
   return;
  }
-
+ 
  showView("article");
-
+ 
  // Langsung merender HTML mentah dari kolom content artikel secara utuh
  const articleContentHtml = article.content || "<p>Full analysis coming soon.</p>";
-
+ 
  const sameCategoryArticles = articles.filter(a => a.id !== article.id && a.category === article.category);
  const otherArticles = articles.filter(a => a.id !== article.id && a.category !== article.category);
  const relatedArticles = [...sameCategoryArticles, ...otherArticles].slice(0, 3);
-
+ 
  const relatedHtml = relatedArticles.length > 0 ? `
  <div class="related-research-section">
    <div class="eyebrow" style="margin-bottom: 4px;">Keep Researching</div>
@@ -668,13 +667,13 @@ function openArticleById(id,push=true){
      `).join("")}
    </div>
  </div>` : "";
-
+ 
  $("#articleDetail").innerHTML=`<article><header class="article-header"><span class="tag">${escapeHTML(article.category)}</span><h1>${escapeHTML(article.title)}</h1><p class="article-lead">${escapeHTML(article.excerpt)}</p><div class="meta"><span>${escapeHTML(article.ticker)}</span><span>${escapeHTML(article.date)}</span><span>${escapeHTML(article.read)}</span></div></header>
  <img class="article-hero" src="${escapeHTML(article.image)}" alt="${escapeHTML(article.title)}">
  <div class="article-layout"><div class="article-content">
  
  ${articleContentHtml}
-
+ 
  <!-- AUTHOR PROFILE (Pilihan 2 Sesuai Diskusi) -->
  <div class="satisfynex-author-card" itemscope itemtype="https://schema.org/Person" style="margin: 30px 0 20px 0; padding: 20px; background-color: var(--panel); border: 1px solid var(--line); border-radius: 12px; display: flex; gap: 16px; align-items: flex-start; color: var(--text);">
    <div style="flex-shrink: 0;">
@@ -691,37 +690,38 @@ function openArticleById(id,push=true){
      </div>
    </div>
  </div>
-
+ 
  <!-- Rujukan Outbound Resmi SEC & Investor Relations -->
  <div style="margin: 20px 0; padding: 12px; background: rgba(142, 224, 189, 0.03); border-left: 3px solid var(--accent); font-size: 0.85rem; color: var(--muted);">
    <span>Primary Source Verification: </span>
    <a href="https://www.sec.gov" target="_blank" rel="noopener" style="color: var(--accent);">SEC EDGAR Database</a> &bull; 
    <a href="https://www.investor.gov" target="_blank" rel="noopener" style="color: var(--accent);">Investor Relations Portal</a>
  </div>
-
+ 
  <hr style="border:0;border-top:1px solid var(--line);margin:35px 0"><p class="muted small">This article is provided for informational and educational purposes only. It is not a recommendation to buy or sell any security.</p>
-
+ 
  <!-- RELATED RESEARCH SECTION -->
  ${relatedHtml}
-
+ 
  </div>
  <aside class="sidebar"><div class="panel"><h3>About this research</h3><p>Satisfynex explores company fundamentals, market developments, technical evidence, and investment risks.</p></div><div class="panel"><h3>Explore more</h3><a class="read-more" href="/#latest">Browse all articles →</a></div></aside></div></article>`;
-
+ 
  setMeta(article);
-
+ updateDynamicCanonical();
+ 
  setTimeout(processAllImages, 300);
-
+ 
  if(push)history.pushState({view:"article",id:article.id},"",articleUrl(article.id));
-
+ 
  window.scrollTo(0, 0);
  document.documentElement.scrollTop = 0;
  document.body.scrollTop = 0;
-
+ 
  setTimeout(() => {
    window.scrollTo({top: 0, behavior: "instant"});
  }, 50);
 }
-
+ 
 const pages={
  privacy:{title:"Privacy Policy",body:`<p><strong>Last updated: October 20, 2026</strong></p><p>This Privacy Policy explains how Satisfynex handles information when you visit our website.</p><h2>Information we may collect</h2><p>Our hosting and website services may process technical information such as IP address, browser type, device information, and request logs to operate and secure the website.</p><h2>Contacting us</h2><p>If you email us, we receive the information you choose to include and use it to respond.</p><h2>Cookies and advertising</h2><p>If analytics or advertising services are enabled, those services may use cookies or similar technologies under their own policies. Actual use depends on the services enabled on this website.</p><h2>Third-party services</h2><p>Hosting, database, analytics, and advertising providers may process information under their own policies.</p><h2>Your choices</h2><p>Depending on applicable law, you may request access to, correction of, or deletion of personal information.</p><h2>Contact</h2><p>Privacy questions: <a href="mailto:research@satisfynex.com">research@satisfynex.com</a>.</p>`},
  terms:{title:"Terms of Service",body:`<p><strong>Last updated: October 20, 2026</strong></p><p>By using Satisfynex, you agree to these terms.</p><h2>Purpose</h2><p>Satisfynex publishes general information and educational research about US-listed companies, financial results, industries, and markets.</p><h2>No investment advice</h2><p>Content is not personalized financial, legal, or tax advice and is not an offer to buy or sell securities. You are responsible for your decisions.</p><h2>Accuracy and risks</h2><p>We do not guarantee content is complete, current, or error-free. Investing involves risk, including the possible loss of capital. Past performance does not guarantee future results.</p><h2>Intellectual property</h2><p>Do not republish substantial original content commercially without permission from the relevant rights holder.</p><h2>Third-party links</h2><p>We are not responsible for external websites or services.</p><h2>Contact</h2><p><a href="mailto:research@satisfynex.com">research@satisfynex.com</a></p>`},
@@ -729,17 +729,17 @@ const pages={
    title: "About Us",
    body: `
      <p>Satisfynex is an independent financial research platform dedicated to delivering clean, data-driven technical analysis and market insights on US-listed equities, energy sectors, and commodities. Founded in Bali, Indonesia, Satisfynex operates with a clear objective: to cut through market noise and provide retail investors with objective, actionable visual chart breakdowns.</p>
-     
+ 
      <h2>The Founder's Journey: Self-Taught Discipline & Market Precision</h2>
      <p>Satisfynex is founded and operated by <strong>Tutde Ariyasa</strong>, an independent financial analyst and self-taught market researcher based in Bali, Indonesia. Starting as an individual investor who spent years studying US stock market dynamics, technical charting workflows, and custom indicator development on TradingView, Tutde built this platform to document rigorous, hands-on market evaluations.</p>
      <p>Rather than relying on automated generic commentary, real market expertise is forged through thousands of hours of screen time, disciplined chart analysis, and strict risk management. Satisfynex transforms this independent research into structured, transparent market intelligence for everyday investors.</p>
-     
+ 
      <h2>Our Mission & Approach</h2>
      <p>Our mission is to serve as an objective research journal, presenting clear technical indicators, fundamental business metrics, and structural chart analysis. We believe in radical transparency: every market commentary is crafted with a risk-first perspective to help readers understand the underlying evidence behind an investment thesis, rather than providing prescriptive signals.</p>
-     
+ 
      <h2>Educational Disclaimer</h2>
      <p>All articles, charts, commentary, and materials published by Satisfynex are strictly for educational and informational purposes as part of an independent research journal. Nothing on this website constitutes personalized financial advice, legal counsel, or a recommendation to buy, hold, or sell any security. Market investments involve substantial risk, and readers should always perform their own independent verification.</p>
-     
+ 
      <h2>Contact</h2>
      <p><a href="mailto:research@satisfynex.com">research@satisfynex.com</a></p>
    `
@@ -747,40 +747,42 @@ const pages={
  contact:{title:"Contact Us",body:`<p>We welcome reader feedback, questions about published research, and correction requests.</p><div class="contact-card"><div class="eyebrow">Email</div><h2>Get in touch with Satisfynex</h2><p>Include the article title or URL if your inquiry concerns a specific publication.</p><p><a class="email-link" href="mailto:research@satisfynex.com">research@satisfynex.com</a></p><a class="button-link" href="mailto:research@satisfynex.com?subject=Satisfynex%20Website%20Inquiry">Email Satisfynex →</a></div><p>Please do not send passwords, payment details, or other sensitive information. We do not provide individualized investment recommendations by email.</p>`},
  disclaimer:{title:"Investment Disclaimer",body:`<p><strong>Last updated: October 20, 2026</strong></p><p>All articles, charts, commentary, and materials published by Satisfynex are for general informational and educational purposes only.</p><h2>Not financial advice</h2><p>Nothing on this website is personalized investment advice or a recommendation to buy, hold, or sell any security.</p><h2>Investment risk</h2><p>Investments can lose value, including the loss of some or all of your capital. Historical performance does not guarantee future results.</p><h2>Independent verification</h2><p>Information may be incomplete, delayed, or outdated. Consult official company filings and reliable sources before making decisions.</p><h2>Contact</h2><p><a href="mailto:research@satisfynex.com">research@satisfynex.com</a></p>`}
 };
-
+ 
 function showPage(type,push=true){
  const p=pages[type];
  if(!p){showHome(false);return;}
-
+ 
  showView("page");
  $("#pageDetail").innerHTML=`<h1>${escapeHTML(p.title)}</h1>${p.body}`;
  setMeta(null,p.title);
-
+ updateDynamicCanonical();
+ 
  const paths={privacy:"/privacy-policy",terms:"/terms-of-service",about:"/about",contact:"/contact",disclaimer:"/disclaimer"};
  if(push)history.pushState({view:"page",type},"",paths[type]);
  window.scrollTo(0, 0);
 }
-
+ 
 function routeFromLocation(){
  const path=location.pathname.replace(/\/+$/,"")||"/";
-
+ 
  if(path.startsWith("/articles/")){
   const slug=path.slice("/articles/".length);
   openArticleById(slug,false);
   return;
  }
-
+ 
  const routes={"/privacy-policy":"privacy","/terms-of-service":"terms","/about":"about","/contact":"contact","/disclaimer":"disclaimer"};
  if(routes[path]){
   showPage(routes[path],false);
   return;
  }
-
+ 
  showView("home");
  setMeta();
+ updateDynamicCanonical();
  if(location.hash==="#latest")setTimeout(()=>$("#latest").scrollIntoView(),0);
 }
-
+ 
 document.addEventListener("click",e=>{
  const a=e.target.closest("a[data-article]");
  if(a&&!e.ctrlKey&&!e.metaKey&&!e.shiftKey&&!e.altKey&&e.button===0){
@@ -788,37 +790,37 @@ document.addEventListener("click",e=>{
   openArticleById(a.dataset.article,true);
   return;
  }
-
+ 
  const link=e.target.closest("a");
  if(!link||e.ctrlKey||e.metaKey||e.shiftKey||e.altKey||e.button!==0)return;
-
+ 
  const url=new URL(link.href,location.href);
  if(url.origin!==location.origin)return;
-
+ 
  if(url.pathname==="/#latest"||link.getAttribute("href")==="/#latest"){
   e.preventDefault();
   showHome(true,"#latest");
   return;
  }
-
+ 
  if(url.pathname==="/"&&!url.hash){
   e.preventDefault();
   showHome(true);
   return;
  }
-
+ 
  const pathToType={"/privacy-policy":"privacy","/terms-of-service":"terms","/about":"about","/contact":"contact","/disclaimer":"disclaimer"};
  if(pathToType[url.pathname]){
   e.preventDefault();
   showPage(pathToType[url.pathname],true);
  }
 });
-
+ 
 window.addEventListener("popstate",routeFromLocation);
 $("#searchInput").addEventListener("input",()=>{currentPage=1;renderArticles();});
 $("#categoryFilter").addEventListener("change",()=>{currentPage=1;renderArticles();});
 $("#year").textContent=new Date().getFullYear();
-
+ 
 // Mengambil Data Artikel Manual & News Otomatis dari Supabase Lalu Menyatukannya
 async function loadArticles(){
  const headers = {
@@ -826,23 +828,23 @@ async function loadArticles(){
    Authorization: "Bearer " + SUPABASE_KEY,
    Accept: "application/json"
  };
-
+ 
  const articlesEndpoint = SUPABASE_URL + "/rest/v1/articles?select=id,title,slug,ticker,category,excerpt,content,image_url,status,created_at&status=eq.published&order=created_at.desc";
  const newsEndpoint = SUPABASE_URL + "/rest/v1/news?select=id,title,summary,analysis,category,image_url,source_url,source_name,created_at&order=created_at.desc";
-
+ 
  try{
   const [resArticles, resNews] = await Promise.all([
     fetch(articlesEndpoint, { headers }),
     fetch(newsEndpoint, { headers })
   ]);
-
+ 
   let combinedRows = [];
-
+ 
   if (resArticles.ok) {
     const manualArticles = await resArticles.json();
     if (Array.isArray(manualArticles)) combinedRows.push(...manualArticles);
   }
-
+ 
   if (resNews.ok) {
     const autoNews = await resNews.json();
     if (Array.isArray(autoNews)) {
@@ -853,12 +855,7 @@ async function loadArticles(){
         ticker: "MARKET",
         category: item.category || "Market Insights",
         excerpt: item.summary,
-        content: `${item.summary}
-
-Key Market Analysis:
-${item.analysis}
-
-Source: ${item.source_name || 'CNBC'}`,
+        content: `${item.summary}\n\nKey Market Analysis:\n${item.analysis}\n\nSource: ${item.source_name || 'CNBC'}`,
         image_url: item.image_url,
         status: "published",
         created_at: item.created_at
@@ -866,12 +863,12 @@ Source: ${item.source_name || 'CNBC'}`,
       combinedRows.push(...formattedNews);
     }
   }
-
+ 
   // Mengurutkan seluruh konten gabungan berdasarkan tanggal rilis paling baru
   combinedRows.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-
+ 
   articles = combinedRows.map(toArticle);
-
+ 
   renderCategories();
   renderFeatured();
   renderArticles();
@@ -884,9 +881,10 @@ Source: ${item.source_name || 'CNBC'}`,
   routeFromLocation();
  }
 }
-
+ 
 loadArticles();
 initTextRotator();
 </script>
 </body>
 </html>
+ 
