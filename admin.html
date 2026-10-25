@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Satisfynex — Admin</title>
+<title>Satisfynex — Admin Dashboard</title>
 <meta name="robots" content="noindex,nofollow">
 <style>
 :root{color-scheme:dark;--bg:#090d14;--panel:#111824;--line:#263244;--text:#eef3fb;--muted:#94a3b8;--accent:#8be0c0;--danger:#ff9292;--twitter:#1d9bf0}
@@ -19,7 +19,7 @@ p,.muted,.hint{color:var(--muted)}
 .grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(260px,.8fr);gap:20px;align-items:start}
 label{display:block;font-size:13px;margin:14px 0 6px;color:#c3cede}
 input,select,textarea{width:100%;background:#0b111b;color:var(--text);border:1px solid #344258;border-radius:8px;padding:12px;font:inherit}
-textarea{min-height:110px;resize:vertical}#content{min-height:300px}
+textarea{min-height:110px;resize:vertical}#content,#newsAnalysis{min-height:220px}
 input:focus,select:focus,textarea:focus{outline:1px solid var(--accent)}
 button,.link{cursor:pointer;border:1px solid var(--line);border-radius:8px;padding:10px 14px;background:#1a2535;color:var(--text);font:inherit;text-decoration:none}
 button.primary{background:var(--accent);color:#07140f;border-color:var(--accent);font-weight:750}
@@ -37,6 +37,11 @@ button:disabled{opacity:.5}
 .article-title{font-weight:700;overflow-wrap:anywhere}
 .meta{font-size:12px;color:var(--muted);margin:4px 0 9px}
 .preview{display:block;width:100%;max-height:240px;object-fit:contain;margin-top:12px;border-radius:8px;background:#080c12}
+
+/* Tab Switcher Styles */
+.tab-nav{display:flex;gap:10px;margin-bottom:20px;border-bottom:1px solid var(--line);padding-bottom:12px}
+.tab-btn{background:#0b111b;border:1px solid var(--line);color:var(--muted);font-weight:600;padding:10px 18px;border-radius:8px;cursor:pointer}
+.tab-btn.active{background:var(--accent);color:#07140f;border-color:var(--accent)}
 
 .admin-pagination{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:18px;padding-top:12px;border-top:1px solid var(--line)}
 .admin-pagination button{background:#1a2535;color:var(--text);border:1px solid var(--line);padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600}
@@ -59,7 +64,7 @@ button:disabled{opacity:.5}
 <main>
 <section id="loginPanel" class="panel">
   <h1>Admin login</h1>
-  <p>Sign in to manage Satisfynex research articles.</p>
+  <p>Sign in to manage Satisfynex research and news.</p>
   <form id="loginForm">
     <label for="email">Admin email</label>
     <input id="email" type="email" autocomplete="username" required>
@@ -73,79 +78,141 @@ button:disabled{opacity:.5}
 </section>
 
 <section id="app">
-  <h1>Research dashboard</h1>
-  <p>Create, edit, and publish your US stock analysis.</p>
+  <h1>Dashboard</h1>
+  <p>Create, edit, and publish your research or curated market news.</p>
+
+  <!-- TAB SWITCHER -->
+  <div class="tab-nav">
+    <button type="button" id="tabResearchBtn" class="tab-btn active">📑 Write Research</button>
+    <button type="button" id="tabNewsBtn" class="tab-btn">📰 Write News</button>
+  </div>
+
   <div class="grid">
+    <!-- KOLOM KIRI: EDITOR (RESEARCH / NEWS) -->
     <section class="panel">
-      <div class="row" style="justify-content:space-between">
-        <h2 id="editorHeading">Write an article</h2>
-        <button id="newBtn" type="button" class="small">New article</button>
+      
+      <!-- FORM 1: WRITE RESEARCH (Tabel articles) -->
+      <div id="researchSection">
+        <div class="row" style="justify-content:space-between">
+          <h2 id="editorHeading">Write an article</h2>
+          <button id="newBtn" type="button" class="small">New article</button>
+        </div>
+        <form id="articleForm">
+          <input id="articleId" type="hidden">
+
+          <label for="title">Title *</label>
+          <input id="title" maxlength="200" required placeholder="Why AI Infrastructure Stocks Could Benefit">
+
+          <label for="ticker">Ticker</label>
+          <input id="ticker" maxlength="30" placeholder="NVDA, MU, XOM...">
+
+          <label for="category">Category *</label>
+          <select id="category" required>
+            <option>Stock Analysis</option>
+            <option>AI &amp; Technology</option>
+            <option>Energy</option>
+            <option>Semiconductors</option>
+            <option>Market Insights</option>
+            <option>Earnings</option>
+            <option>Risk Analysis</option>
+          </select>
+
+          <label for="slug">URL slug *</label>
+          <input id="slug" maxlength="220" required placeholder="ai-infrastructure-stocks">
+          <div class="hint">Generated from the title; editable.</div>
+
+          <label for="excerpt">Short summary</label>
+          <textarea id="excerpt" maxlength="500" style="min-height:85px" placeholder="A concise homepage summary."></textarea>
+
+          <label for="content">Article content *</label>
+          <textarea id="content" required placeholder="Write your analysis here. Separate paragraphs with a blank line."></textarea>
+
+          <label for="imageFile">Cover image / chart</label>
+          <input id="imageFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif">
+          <div class="hint">JPG, PNG, WebP, or GIF. Maximum 8 MB.</div>
+          <div id="imageStatus" class="hint"></div>
+          <img id="imagePreview" class="preview" alt="Article image preview" hidden>
+          <div class="row" style="margin-top:8px">
+            <button id="removeImageBtn" type="button" class="small" hidden>Remove image</button>
+          </div>
+
+          <div class="row" style="margin-top:20px">
+            <button id="draftBtn" type="button">Save draft</button>
+            <button id="publishBtn" type="button" class="primary">Publish article</button>
+          </div>
+
+          <div class="row" style="margin-top:10px; border-top:1px solid var(--line); padding-top:15px;">
+            <button id="copyTextBtn" type="button" class="twitter-btn">📋 Copy Tweet Text</button>
+            <button id="downloadImgBtn" type="button" class="twitter-btn">🖼️ Download Watermarked Image</button>
+          </div>
+
+          <div class="row" style="margin-top:10px;">
+            <button id="fetchNewsBtn" type="button" class="primary" style="background:#3b82f6; color:#ffffff; border-color:#3b82f6; width:100%;">
+              🔄 Tarik & Proses Berita Otomatis (AI)
+            </button>
+          </div>
+          <div id="fetchNewsStatus" class="status" role="status"></div>
+
+          <div id="saveStatus" class="status" role="status"></div>
+        </form>
       </div>
-      <form id="articleForm">
-        <input id="articleId" type="hidden">
 
-        <label for="title">Title *</label>
-        <input id="title" maxlength="200" required placeholder="Why AI Infrastructure Stocks Could Benefit">
-
-        <label for="ticker">Ticker</label>
-        <input id="ticker" maxlength="30" placeholder="NVDA, MU, XOM...">
-
-        <label for="category">Category *</label>
-        <select id="category" required>
-          <option>Stock Analysis</option>
-          <option>AI &amp; Technology</option>
-          <option>Energy</option>
-          <option>Semiconductors</option>
-          <option>Market Insights</option>
-          <option>Earnings</option>
-          <option>Risk Analysis</option>
-        </select>
-
-        <label for="slug">URL slug *</label>
-        <input id="slug" maxlength="220" required placeholder="ai-infrastructure-stocks">
-        <div class="hint">Generated from the title; editable.</div>
-
-        <label for="excerpt">Short summary</label>
-        <textarea id="excerpt" maxlength="500" style="min-height:85px" placeholder="A concise homepage summary."></textarea>
-
-        <label for="content">Article content *</label>
-        <textarea id="content" required placeholder="Write your analysis here. Separate paragraphs with a blank line."></textarea>
-
-        <label for="imageFile">Cover image / chart</label>
-        <input id="imageFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif">
-        <div class="hint">JPG, PNG, WebP, or GIF. Maximum 8 MB.</div>
-        <div id="imageStatus" class="hint"></div>
-        <img id="imagePreview" class="preview" alt="Article image preview" hidden>
-        <div class="row" style="margin-top:8px">
-          <button id="removeImageBtn" type="button" class="small" hidden>Remove image</button>
+      <!-- FORM 2: WRITE NEWS (Tabel news) -->
+      <div id="newsSection" style="display:none;">
+        <div class="row" style="justify-content:space-between">
+          <h2 id="newsEditorHeading">Write News Update</h2>
+          <button id="newNewsBtn" type="button" class="small">New news</button>
         </div>
+        <form id="newsForm">
+          <input id="newsId" type="hidden">
 
-        <div class="row" style="margin-top:20px">
-          <button id="draftBtn" type="button">Save draft</button>
-          <button id="publishBtn" type="button" class="primary">Publish article</button>
-        </div>
+          <label for="newsTitle">News Title *</label>
+          <input id="newsTitle" maxlength="250" required placeholder="Global market updates and economic shifts...">
 
-        <!-- Tombol Teks & Watermarked Image -->
-        <div class="row" style="margin-top:10px; border-top:1px solid var(--line); padding-top:15px;">
-          <button id="copyTextBtn" type="button" class="twitter-btn">📋 Copy Tweet Text</button>
-          <button id="downloadImgBtn" type="button" class="twitter-btn">🖼️ Download Watermarked Image</button>
-        </div>
+          <label for="newsCategory">Category *</label>
+          <select id="newsCategory" required>
+            <option>Market Insights</option>
+            <option>Macro</option>
+            <option>Energy</option>
+            <option>Technology</option>
+            <option>Commodities</option>
+          </select>
 
-        <!-- Tombol Trigger Berita Otomatis AI -->
-        <div class="row" style="margin-top:10px;">
-          <button id="fetchNewsBtn" type="button" class="primary" style="background:#3b82f6; color:#ffffff; border-color:#3b82f6; width:100%;">
-            🔄 Tarik & Proses Berita Otomatis (AI)
-          </button>
-        </div>
-        <div id="fetchNewsStatus" class="status" role="status"></div>
+          <label for="newsSummary">Summary / Short Excerpt *</label>
+          <textarea id="newsSummary" maxlength="400" style="min-height:85px" required placeholder="A brief summary of the news update."></textarea>
 
-        <div id="saveStatus" class="status" role="status"></div>
-      </form>
+          <label for="newsAnalysis">News Analysis / Content *</label>
+          <textarea id="newsAnalysis" required placeholder="Write your curated news analysis here..."></textarea>
+
+          <label for="newsSourceName">Source Name</label>
+          <input id="newsSourceName" placeholder="e.g. CNBC, Bloomberg, Reuters">
+
+          <label for="newsSourceUrl">Source URL</label>
+          <input id="newsSourceUrl" type="url" placeholder="https://...">
+
+          <label for="newsImageFile">News Image</label>
+          <input id="newsImageFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif">
+          <div class="hint">JPG, PNG, WebP, or GIF. Maximum 8 MB.</div>
+          <div id="newsImageStatus" class="hint"></div>
+          <img id="newsImagePreview" class="preview" alt="News image preview" hidden>
+          <div class="row" style="margin-top:8px">
+            <button id="newsRemoveImageBtn" type="button" class="small" hidden>Remove image</button>
+          </div>
+
+          <div class="row" style="margin-top:20px">
+            <button id="publishNewsBtn" type="button" class="primary">Publish News</button>
+          </div>
+
+          <div id="newsSaveStatus" class="status" role="status"></div>
+        </form>
+      </div>
+
     </section>
 
+    <!-- KOLOM KANAN: DAFTAR KONTEN (RESEARCH / NEWS) -->
     <aside class="panel">
       <div class="row" style="justify-content:space-between">
-        <h2>Articles</h2>
+        <h2 id="sidebarListTitle">Articles</h2>
         <button id="refreshBtn" class="small" type="button">Refresh</button>
       </div>
       <div id="articleList">Sign in to load articles.</div>
@@ -165,19 +232,24 @@ button:disabled{opacity:.5}
   const $ = id => document.getElementById(id);
 
   if (!window.supabase) {
-    $("loginStatus").textContent =
-      "Supabase library failed to load. Check your internet connection or try again later.";
+    $("loginStatus").textContent = "Supabase library failed to load.";
     $("loginStatus").classList.add("error");
     return;
   }
 
   const db = window.supabase.createClient(URL, KEY);
   let user = null;
+  let currentTab = "research"; // "research" atau "news"
+  
   let imageUrl = "";
   let removeImage = false;
   let busy = false;
+
+  let newsImageUrl = "";
+  let newsRemoveImage = false;
   
   let adminArticles = [];
+  let adminNewsList = [];
   let adminCurrentPage = 1;
   const ADMIN_ARTICLES_PER_PAGE = 20;
 
@@ -200,6 +272,13 @@ button:disabled{opacity:.5}
     else $("imagePreview").removeAttribute("src");
   }
 
+  function newsPreview(url) {
+    $("newsImagePreview").hidden = !url;
+    $("newsRemoveImageBtn").hidden = !url;
+    if (url) $("newsImagePreview").src = url;
+    else $("newsImagePreview").removeAttribute("src");
+  }
+
   function loginView() {
     user = null;
     $("loginPanel").style.display = "block";
@@ -219,7 +298,7 @@ button:disabled{opacity:.5}
     $("loginPanel").style.display = "none";
     $("app").style.display = "block";
     $("logoutBtn").hidden = false;
-    await loadArticles();
+    await loadAllData();
   }
 
   $("loginForm").addEventListener("submit", async event => {
@@ -237,6 +316,29 @@ button:disabled{opacity:.5}
     await db.auth.signOut();
     loginView();
     status("loginStatus", "You have been logged out.");
+  });
+
+  // Switch Tab Handler
+  $("tabResearchBtn").addEventListener("click", () => {
+    currentTab = "research";
+    $("tabResearchBtn").classList.add("active");
+    $("tabNewsBtn").classList.remove("active");
+    $("researchSection").style.display = "block";
+    $("newsSection").style.display = "none";
+    $("sidebarListTitle").textContent = "Articles";
+    adminCurrentPage = 1;
+    renderAdminList();
+  });
+
+  $("tabNewsBtn").addEventListener("click", () => {
+    currentTab = "news";
+    $("tabNewsBtn").classList.add("active");
+    $("tabResearchBtn").classList.remove("active");
+    $("newsSection").style.display = "block";
+    $("researchSection").style.display = "none";
+    $("sidebarListTitle").textContent = "News Updates";
+    adminCurrentPage = 1;
+    renderAdminList();
   });
 
   $("title").addEventListener("input", () => {
@@ -258,6 +360,19 @@ button:disabled{opacity:.5}
   }
   $("newBtn").addEventListener("click", resetEditor);
 
+  function resetNewsEditor() {
+    $("newsForm").reset();
+    $("newsId").value = "";
+    newsImageUrl = "";
+    newsRemoveImage = false;
+    $("newsImageFile").value = "";
+    $("newsImageStatus").textContent = "";
+    newsPreview("");
+    $("newsEditorHeading").textContent = "Write News Update";
+    status("newsSaveStatus", "");
+  }
+  $("newNewsBtn").addEventListener("click", resetNewsEditor);
+
   $("removeImageBtn").addEventListener("click", () => {
     imageUrl = "";
     removeImage = true;
@@ -266,184 +381,59 @@ button:disabled{opacity:.5}
     preview("");
   });
 
+  $("newsRemoveImageBtn").addEventListener("click", () => {
+    newsImageUrl = "";
+    newsRemoveImage = true;
+    $("newsImageFile").value = "";
+    $("newsImageStatus").textContent = "Image will be removed when saved.";
+    newsPreview("");
+  });
+
   $("imageFile").addEventListener("change", () => {
     const file = $("imageFile").files[0];
     if (!file) return;
     if (file.size > 8 * 1024 * 1024) {
       $("imageFile").value = "";
-      return status("saveStatus", "Image exceeds the 8 MB limit.", true);
+      return status("saveStatus", "Image exceeds 8 MB limit.", true);
     }
-    if (!["image/jpeg","image/png","image/webp","image/gif"].includes(file.type)) {
-      $("imageFile").value = "";
-      return status("saveStatus", "Unsupported image type.", true);
-    }
-    
     const reader = new FileReader();
-    reader.onload = e => {
-      $("imagePreview").src = e.target.result;
-    };
+    reader.onload = e => { $("imagePreview").src = e.target.result; };
     reader.readAsDataURL(file);
-
     $("imagePreview").hidden = false;
     $("removeImageBtn").hidden = false;
-    $("imageStatus").textContent = "Ready to upload: " + file.name;
+    $("imageStatus").textContent = "Ready: " + file.name;
     removeImage = false;
+  });
+
+  $("newsImageFile").addEventListener("change", () => {
+    const file = $("newsImageFile").files[0];
+    if (!file) return;
+    if (file.size > 8 * 1024 * 1024) {
+      $("newsImageFile").value = "";
+      return status("newsSaveStatus", "Image exceeds 8 MB limit.", true);
+    }
+    const reader = new FileReader();
+    reader.onload = e => { $("newsImagePreview").src = e.target.result; };
+    reader.readAsDataURL(file);
+    $("newsImagePreview").hidden = false;
+    $("newsRemoveImageBtn").hidden = false;
+    $("newsImageStatus").textContent = "Ready: " + file.name;
+    newsRemoveImage = false;
   });
 
   async function uploadImage(file) {
     const name = file.name.replace(/[^a-zA-Z0-9._-]/g, "-");
     const path = user.id + "/" + Date.now() + "-" + name;
     const { error } = await db.storage.from(BUCKET).upload(path, file, {
-      cacheControl: "3600",
-      upsert: false,
-      contentType: file.type
+      cacheControl: "3600", upsert: false, contentType: file.type
     });
     if (error) throw error;
     return db.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
   }
 
-  // Builder Teks Tweet (Format /articles/ dan $TICKER bersih)
-  function getTweetTextData() {
-    const title = $("title").value.trim();
-    const slug = slugify($("slug").value);
-    let ticker = $("ticker").value.trim().toUpperCase();
-    ticker = ticker.replace(/^\$+/, '');
-
-    if (!title || !slug) {
-      alert("Please fill in at least the Title and Slug first!");
-      return null;
-    }
-
-    const tickerTag = ticker ? `$${ticker} ` : "";
-    const researchUrl = `https://www.satisfynex.com/articles/${slug}`;
-    return `[NEW RESEARCH] ${tickerTag}${title}\n\nRead the full report 👇\n${researchUrl}\n\n#SatisfyNex #StockMarket #Investing`;
-  }
-
-  $("copyTextBtn").addEventListener("click", () => {
-    const tweetText = getTweetTextData();
-    if (!tweetText) return;
-
-    navigator.clipboard.writeText(tweetText).then(() => {
-      status("saveStatus", "📋 Tweet text copied to clipboard successfully!");
-    }).catch(err => {
-      status("saveStatus", "Failed to copy text: " + err.message, true);
-    });
-  });
-
-  // Tombol Download Watermarked Image (Menggunakan Fetch Blob Aman untuk iPadOS)
-  $("downloadImgBtn").addEventListener("click", async () => {
-    const fileInput = $("imageFile").files[0];
-
-    if (fileInput) {
-      const reader = new FileReader();
-      reader.onload = e => processAndDownload(e.target.result);
-      reader.readAsDataURL(fileInput);
-    } else if (imageUrl) {
-      try {
-        status("saveStatus", "Fetching chart image…");
-        const res = await fetch(imageUrl);
-        const blob = await res.blob();
-        const reader = new FileReader();
-        reader.onload = e => processAndDownload(e.target.result);
-        reader.readAsDataURL(blob);
-      } catch (err) {
-        processAndDownload(imageUrl);
-      }
-    } else {
-      status("saveStatus", "No image/chart attached to download.", true);
-    }
-  });
-
-  function processAndDownload(src) {
-    status("saveStatus", "Processing watermarked image…");
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.onload = () => {
-      try {
-        const canvas = document.createElement("canvas");
-        canvas.width = img.naturalWidth || img.width;
-        canvas.height = img.naturalHeight || img.height;
-        const ctx = canvas.getContext("2d");
-        
-        ctx.drawImage(img, 0, 0);
-
-        const fontSize = Math.max(22, Math.floor(canvas.width * 0.028));
-        ctx.font = `bold ${fontSize}px system-ui, -apple-system, sans-serif`;
-        ctx.fillStyle = "rgba(139, 224, 192, 0.9)";
-        ctx.shadowColor = "rgba(0, 0, 0, 0.85)";
-        ctx.shadowBlur = 6;
-        ctx.textAlign = "right";
-
-        const padding = fontSize * 1.2;
-        ctx.fillText("SatisfyNex Global Research", canvas.width - padding, canvas.height - padding);
-
-        canvas.toBlob(blob => {
-          if (!blob) {
-            status("saveStatus", "Failed to generate image blob.", true);
-            return;
-          }
-          const blobUrl = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = blobUrl;
-          a.download = `satisfynex-${Date.now()}.png`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
-          status("saveStatus", "🖼️ Watermarked image downloaded successfully!");
-        }, "image/png");
-      } catch (err) {
-        status("saveStatus", "Error applying watermark: " + err.message, true);
-      }
-    };
-    img.onerror = () => {
-      status("saveStatus", "Failed to load image for watermarking.", true);
-    };
-    img.src = src;
-  }
-
-  // Trigger Tombol Tarik Berita Otomatis via API Backend (Aman terhadap Error Pattern JSON)
-  $("fetchNewsBtn").addEventListener("click", async () => {
-    const btn = $("fetchNewsBtn");
-    const statusEl = $("fetchNewsStatus");
-
-    if (busy) return;
-    busy = true;
-    btn.disabled = true;
-    statusEl.textContent = "Sedang menarik RSS, memproses ringkasan AI, dan mengambil gambar Unsplash...";
-    statusEl.classList.remove("error");
-
-    try {
-      const response = await fetch("/api/cron-news");
-      const textResponse = await response.text();
-      
-      let result;
-      try {
-        result = JSON.parse(textResponse);
-      } catch (e) {
-        throw new Error("Server mengembalikan respons non-JSON: " + textResponse.slice(0, 100));
-      }
-
-      if (!response.ok || !result.success) {
-        throw new Error(result.error || "Gagal memperbarui berita.");
-      }
-
-      statusEl.textContent = `✅ Sukses! ${result.message}`;
-      await loadArticles();
-    } catch (err) {
-      statusEl.textContent = "❌ Error: " + err.message;
-      statusEl.classList.add("error");
-    } finally {
-      busy = false;
-      btn.disabled = false;
-    }
-  });
-
+  // --- SAVE RESEARCH ARTICLE ---
   async function save(statusValue) {
     if (busy) return;
-    if (!user || user.id !== ADMIN_UID) {
-      return status("saveStatus", "Please sign in with the admin account.", true);
-    }
     const title = $("title").value.trim();
     const slug = slugify($("slug").value);
     const content = $("content").value.trim();
@@ -491,10 +481,8 @@ button:disabled{opacity:.5}
       preview(imageUrl);
       $("slug").dataset.edited = "1";
       $("editorHeading").textContent = "Edit article";
-      status("saveStatus", statusValue === "published"
-        ? "Article published successfully."
-        : "Draft saved successfully.");
-      await loadArticles();
+      status("saveStatus", statusValue === "published" ? "Article published successfully." : "Draft saved successfully.");
+      await loadAllData();
     } catch (err) {
       status("saveStatus", err.message || "Unable to save article.", true);
     } finally {
@@ -505,58 +493,123 @@ button:disabled{opacity:.5}
 
   $("draftBtn").addEventListener("click", () => save("draft"));
   $("publishBtn").addEventListener("click", () => save("published"));
-  $("refreshBtn").addEventListener("click", loadArticles);
 
-  async function loadArticles() {
-    if (!user || user.id !== ADMIN_UID) return;
-    $("articleList").textContent = "Loading articles…";
-    const { data, error } = await db.from("articles")
-      .select("id,title,slug,ticker,category,status,created_at")
-      .order("created_at", { ascending: false });
+  // --- SAVE MANUAL NEWS ---
+  $("publishNewsBtn").addEventListener("click", async () => {
+    if (busy) return;
+    const title = $("newsTitle").value.trim();
+    const summary = $("newsSummary").value.trim();
+    const analysis = $("newsAnalysis").value.trim();
 
-    if (error) {
-      $("articleList").textContent = "Could not load articles: " + error.message;
-      return;
+    if (!title || !summary || !analysis) {
+      return status("newsSaveStatus", "Title, summary, and analysis are required.", true);
     }
 
-    adminArticles = data || [];
-    renderAdminArticles();
+    busy = true;
+    $("publishNewsBtn").disabled = true;
+    status("newsSaveStatus", "Publishing news…");
+
+    try {
+      let finalImage = newsRemoveImage ? null : newsImageUrl;
+      const file = $("newsImageFile").files[0];
+      if (file) {
+        status("newsSaveStatus", "Uploading news image…");
+        finalImage = await uploadImage(file);
+      }
+
+      const newsItem = {
+        title,
+        summary,
+        analysis,
+        category: $("newsCategory").value,
+        source_name: $("newsSourceName").value.trim() || "Satisfynex Editorial",
+        source_url: $("newsSourceUrl").value.trim() || null,
+        image_url: finalImage,
+        created_at: new Date().toISOString()
+      };
+
+      const id = $("newsId").value;
+      const result = id
+        ? await db.from("news").update(newsItem).eq("id", id).select().single()
+        : await db.from("news").insert(newsItem).select().single();
+
+      if (result.error) throw result.error;
+
+      $("newsId").value = result.data.id;
+      newsImageUrl = finalImage || "";
+      newsRemoveImage = false;
+      $("newsImageFile").value = "";
+      $("newsImageStatus").textContent = "";
+      newsPreview(newsImageUrl);
+      $("newsEditorHeading").textContent = "Edit News Update";
+      status("newsSaveStatus", "News published successfully!");
+      await loadAllData();
+    } catch (err) {
+      status("newsSaveStatus", err.message || "Unable to save news.", true);
+    } finally {
+      busy = false;
+      $("publishNewsBtn").disabled = false;
+    }
+  });
+
+  $("refreshBtn").addEventListener("click", loadAllData);
+
+  async function loadAllData() {
+    if (!user || user.id !== ADMIN_UID) return;
+    $("articleList").textContent = "Loading data…";
+    
+    // Fetch articles & news secara paralel
+    const [resArticles, resNews] = await Promise.all([
+      db.from("articles").select("id,title,slug,ticker,category,status,created_at").order("created_at", { ascending: false }),
+      db.from("news").select("id,title,category,source_name,created_at").order("created_at", { ascending: false })
+    ]);
+
+    if (resArticles.error) console.error(resArticles.error.message);
+    if (resNews.error) console.error(resNews.error.message);
+
+    adminArticles = resArticles.data || [];
+    adminNewsList = resNews.data || [];
+    renderAdminList();
   }
 
-  function renderAdminArticles() {
-    const totalPages = Math.ceil(adminArticles.length / ADMIN_ARTICLES_PER_PAGE) || 1;
+  function renderAdminList() {
+    const listContainer = $("articleList");
+    listContainer.replaceChildren();
+
+    const dataList = currentTab === "research" ? adminArticles : adminNewsList;
+    const totalPages = Math.ceil(dataList.length / ADMIN_ARTICLES_PER_PAGE) || 1;
     if (adminCurrentPage > totalPages) adminCurrentPage = totalPages;
     if (adminCurrentPage < 1) adminCurrentPage = 1;
 
     const start = (adminCurrentPage - 1) * ADMIN_ARTICLES_PER_PAGE;
-    const paginated = adminArticles.slice(start, start + ADMIN_ARTICLES_PER_PAGE);
-
-    const listContainer = $("articleList");
-    listContainer.replaceChildren();
+    const paginated = dataList.slice(start, start + ADMIN_ARTICLES_PER_PAGE);
 
     if (!paginated.length) {
-      listContainer.textContent = "No articles yet. Create your first article.";
+      listContainer.textContent = currentTab === "research" ? "No articles yet." : "No news published yet.";
       $("adminPaginationContainer").innerHTML = "";
       return;
     }
 
-    paginated.forEach(article => {
+    paginated.forEach(item => {
       const wrapper = document.createElement("div");
       wrapper.className = "article";
       const title = document.createElement("div");
       title.className = "article-title";
-      title.textContent = article.title;
+      title.textContent = item.title;
       const meta = document.createElement("div");
       meta.className = "meta";
-      meta.textContent = [
-        article.ticker || "No ticker", article.category, article.status,
-        new Date(article.created_at).toLocaleDateString()
-      ].join(" · ");
+      meta.textContent = currentTab === "research" 
+        ? [item.ticker || "No ticker", item.category, item.status, new Date(item.created_at).toLocaleDateString()].join(" · ")
+        : [item.source_name || "Satisfynex", item.category, new Date(item.created_at).toLocaleDateString()].join(" · ");
+      
       const edit = document.createElement("button");
       edit.type = "button";
       edit.className = "small";
       edit.textContent = "Edit";
-      edit.addEventListener("click", () => editArticle(article.id));
+      edit.addEventListener("click", () => {
+        if (currentTab === "research") editArticle(item.id);
+        else editNews(item.id);
+      });
       wrapper.append(title, meta, edit);
       listContainer.append(wrapper);
     });
@@ -570,16 +623,10 @@ button:disabled{opacity:.5}
       </div>`;
 
       $("adminPrevBtn")?.addEventListener("click", () => {
-        if (adminCurrentPage > 1) {
-          adminCurrentPage--;
-          renderAdminArticles();
-        }
+        if (adminCurrentPage > 1) { adminCurrentPage--; renderAdminList(); }
       });
       $("adminNextBtn")?.addEventListener("click", () => {
-        if (adminCurrentPage < totalPages) {
-          adminCurrentPage++;
-          renderAdminArticles();
-        }
+        if (adminCurrentPage < totalPages) { adminCurrentPage++; renderAdminList(); }
       });
     } else {
       pagContainer.innerHTML = "";
@@ -588,8 +635,7 @@ button:disabled{opacity:.5}
 
   async function editArticle(id) {
     status("saveStatus", "Loading article…");
-    const { data, error } = await db.from("articles")
-      .select("*").eq("id", id).single();
+    const { data, error } = await db.from("articles").select("*").eq("id", id).single();
     if (error) return status("saveStatus", error.message, true);
 
     $("articleId").value = data.id;
@@ -606,7 +652,29 @@ button:disabled{opacity:.5}
     $("imageStatus").textContent = imageUrl ? "Current image loaded." : "No image attached.";
     preview(imageUrl);
     $("editorHeading").textContent = "Edit article";
-    status("saveStatus", "Editing article #" + data.id + " (" + data.status + ").");
+    status("saveStatus", "Editing article #" + data.id);
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+
+  async function editNews(id) {
+    status("newsSaveStatus", "Loading news…");
+    const { data, error } = await db.from("news").select("*").eq("id", id).single();
+    if (error) return status("newsSaveStatus", error.message, true);
+
+    $("newsId").value = data.id;
+    $("newsTitle").value = data.title || "";
+    $("newsCategory").value = data.category || "Market Insights";
+    $("newsSummary").value = data.summary || "";
+    $("newsAnalysis").value = data.analysis || "";
+    $("newsSourceName").value = data.source_name || "";
+    $("newsSourceUrl").value = data.source_url || "";
+    newsImageUrl = data.image_url || "";
+    newsRemoveImage = false;
+    $("newsImageFile").value = "";
+    $("newsImageStatus").textContent = newsImageUrl ? "Current image loaded." : "No image attached.";
+    newsPreview(newsImageUrl);
+    $("newsEditorHeading").textContent = "Edit News Update";
+    status("newsSaveStatus", "Editing news item #" + data.id);
     window.scrollTo({top:0,behavior:"smooth"});
   }
 
