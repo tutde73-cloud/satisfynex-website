@@ -100,11 +100,19 @@ button:disabled{opacity:.5}
         <form id="articleForm">
           <input id="articleId" type="hidden">
 
+          <!-- PILIHAN TARGET HALAMAN DI WEBSITE -->
+          <label for="targetSection" style="color:var(--accent); font-weight:700;">Target Section / Website Page *</label>
+          <select id="targetSection" required style="border-color:var(--accent);">
+            <option value="research">Homepage / US Stock Research (Default)</option>
+            <option value="global">Global Markets Page ($SSEC, IHSG, Gold, Indices)</option>
+          </select>
+          <div class="hint">Pilih di mana artikel ini akan ditampilkan secara khusus di website.</div>
+
           <label for="title">Title *</label>
           <input id="title" maxlength="200" required placeholder="Why AI Infrastructure Stocks Could Benefit">
 
           <label for="ticker">Ticker</label>
-          <input id="ticker" maxlength="30" placeholder="NVDA, MU, XOM...">
+          <input id="ticker" maxlength="30" placeholder="NVDA, MU, XOM, $SSEC...">
 
           <label for="category">Category *</label>
           <select id="category" required>
@@ -258,65 +266,40 @@ button:disabled{opacity:.5}
       .slice(0, 200);
   }
 
-  /* Fungsi Otomatis Mengubah Copasan Markdown Menjadi HTML Rapi */
   function convertMarkdownToHtml() {
     let text = $("content").value;
     if (!text.trim()) return;
-
-    // Bersihkan karakter aneh
     text = text.replace(/\r\n/g, "\n");
-
     let lines = text.split("\n");
     let htmlOutput = [];
     let inList = false;
 
     for (let i = 0; i < lines.length; i++) {
       let line = lines[i].trim();
-
       if (!line) {
-        if (inList) {
-          htmlOutput.push("</ul>");
-          inList = false;
-        }
+        if (inList) { htmlOutput.push("</ul>"); inList = false; }
         continue;
       }
-
-      // Deteksi Heading (Judul Bagian) -> dijadikan <h2>
       if (line.startsWith("### ")) {
         if (inList) { htmlOutput.push("</ul>"); inList = false; }
         htmlOutput.push(`<h3>${line.replace("### ", "").trim()}</h3>`);
       } else if (line.startsWith("## ") || (!line.startsWith("- ") && line.length < 60 && !line.endsWith(".") && i < lines.length - 1 && lines[i+1].trim() === "")) {
-        // Deteksi baris pendek tanpa titik as heading
         if (inList) { htmlOutput.push("</ul>"); inList = false; }
         let headingText = line.replace(/^##\s*/, "");
         htmlOutput.push(`<h2>${headingText}</h2>`);
-      } 
-      // Deteksi Bullet Points (* atau -)
-      else if (line.startsWith("- ") || line.startsWith("* ")) {
-        if (!inList) {
-          htmlOutput.push("<ul>");
-          inList = true;
-        }
+      } else if (line.startsWith("- ") || line.startsWith("* ")) {
+        if (!inList) { htmlOutput.push("<ul>"); inList = true; }
         let bulletText = line.replace(/^[-*]\s*/, "");
-        
-        // Bold otomatis teks sebelum titik dua (misal: **Data Center:** -> <strong>Data Center:</strong>)
         bulletText = bulletText.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
         bulletText = bulletText.replace(/^([A-Za-z\s/]+):/, "<strong>$1:</strong>");
-
         htmlOutput.push(`<li>${bulletText}</li>`);
-      } 
-      // Paragraf biasa
-      else {
+      } else {
         if (inList) { htmlOutput.push("</ul>"); inList = false; }
         let pText = line.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
         htmlOutput.push(`<p>${pText}</p>`);
       }
     }
-
-    if (inList) {
-      htmlOutput.push("</ul>");
-    }
-
+    if (inList) htmlOutput.push("</ul>");
     $("content").value = htmlOutput.join("\n");
   }
 
@@ -493,6 +476,7 @@ button:disabled{opacity:.5}
     const title = $("title").value.trim();
     const slug = slugify($("slug").value);
     const content = $("content").value.trim();
+    const targetSection = $("targetSection").value;
 
     if (!title || !slug || !content) {
       return status("saveStatus", "Title, slug, and content are required.", true);
@@ -510,10 +494,16 @@ button:disabled{opacity:.5}
         finalImage = await uploadImage(file);
       }
 
+      // Jika user memilih Global Markets, otomatis kita sisipkan tanda khusus di Ticker agar terbaca filter
+      let userTicker = $("ticker").value.trim().toUpperCase();
+      if (targetSection === "global" && !userTicker.includes("$SSEC") && !userTicker.includes("$COMPOSITE") && !userTicker.includes("$XAUUSD")) {
+        userTicker = userTicker ? userTicker + " $SSEC" : "$SSEC";
+      }
+
       const article = {
         title,
         slug,
-        ticker: $("ticker").value.trim().toUpperCase() || null,
+        ticker: userTicker || null,
         category: $("category").value,
         excerpt: $("excerpt").value.trim() || null,
         content,
@@ -704,6 +694,11 @@ button:disabled{opacity:.5}
     $("slug").dataset.edited = "1";
     $("excerpt").value = data.excerpt || "";
     $("content").value = data.content || "";
+    
+    // Deteksi otomatis pilihan target section berdasarkan ticker yang ada
+    const hasGlobalTicker = ['$SSEC', '$COMPOSITE', '$IHSG', '$NYA', '$NDX', '$DJI', '$SPX', '$XAUUSD'].some(t => (data.ticker || "").toUpperCase().includes(t));
+    $("targetSection").value = hasGlobalTicker ? "global" : "research";
+
     imageUrl = data.image_url || "";
     removeImage = false;
     $("imageFile").value = "";
@@ -722,7 +717,7 @@ button:disabled{opacity:.5}
     $("newsId").value = data.id;
     $("newsSlug").value = data.slug || "";
     $("newsTitle").value = data.title || "";
-    $("newsCategory").value = data.category || "Market Insights";
+    $("newsCategory").value = data.newsCategory || "Market Insights";
     $("newsSummary").value = data.summary || "";
     $("newsAnalysis").value = data.analysis || "";
     $("newsSourceName").value = data.source_name || "";
