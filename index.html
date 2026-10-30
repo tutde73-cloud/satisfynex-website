@@ -239,6 +239,7 @@ h1,h2,h3,p{margin-top:0}
  <div class="container nav">
   <a class="brand" href="/">satisfy<span>nex</span></a>
   <nav class="navlinks" aria-label="Main navigation">
+   <a href="/global-markets">Global Markets</a>
    <a href="/">Research</a>
    <a href="/#latest">Latest</a>
    <a href="/about">About</a>
@@ -298,6 +299,21 @@ h1,h2,h3,p{margin-top:0}
   </div>
  </div></section>
 </div>
+ 
+<!-- HALAMAN KHUSUS GLOBAL MARKETS -->
+<section id="globalView" class="article-page hidden">
+ <div class="container">
+  <a class="back-link" href="/">← Back to research</a>
+  <div class="article-header">
+   <span class="tag">Global Markets & Macro</span>
+   <h1>Sovereign Indices, Country Benchmarks & Commodity Action</h1>
+   <p class="article-lead">Macroeconomic trends, global index breakdowns (IHSG, SSE, NYSE), and commodity liquidity flows.</p>
+  </div>
+  <div id="globalGrid" class="article-grid" style="margin-top: 25px;">
+   <div class="notice">Loading global market insights...</div>
+  </div>
+ </div>
+</section>
  
 <section id="articleView" class="article-page hidden"><div class="container">
  <a class="back-link" href="/">← Back to research</a><div id="articleDetail"></div>
@@ -582,6 +598,27 @@ function renderArticles(){
  }
 }
  
+// RENDER HALAMAN GLOBAL MARKETS (Mendukung filter ticker indeks/komoditas)
+function renderGlobalMarkets(){
+ const globalTickers = ['$SSEC', '$COMPOSITE', '$IHSG', '$NYA', '$NDX', '$DJI', '$SPX', '$XAUUSD', '$XAGUSD', '$CL', '$FTSE', '$N225'];
+ 
+ const globalFiltered = articles.filter(a => {
+  const textCheck = (a.title + " " + a.ticker + " " + a.excerpt).toUpperCase();
+  return globalTickers.some(t => textCheck.includes(t));
+ });
+ 
+ const grid = $("#globalGrid");
+ if(!grid) return;
+ 
+ if(globalFiltered.length === 0){
+  grid.innerHTML = '<div class="notice" style="grid-column:1/-1">No global market indices analysis published yet. Publish an article containing tickers like $SSEC, $COMPOSITE, or $XAUUSD.</div>';
+  return;
+ }
+ 
+ grid.innerHTML = globalFiltered.map(cardMarkup).join("");
+ setTimeout(processAllImages, 300);
+}
+ 
 function updateDynamicCanonical() {
   let c = document.querySelector('link[rel="canonical"]');
   if (!c) {
@@ -612,6 +649,7 @@ function setMeta(article=null,pageTitle=null){
  
 function showView(view){
  $("#homeView").classList.toggle("hidden",view!=="home");
+ $("#globalView").classList.toggle("hidden",view!=="global");
  $("#articleView").classList.toggle("hidden",view!=="article");
  $("#pageView").classList.toggle("hidden",view!=="page");
 }
@@ -623,6 +661,15 @@ function showHome(push=true,hash=""){
  if(push)history.pushState({view:"home"},"","/"+hash);
  if(hash==="#latest")setTimeout(()=>$("#latest").scrollIntoView({behavior:"smooth"}),0);
  else window.scrollTo({top:0,behavior:"auto"});
+}
+ 
+function showGlobalMarkets(push=true){
+ showView("global");
+ renderGlobalMarkets();
+ setMeta(null, "Global Markets & Macro Analysis");
+ updateDynamicCanonical();
+ if(push)history.pushState({view:"global"},"","/global-markets");
+ window.scrollTo({top:0,behavior:"auto"});
 }
  
 function openArticleById(id,push=true){
@@ -640,7 +687,6 @@ function openArticleById(id,push=true){
  
  showView("article");
  
- // Langsung merender HTML mentah dari kolom content artikel secara utuh
  const articleContentHtml = article.content || "<p>Full analysis coming soon.</p>";
  
  const sameCategoryArticles = articles.filter(a => a.id !== article.id && a.category === article.category);
@@ -674,7 +720,7 @@ function openArticleById(id,push=true){
  
  ${articleContentHtml}
  
- <!-- AUTHOR PROFILE (Pilihan 2 Sesuai Diskusi) -->
+ <!-- AUTHOR PROFILE -->
  <div class="satisfynex-author-card" itemscope itemtype="https://schema.org/Person" style="margin: 30px 0 20px 0; padding: 20px; background-color: var(--panel); border: 1px solid var(--line); border-radius: 12px; display: flex; gap: 16px; align-items: flex-start; color: var(--text);">
    <div style="flex-shrink: 0;">
      <img src="/Icon.png" alt="Tutde Ariyasa" itemprop="image" style="width: 50px; height: 50px; border-radius: 50%; border: 1px solid var(--line); object-fit: cover; background: #0c1017;" />
@@ -765,6 +811,11 @@ function showPage(type,push=true){
 function routeFromLocation(){
  const path=location.pathname.replace(/\/+$/,"")||"/";
  
+ if(path==="/global-markets"){
+  showGlobalMarkets(false);
+  return;
+ }
+ 
  if(path.startsWith("/articles/")){
   const slug=path.slice("/articles/".length);
   openArticleById(slug,false);
@@ -797,6 +848,12 @@ document.addEventListener("click",e=>{
  const url=new URL(link.href,location.href);
  if(url.origin!==location.origin)return;
  
+ if(url.pathname==="/global-markets"){
+  e.preventDefault();
+  showGlobalMarkets(true);
+  return;
+ }
+ 
  if(url.pathname==="/#latest"||link.getAttribute("href")==="/#latest"){
   e.preventDefault();
   showHome(true,"#latest");
@@ -821,7 +878,6 @@ $("#searchInput").addEventListener("input",()=>{currentPage=1;renderArticles();}
 $("#categoryFilter").addEventListener("change",()=>{currentPage=1;renderArticles();});
 $("#year").textContent=new Date().getFullYear();
  
-// Mengambil Data Artikel Manual & News Otomatis dari Supabase Lalu Menyatukannya
 async function loadArticles(){
  const headers = {
    apikey: SUPABASE_KEY,
@@ -864,9 +920,7 @@ async function loadArticles(){
     }
   }
  
-  // Mengurutkan seluruh konten gabungan berdasarkan tanggal rilis paling baru
   combinedRows.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
- 
   articles = combinedRows.map(toArticle);
  
   renderCategories();
@@ -887,4 +941,3 @@ initTextRotator();
 </script>
 </body>
 </html>
- 
