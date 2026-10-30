@@ -23,6 +23,8 @@ textarea{min-height:110px;resize:vertical}#content,#newsAnalysis{min-height:220p
 input:focus,select:focus,textarea:focus{outline:1px solid var(--accent)}
 button,.link{cursor:pointer;border:1px solid var(--line);border-radius:8px;padding:10px 14px;background:#1a2535;color:var(--text);font:inherit;text-decoration:none}
 button.primary{background:var(--accent);color:#07140f;border-color:var(--accent);font-weight:750}
+button.danger{background:rgba(255, 146, 146, 0.15);color:var(--danger);border-color:rgba(255, 146, 146, 0.3);font-weight:600}
+button.danger:hover{background:rgba(255, 146, 146, 0.3)}
 button.twitter-btn{background:rgba(29, 155, 240, 0.15);color:#71c9f8;border-color:#1d9bf0;font-weight:600}
 button.twitter-btn:hover{background:rgba(29, 155, 240, 0.25)}
 button:disabled{opacity:.5}
@@ -494,7 +496,6 @@ button:disabled{opacity:.5}
         finalImage = await uploadImage(file);
       }
 
-      // Jika user memilih Global Markets, otomatis kita sisipkan tanda khusus di Ticker agar terbaca filter
       let userTicker = $("ticker").value.trim().toUpperCase();
       if (targetSection === "global" && !userTicker.includes("$SSEC") && !userTicker.includes("$COMPOSITE") && !userTicker.includes("$XAUUSD")) {
         userTicker = userTicker ? userTicker + " $SSEC" : "$SSEC";
@@ -620,6 +621,33 @@ button:disabled{opacity:.5}
     renderAdminList();
   }
 
+  /* FUNGSI HAPUS ARTIKEL / NEWS */
+  async function deleteItem(id, type) {
+    const isArticle = type === "research";
+    const itemTitle = isArticle 
+      ? adminArticles.find(a => a.id === id)?.title 
+      : adminNewsList.find(n => n.id === id)?.title;
+
+    if (!confirm(`Are you sure you want to delete "${itemTitle}"? This cannot be undone.`)) return;
+
+    const statusId = isArticle ? "saveStatus" : "newsSaveStatus";
+    status(statusId, "Deleting item…");
+
+    try {
+      const table = isArticle ? "articles" : "news";
+      const { error } = await db.from(table).delete().eq("id", id);
+      if (error) throw error;
+
+      status(statusId, "Item deleted successfully.");
+      if (isArticle && $("articleId").value === String(id)) resetEditor();
+      if (!isArticle && $("newsId").value === String(id)) resetNewsEditor();
+
+      await loadAllData();
+    } catch (err) {
+      status(statusId, err.message || "Failed to delete item.", true);
+    }
+  }
+
   function renderAdminList() {
     const listContainer = $("articleList");
     listContainer.replaceChildren();
@@ -650,6 +678,10 @@ button:disabled{opacity:.5}
         ? [item.ticker || "No ticker", item.category, item.status, new Date(item.created_at).toLocaleDateString()].join(" · ")
         : [item.source_name || "Satisfynex", item.category, new Date(item.created_at).toLocaleDateString()].join(" · ");
       
+      const btnRow = document.createElement("div");
+      btnRow.className = "row";
+      btnRow.style.marginTop = "6px";
+
       const edit = document.createElement("button");
       edit.type = "button";
       edit.className = "small";
@@ -658,7 +690,15 @@ button:disabled{opacity:.5}
         if (currentTab === "research") editArticle(item.id);
         else editNews(item.id);
       });
-      wrapper.append(title, meta, edit);
+
+      const del = document.createElement("button");
+      del.type = "button";
+      del.className = "small danger";
+      del.textContent = "Delete";
+      del.addEventListener("click", () => deleteItem(item.id, currentTab));
+
+      btnRow.append(edit, del);
+      wrapper.append(title, meta, btnRow);
       listContainer.append(wrapper);
     });
 
@@ -695,7 +735,6 @@ button:disabled{opacity:.5}
     $("excerpt").value = data.excerpt || "";
     $("content").value = data.content || "";
     
-    // Deteksi otomatis pilihan target section berdasarkan ticker yang ada
     const hasGlobalTicker = ['$SSEC', '$COMPOSITE', '$IHSG', '$NYA', '$NDX', '$DJI', '$SPX', '$XAUUSD'].some(t => (data.ticker || "").toUpperCase().includes(t));
     $("targetSection").value = hasGlobalTicker ? "global" : "research";
 
@@ -717,7 +756,7 @@ button:disabled{opacity:.5}
     $("newsId").value = data.id;
     $("newsSlug").value = data.slug || "";
     $("newsTitle").value = data.title || "";
-    $("newsCategory").value = data.newsCategory || "Market Insights";
+    $("newsCategory").value = data.category || "Market Insights";
     $("newsSummary").value = data.summary || "";
     $("newsAnalysis").value = data.analysis || "";
     $("newsSourceName").value = data.source_name || "";
