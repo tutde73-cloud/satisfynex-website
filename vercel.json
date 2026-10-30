@@ -33,6 +33,10 @@
       "destination": "/api/sitemap"
     },
     {
+      "source": "/global-markets",
+      "destination": "/index.html"
+    },
+    {
       "source": "/articles/:path*",
       "destination": "/index.html"
     },
