@@ -6,7 +6,6 @@
 <title>Satisfynex — Independent US Stock Research</title>
 <meta name="description" content="Independent research on US stocks, company fundamentals, technical charts and market trends.">
  
-<!-- Favicon untuk Google Search & Apple Touch Icon -->
 <link rel="icon" href="/Icon.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="/Icon.png">
  
@@ -16,13 +15,11 @@
 <meta property="og:description" content="Independent research on US stocks, company fundamentals, technical charts and market trends.">
 <meta property="og:url" content="https://www.satisfynex.com/">
  
-<!-- Google tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-742MNVD8XT"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
- 
   gtag('config', 'G-742MNVD8XT');
 </script>
  
@@ -31,7 +28,6 @@
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:110px}
  
-/* Proteksi Teks: Mencegah highlight & seleksi teks */
 body{
   margin:0;
   background:var(--bg);
@@ -49,7 +45,6 @@ button,input,select{font:inherit}
 .container{width:min(var(--max),calc(100% - 40px));margin:auto}
 .hidden{display:none!important}
  
-/* Header & Sticky Container */
 .topbar{position:sticky;top:0;z-index:20;background:#0c1017f5;border-bottom:1px solid var(--line)}
 .ticker-tape-container{width:100%;background:#080b10;border-bottom:1px solid var(--line);min-height:46px;overflow:hidden}
  
@@ -58,7 +53,6 @@ button,input,select{font:inherit}
 .brand span{color:var(--accent)}
 .navlinks,.footer-links{display:flex;align-items:center;flex-wrap:wrap;gap:18px;color:var(--muted);font-size:13px}
  
-/* Hero Section dengan Gambar Latar Belakang IMG_1210.jpeg */
 .hero{
   position: relative;
   padding: 85px 0 65px;
@@ -75,7 +69,6 @@ h1,h2,h3,p{margin-top:0}
 .hero p{max-width:640px;color:#d0d9e5;font-size:17px;min-height:65px;text-shadow: 0 1px 5px rgba(0,0,0,0.8)}
 .hero-note{display:inline-block;border:1px solid var(--line);border-radius:30px;padding:7px 13px;color:var(--muted);font-size:12px;background: rgba(12, 16, 23, 0.6);backdrop-filter: blur(4px)}
  
-/* Widget Panel Styles */
 .screener-section{padding:30px 0 20px;border-top:1px solid var(--line)}
 .screener-panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:0 10px 25px -5px rgba(0,0,0,0.3)}
  
@@ -135,7 +128,6 @@ h1,h2,h3,p{margin-top:0}
 .footer-row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:24px}
 .footer-links{max-width:600px;align-items:flex-start}
  
-/* Related Research Section Grid Styling */
 .related-research-section{margin-top:45px;border-top:1px solid var(--line);padding-top:30px}
 .related-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:20px}
 .related-card{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;transition:transform .15s,border-color .15s}
@@ -145,14 +137,12 @@ h1,h2,h3,p{margin-top:0}
 .related-date{font-size:11px;color:var(--muted);margin-bottom:6px}
 .related-title{font-size:13px;font-weight:600;line-height:1.35;color:var(--text);margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
  
-/* Stylings Pagination Navigasi */
 .pagination{display:flex;justify-content:center;align-items:center;gap:12px;margin-top:35px}
 .pagination button{background:var(--panel);color:var(--text);border:1px solid var(--line);padding:10px 18px;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px;transition:background .15s,border-color .15s}
 .pagination button:hover:not(:disabled){background:#1c2636;border-color:var(--accent)}
 .pagination button:disabled{opacity:0.4;cursor:not-allowed}
 .pagination span{color:var(--muted);font-size:13px}
  
-/* Smooth Text Rotator Transition */
 .text-rotator {
   opacity: 1;
   transition: opacity 0.6s ease-in-out;
@@ -174,7 +164,6 @@ h1,h2,h3,p{margin-top:0}
   .brand{font-size:22px}
   .navlinks{gap:12px;font-size:12px}
  
-  /* Optimalisasi Hero Section untuk HP */
   .hero{
     padding: 50px 0 40px;
     background: linear-gradient(180deg, rgba(12, 16, 23, 0.94) 0%, rgba(12, 16, 23, 0.86) 65%, rgba(12, 16, 23, 0.7) 100%), url('/IMG_1210.jpeg');
@@ -205,7 +194,6 @@ h1,h2,h3,p{margin-top:0}
  
 <body>
 <header class="topbar">
- <!-- TradingView Extended Ticker Tape -->
  <div class="ticker-tape-container">
   <div class="tradingview-widget-container">
    <div class="tradingview-widget-container__widget"></div>
@@ -271,7 +259,6 @@ h1,h2,h3,p{margin-top:0}
   <div id="paginationContainer"></div>
  </div></section>
  
- <!-- WIDGET 1: Market Data -->
  <section class="screener-section"><div class="container">
   <div class="screener-panel">
    <div style="padding: 10px 10px 15px;">
@@ -285,7 +272,6 @@ h1,h2,h3,p{margin-top:0}
   </div>
  </div></section>
  
- <!-- WIDGET 2: Market Overview (Market Movers) -->
  <section class="screener-section" style="padding-top: 10px;"><div class="container">
   <div class="screener-panel">
    <div style="padding: 10px 10px 15px;">
@@ -300,14 +286,13 @@ h1,h2,h3,p{margin-top:0}
  </div></section>
 </div>
  
-<!-- HALAMAN KHUSUS GLOBAL MARKETS -->
 <section id="globalView" class="article-page hidden">
  <div class="container">
   <a class="back-link" href="/">← Back to research</a>
   <div class="article-header">
    <span class="tag">Global Markets & Macro</span>
    <h1>Sovereign Indices, Country Benchmarks & Commodity Action</h1>
-   <p class="article-lead">Macroeconomic trends, global index breakdowns (IHSG, SSE, NYSE), and commodity liquidity flows.</p>
+   <p class="article-lead">Macroeconomic trends, global index breakdowns, and commodity liquidity flows.</p>
   </div>
   <div id="globalGrid" class="article-grid" style="margin-top: 25px;">
    <div class="notice">Loading global market insights...</div>
@@ -331,6 +316,7 @@ h1,h2,h3,p{margin-top:0}
   <p>Questions? <a class="email-link" href="mailto:research@satisfynex.com">research@satisfynex.com</a></p>
  </div>
  <nav class="footer-links" aria-label="Policies and information">
+  <a href="/global-markets">Global Markets</a>
   <a href="/privacy-policy">Privacy Policy</a>
   <a href="/terms-of-service">Terms of Service</a>
   <a href="/about">About Us</a>
@@ -343,16 +329,10 @@ h1,h2,h3,p{margin-top:0}
 <script>
 "use strict";
  
-/* ========================================================
-   KEAMANAN: 1. MENONAKTIFKAN KLIK KANAN (DISABLE RIGHT CLICK)
-   ======================================================== */
 document.addEventListener("contextmenu", function(e) {
   e.preventDefault();
 });
  
-/* ========================================================
-   KEAMANAN: 2. AUTO WATERMARK DI TENGAH & SAMAR (ANTI-CROP)
-   ======================================================== */
 function applyWatermark(imgElement) {
   if (!imgElement || imgElement.dataset.watermarked === "true") return;
  
@@ -371,12 +351,10 @@ function applyWatermark(imgElement) {
     try {
       canvas.width = img.naturalWidth;
       canvas.height = img.naturalHeight;
- 
       ctx.drawImage(img, 0, 0);
  
       const fontSize = Math.max(22, Math.floor(canvas.width * 0.065)); 
       ctx.font = `bold ${fontSize}px Inter, sans-serif`;
- 
       ctx.fillStyle = "rgba(255, 255, 255, 0.25)"; 
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
@@ -413,7 +391,6 @@ function processAllImages() {
 const SUPABASE_URL="https://ngysrsypmieuvucqupgd.supabase.co";
 const SUPABASE_KEY="sb_publishable_U05M_WQFKioCZ1LNSfyNbQ_jUoJTQvd";
 const SITE_URL="https://www.satisfynex.com";
-const CONTACT_EMAIL="research@satisfynex.com";
 const FALLBACK_IMAGE="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80";
  
 let articles=[];
@@ -433,18 +410,14 @@ const rotatingSentences = [
 function initTextRotator() {
   const targetElement = $("#dynamicHeroText");
   if (!targetElement) return;
- 
   let currentIndex = 0;
- 
   setInterval(() => {
     targetElement.classList.add("fade-out");
- 
     setTimeout(() => {
       currentIndex = (currentIndex + 1) % rotatingSentences.length;
       targetElement.textContent = rotatingSentences[currentIndex];
       targetElement.classList.remove("fade-out");
     }, 600);
- 
   }, 3800);
 }
  
@@ -511,17 +484,22 @@ function toArticle(row){
  const content=contentToText(row.content);
  const words=content.trim().split(/\s+/).filter(Boolean).length;
  const id=normalizeSlug(row.slug)||slugify(row.title)||String(row.id);
+ const tickerVal = (row.ticker || "").toUpperCase();
+ 
+ const isGlobal = ['$SSEC', '$COMPOSITE', '$IHSG', '$NYA', '$NDX', '$DJI', '$SPX', '$XAUUSD'].some(t => tickerVal.includes(t));
  
  return {
   id,
   title:row.title||"Untitled Article",
   ticker:row.ticker||"",
-  category:row.category||"Market Insights",
+  category: isGlobal ? "GLOBAL MARKETS" : (row.category||"Market Insights"),
   date:formatDate(row.created_at),
   image:safeImage(row.image_url),
   read:Math.max(1,Math.ceil(words/200))+" min read",
   excerpt:row.excerpt||content.slice(0,220)||"Read the latest Satisfynex research.",
-  content
+  content,
+  isGlobal,
+  created_at: row.created_at
  };
 }
  
@@ -537,12 +515,14 @@ function cardMarkup(a){
  
 function renderFeatured(){
  const target=$("#featuredGrid");
- if(!articles.length){
+ const normalArticles = articles.filter(a => !a.isGlobal);
+ 
+ if(!normalArticles.length){
   target.innerHTML='<div class="notice">No published articles yet. Publish an article through your admin page.</div>';
   return;
  }
  
- const main=articles[0],side=articles.slice(1,4);
+ const main=normalArticles[0],side=normalArticles.slice(1,4);
  const mainUrl=articleUrl(main.id);
  
  target.innerHTML=`<article class="feature-main">
@@ -557,7 +537,8 @@ function renderFeatured(){
  
 function renderCategories(){
  const s=$("#categoryFilter"),old=s.value;
- const categories=[...new Set(articles.map(a=>a.category))].filter(Boolean).sort();
+ const normalArticles = articles.filter(a => !a.isGlobal);
+ const categories=[...new Set(normalArticles.map(a=>a.category))].filter(Boolean).sort();
  s.innerHTML='<option value="">All categories</option>'+categories.map(c=>`<option value="${escapeHTML(c)}">${escapeHTML(c)}</option>`).join("");
  if(categories.includes(old))s.value=old;
 }
@@ -565,53 +546,60 @@ function renderCategories(){
 function renderArticles(){
  const search=($("#searchInput").value||"").trim().toLowerCase();
  const cat=$("#categoryFilter").value;
- const filtered=articles.filter(a=>(!search||[a.title,a.ticker,a.category,a.excerpt,a.content].join(" ").toLowerCase().includes(search))&&(!cat||a.category===cat));
  
- const totalPages=Math.ceil(filtered.length/ARTICLES_PER_PAGE)||1;
- if(currentPage>totalPages)currentPage=totalPages;
- if(currentPage<1)currentPage=1;
+ const normalArticles = articles.filter(a => !a.isGlobal);
+ const globalArticles = articles.filter(a => a.isGlobal);
  
- const start=(currentPage-1)*ARTICLES_PER_PAGE;
- const paginated=filtered.slice(start,start+ARTICLES_PER_PAGE);
+ // Ambil 5 artikel Global Markets terbaru untuk dipajang di halaman utama
+ const featuredGlobalInHome = globalArticles.slice(0, 5);
  
- $("#articleCount").textContent=filtered.length+(filtered.length===1?" article":" articles");
- $("#articleGrid").innerHTML=paginated.length?paginated.map(cardMarkup).join(""):'<div class="empty" style="grid-column:1/-1">No matching articles found.</div>';
+ const combinedHomeArticles = [...normalArticles, ...featuredGlobalInHome];
+ combinedHomeArticles.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+ 
+ const filtered = combinedHomeArticles.filter(a => 
+   (!search || [a.title, a.ticker, a.category, a.excerpt, a.content].join(" ").toLowerCase().includes(search)) && 
+   (!cat || a.category === cat)
+ );
+ 
+ const totalPages = Math.ceil(filtered.length / ARTICLES_PER_PAGE) || 1;
+ if(currentPage > totalPages) currentPage = totalPages;
+ if(currentPage < 1) currentPage = 1;
+ 
+ const start = (currentPage - 1) * ARTICLES_PER_PAGE;
+ const paginated = filtered.slice(start, start + ARTICLES_PER_PAGE);
+ 
+ $("#articleCount").textContent = filtered.length + (filtered.length === 1 ? " article" : " articles");
+ $("#articleGrid").innerHTML = paginated.length ? paginated.map(cardMarkup).join("") : '<div class="empty" style="grid-column:1/-1">No matching articles found.</div>';
  
  setTimeout(processAllImages, 300);
  
- const pagContainer=$("#paginationContainer");
- if(totalPages>1){
-  pagContainer.innerHTML=`<div class="pagination">
-   <button id="prevPageBtn" ${currentPage===1?"disabled":""}>← Previous</button>
+ const pagContainer = $("#paginationContainer");
+ if(totalPages > 1){
+  pagContainer.innerHTML = `<div class="pagination">
+   <button id="prevPageBtn" ${currentPage === 1 ? "disabled" : ""}>← Previous</button>
    <span>Page ${currentPage} of ${totalPages}</span>
-   <button id="nextPageBtn" ${currentPage===totalPages?"disabled":""}>Next →</button>
+   <button id="nextPageBtn" ${currentPage === totalPages ? "disabled" : ""}>Next →</button>
   </div>`;
  
-  $("#prevPageBtn")?.addEventListener("click",()=>{
-   if(currentPage>1){currentPage--;renderArticles();$("#latest").scrollIntoView({behavior:"smooth"});}
+  $("#prevPageBtn")?.addEventListener("click", () => {
+   if(currentPage > 1){ currentPage--; renderArticles(); $("#latest").scrollIntoView({behavior:"smooth"}); }
   });
-  $("#nextPageBtn")?.addEventListener("click",()=>{
-   if(currentPage<totalPages){currentPage++;renderArticles();$("#latest").scrollIntoView({behavior:"smooth"});}
+  $("#nextPageBtn")?.addEventListener("click", () => {
+   if(currentPage < totalPages){ currentPage++; renderArticles(); $("#latest").scrollIntoView({behavior:"smooth"}); }
   });
- }else{
-  pagContainer.innerHTML="";
+ } else {
+  pagContainer.innerHTML = "";
  }
 }
  
-// RENDER HALAMAN GLOBAL MARKETS (Mendukung filter ticker indeks/komoditas)
 function renderGlobalMarkets(){
- const globalTickers = ['$SSEC', '$COMPOSITE', '$IHSG', '$NYA', '$NDX', '$DJI', '$SPX', '$XAUUSD', '$XAGUSD', '$CL', '$FTSE', '$N225'];
- 
- const globalFiltered = articles.filter(a => {
-  const textCheck = (a.title + " " + a.ticker + " " + a.excerpt).toUpperCase();
-  return globalTickers.some(t => textCheck.includes(t));
- });
- 
  const grid = $("#globalGrid");
  if(!grid) return;
  
+ const globalFiltered = articles.filter(a => a.isGlobal);
+ 
  if(globalFiltered.length === 0){
-  grid.innerHTML = '<div class="notice" style="grid-column:1/-1">No global market indices analysis published yet. Publish an article containing tickers like $SSEC, $COMPOSITE, or $XAUUSD.</div>';
+  grid.innerHTML = '<div class="notice" style="grid-column:1/-1">No global market indices analysis published yet. Go to your Admin Dashboard and publish an article with the Global Markets target selected.</div>';
   return;
  }
  
@@ -644,7 +632,7 @@ function setMeta(article=null,pageTitle=null){
  og=document.querySelector('meta[property="og:description"]');
  if(og)og.content=description;
  og=document.querySelector('meta[property="og:url"]');
- if(og)og.content=document.querySelector('link[rel="canonical"]').href;
+ if(og)og.content=document.querySelector('link[rel="canonical"]')?.href || window.location.href;
 }
  
 function showView(view){
@@ -686,7 +674,6 @@ function openArticleById(id,push=true){
  }
  
  showView("article");
- 
  const articleContentHtml = article.content || "<p>Full analysis coming soon.</p>";
  
  const sameCategoryArticles = articles.filter(a => a.id !== article.id && a.category === article.category);
@@ -720,14 +707,13 @@ function openArticleById(id,push=true){
  
  ${articleContentHtml}
  
- <!-- AUTHOR PROFILE -->
  <div class="satisfynex-author-card" itemscope itemtype="https://schema.org/Person" style="margin: 30px 0 20px 0; padding: 20px; background-color: var(--panel); border: 1px solid var(--line); border-radius: 12px; display: flex; gap: 16px; align-items: flex-start; color: var(--text);">
    <div style="flex-shrink: 0;">
-     <img src="/Icon.png" alt="Tutde Ariyasa" itemprop="image" style="width: 50px; height: 50px; border-radius: 50%; border: 1px solid var(--line); object-fit: cover; background: #0c1017;" />
+     <img src="/Icon.png" alt="Ketut Gede Ariyasa" itemprop="image" style="width: 50px; height: 50px; border-radius: 50%; border: 1px solid var(--line); object-fit: cover; background: #0c1017;" />
    </div>
    <div style="display: flex; flex-direction: column; gap: 4px;">
      <span style="font-size: 0.7rem; font-weight: 800; letter-spacing: 0.8px; color: var(--accent); text-transform: uppercase;">WRITTEN BY</span>
-     <h4 style="margin: 0; font-size: 1.05rem; font-weight: 600; color: var(--text);" itemprop="name">Tutde Ariyasa</h4>
+     <h4 style="margin: 0; font-size: 1.05rem; font-weight: 600; color: var(--text);" itemprop="name">Ketut Gede Ariyasa</h4>
      <p style="margin: 4px 0 0; font-size: 0.85rem; line-height: 1.45; color: var(--muted);" itemprop="description">
        Independent financial analyst and founder of Satisfynex, specializing in US equities technical analysis, market data visualization, and risk-first research.
      </p>
@@ -737,7 +723,6 @@ function openArticleById(id,push=true){
    </div>
  </div>
  
- <!-- Rujukan Outbound Resmi SEC & Investor Relations -->
  <div style="margin: 20px 0; padding: 12px; background: rgba(142, 224, 189, 0.03); border-left: 3px solid var(--accent); font-size: 0.85rem; color: var(--muted);">
    <span>Primary Source Verification: </span>
    <a href="https://www.sec.gov" target="_blank" rel="noopener" style="color: var(--accent);">SEC EDGAR Database</a> &bull; 
@@ -746,7 +731,6 @@ function openArticleById(id,push=true){
  
  <hr style="border:0;border-top:1px solid var(--line);margin:35px 0"><p class="muted small">This article is provided for informational and educational purposes only. It is not a recommendation to buy or sell any security.</p>
  
- <!-- RELATED RESEARCH SECTION -->
  ${relatedHtml}
  
  </div>
@@ -754,18 +738,10 @@ function openArticleById(id,push=true){
  
  setMeta(article);
  updateDynamicCanonical();
- 
  setTimeout(processAllImages, 300);
  
  if(push)history.pushState({view:"article",id:article.id},"",articleUrl(article.id));
- 
  window.scrollTo(0, 0);
- document.documentElement.scrollTop = 0;
- document.body.scrollTop = 0;
- 
- setTimeout(() => {
-   window.scrollTo({top: 0, behavior: "instant"});
- }, 50);
 }
  
 const pages={
@@ -775,34 +751,27 @@ const pages={
    title: "About Us",
    body: `
      <p>Satisfynex is an independent financial research platform dedicated to delivering clean, data-driven technical analysis and market insights on US-listed equities, energy sectors, and commodities. Founded in Bali, Indonesia, Satisfynex operates with a clear objective: to cut through market noise and provide retail investors with objective, actionable visual chart breakdowns.</p>
- 
      <h2>The Founder's Journey: Self-Taught Discipline & Market Precision</h2>
-     <p>Satisfynex is founded and operated by <strong>Tutde Ariyasa</strong>, an independent financial analyst and self-taught market researcher based in Bali, Indonesia. Starting as an individual investor who spent years studying US stock market dynamics, technical charting workflows, and custom indicator development on TradingView, Tutde built this platform to document rigorous, hands-on market evaluations.</p>
-     <p>Rather than relying on automated generic commentary, real market expertise is forged through thousands of hours of screen time, disciplined chart analysis, and strict risk management. Satisfynex transforms this independent research into structured, transparent market intelligence for everyday investors.</p>
- 
+     <p>Satisfynex is founded and operated by <strong>Ketut Gede Ariyasa</strong>, an independent financial analyst and self-taught market researcher based in Bali, Indonesia. Starting as an individual investor who spent years studying US stock market dynamics, technical charting workflows, and custom indicator development on TradingView, Tutde built this platform to document rigorous, hands-on market evaluations.</p>
      <h2>Our Mission & Approach</h2>
-     <p>Our mission is to serve as an objective research journal, presenting clear technical indicators, fundamental business metrics, and structural chart analysis. We believe in radical transparency: every market commentary is crafted with a risk-first perspective to help readers understand the underlying evidence behind an investment thesis, rather than providing prescriptive signals.</p>
- 
+     <p>Our mission is to serve as an objective research journal, presenting clear technical indicators, fundamental business metrics, and structural chart analysis.</p>
      <h2>Educational Disclaimer</h2>
-     <p>All articles, charts, commentary, and materials published by Satisfynex are strictly for educational and informational purposes as part of an independent research journal. Nothing on this website constitutes personalized financial advice, legal counsel, or a recommendation to buy, hold, or sell any security. Market investments involve substantial risk, and readers should always perform their own independent verification.</p>
- 
+     <p>All articles, charts, commentary, and materials published by Satisfynex are strictly for educational and informational purposes.</p>
      <h2>Contact</h2>
      <p><a href="mailto:research@satisfynex.com">research@satisfynex.com</a></p>
    `
  },
- contact:{title:"Contact Us",body:`<p>We welcome reader feedback, questions about published research, and correction requests.</p><div class="contact-card"><div class="eyebrow">Email</div><h2>Get in touch with Satisfynex</h2><p>Include the article title or URL if your inquiry concerns a specific publication.</p><p><a class="email-link" href="mailto:research@satisfynex.com">research@satisfynex.com</a></p><a class="button-link" href="mailto:research@satisfynex.com?subject=Satisfynex%20Website%20Inquiry">Email Satisfynex →</a></div><p>Please do not send passwords, payment details, or other sensitive information. We do not provide individualized investment recommendations by email.</p>`},
- disclaimer:{title:"Investment Disclaimer",body:`<p><strong>Last updated: October 20, 2026</strong></p><p>All articles, charts, commentary, and materials published by Satisfynex are for general informational and educational purposes only.</p><h2>Not financial advice</h2><p>Nothing on this website is personalized investment advice or a recommendation to buy, hold, or sell any security.</p><h2>Investment risk</h2><p>Investments can lose value, including the loss of some or all of your capital. Historical performance does not guarantee future results.</p><h2>Independent verification</h2><p>Information may be incomplete, delayed, or outdated. Consult official company filings and reliable sources before making decisions.</p><h2>Contact</h2><p><a href="mailto:research@satisfynex.com">research@satisfynex.com</a></p>`}
+ contact:{title:"Contact Us",body:`<p>We welcome reader feedback, questions about published research, and correction requests.</p><div class="contact-card"><div class="eyebrow">Email</div><h2>Get in touch with Satisfynex</h2><p><a class="email-link" href="mailto:research@satisfynex.com">research@satisfynex.com</a></p></div>`},
+ disclaimer:{title:"Investment Disclaimer",body:`<p><strong>Last updated: October 20, 2026</strong></p><p>All articles, charts, commentary, and materials published by Satisfynex are for general informational and educational purposes only.</p>`}
 };
  
 function showPage(type,push=true){
  const p=pages[type];
  if(!p){showHome(false);return;}
- 
  showView("page");
  $("#pageDetail").innerHTML=`<h1>${escapeHTML(p.title)}</h1>${p.body}`;
  setMeta(null,p.title);
  updateDynamicCanonical();
- 
  const paths={privacy:"/privacy-policy",terms:"/terms-of-service",about:"/about",contact:"/contact",disclaimer:"/disclaimer"};
  if(push)history.pushState({view:"page",type},"",paths[type]);
  window.scrollTo(0, 0);
@@ -810,24 +779,20 @@ function showPage(type,push=true){
  
 function routeFromLocation(){
  const path=location.pathname.replace(/\/+$/,"")||"/";
- 
  if(path==="/global-markets"){
   showGlobalMarkets(false);
   return;
  }
- 
  if(path.startsWith("/articles/")){
   const slug=path.slice("/articles/".length);
   openArticleById(slug,false);
   return;
  }
- 
  const routes={"/privacy-policy":"privacy","/terms-of-service":"terms","/about":"about","/contact":"contact","/disclaimer":"disclaimer"};
  if(routes[path]){
   showPage(routes[path],false);
   return;
  }
- 
  showView("home");
  setMeta();
  updateDynamicCanonical();
@@ -841,10 +806,8 @@ document.addEventListener("click",e=>{
   openArticleById(a.dataset.article,true);
   return;
  }
- 
  const link=e.target.closest("a");
  if(!link||e.ctrlKey||e.metaKey||e.shiftKey||e.altKey||e.button!==0)return;
- 
  const url=new URL(link.href,location.href);
  if(url.origin!==location.origin)return;
  
@@ -853,19 +816,16 @@ document.addEventListener("click",e=>{
   showGlobalMarkets(true);
   return;
  }
- 
  if(url.pathname==="/#latest"||link.getAttribute("href")==="/#latest"){
   e.preventDefault();
   showHome(true,"#latest");
   return;
  }
- 
  if(url.pathname==="/"&&!url.hash){
   e.preventDefault();
   showHome(true);
   return;
  }
- 
  const pathToType={"/privacy-policy":"privacy","/terms-of-service":"terms","/about":"about","/contact":"contact","/disclaimer":"disclaimer"};
  if(pathToType[url.pathname]){
   e.preventDefault();
@@ -895,7 +855,6 @@ async function loadArticles(){
   ]);
  
   let combinedRows = [];
- 
   if (resArticles.ok) {
     const manualArticles = await resArticles.json();
     if (Array.isArray(manualArticles)) combinedRows.push(...manualArticles);
@@ -930,7 +889,7 @@ async function loadArticles(){
  }catch(err){
   console.error("Satisfynex loading error:",err);
   $("#featuredGrid").innerHTML='<div class="notice">Unable to load published research. Please try again later.</div>';
-  $("#articleGrid").innerHTML='<div class="notice" style="grid-column:1/-1">Articles could not be loaded. Check the Supabase connection, table columns, and public SELECT policy.</div>';
+  $("#articleGrid").innerHTML='<div class="notice" style="grid-column:1/-1">Articles could not be loaded.</div>';
   $("#articleCount").textContent="Temporarily unavailable";
   routeFromLocation();
  }
