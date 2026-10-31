@@ -2,795 +2,919 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Satisfynex — Admin Dashboard</title>
-<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Satisfynex — Independent US Stock Research</title>
+<meta name="description" content="Independent research on US stocks, company fundamentals, technical charts and market trends.">
+ 
+<link rel="icon" href="/Icon.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/Icon.png">
+ 
+<meta property="og:site_name" content="Satisfynex">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Satisfynex — Independent US Stock Research">
+<meta property="og:description" content="Independent research on US stocks, company fundamentals, technical charts and market trends.">
+<meta property="og:url" content="https://www.satisfynex.com/">
+ 
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-742MNVD8XT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-742MNVD8XT');
+</script>
+ 
 <style>
-:root{color-scheme:dark;--bg:#090d14;--panel:#111824;--line:#263244;--text:#eef3fb;--muted:#94a3b8;--accent:#8be0c0;--danger:#ff9292;--twitter:#1d9bf0}
+:root{--bg:#0c1017;--panel:#131a25;--line:#283344;--text:#f2f5fa;--muted:#9ca9bb;--accent:#8ee0bd;--max:1180px}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 system-ui,-apple-system,sans-serif}
-header{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid var(--line);gap:12px}
-.brand{font-size:20px;font-weight:800}.brand span{color:var(--accent)}
-main{max-width:1180px;padding:26px 18px 60px;margin:auto}
-h1{font-size:clamp(25px,4vw,35px);line-height:1.2;margin:0 0 8px}
-h2{font-size:19px;margin:0 0 15px}
-p,.muted,.hint{color:var(--muted)}
-.panel{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:20px;margin:20px 0}
-.grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(260px,.8fr);gap:20px;align-items:start}
-label{display:block;font-size:13px;margin:14px 0 6px;color:#c3cede}
-input,select,textarea{width:100%;background:#0b111b;color:var(--text);border:1px solid #344258;border-radius:8px;padding:12px;font:inherit}
-textarea{min-height:110px;resize:vertical}#content,#newsAnalysis{min-height:220px}
-input:focus,select:focus,textarea:focus{outline:1px solid var(--accent)}
-button,.link{cursor:pointer;border:1px solid var(--line);border-radius:8px;padding:10px 14px;background:#1a2535;color:var(--text);font:inherit;text-decoration:none}
-button.primary{background:var(--accent);color:#07140f;border-color:var(--accent);font-weight:750}
-button.danger{background:rgba(255, 146, 146, 0.15);color:var(--danger);border-color:rgba(255, 146, 146, 0.3);font-weight:600}
-button.danger:hover{background:rgba(255, 146, 146, 0.3)}
-button.twitter-btn{background:rgba(29, 155, 240, 0.15);color:#71c9f8;border-color:#1d9bf0;font-weight:600}
-button.twitter-btn:hover{background:rgba(29, 155, 240, 0.25)}
-button:disabled{opacity:.5}
-.row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
-.small{font-size:12px;padding:6px 9px}
-.status{min-height:24px;margin:12px 0;color:var(--accent);overflow-wrap:anywhere}
-.status.error{color:var(--danger)}
-.hint{font-size:12px;margin-top:5px}
-#loginPanel{max-width:450px;margin:45px auto}
-#app{display:none}
-.article{padding:14px 0;border-bottom:1px solid var(--line)}
-.article-title{font-weight:700;overflow-wrap:anywhere}
-.meta{font-size:12px;color:var(--muted);margin:4px 0 9px}
-.preview{display:block;width:100%;max-height:240px;object-fit:contain;margin-top:12px;border-radius:8px;background:#080c12}
-
-/* Tab Switcher Styles */
-.tab-nav{display:flex;gap:10px;margin-bottom:20px;border-bottom:1px solid var(--line);padding-bottom:12px}
-.tab-btn{background:#0b111b;border:1px solid var(--line);color:var(--muted);font-weight:600;padding:10px 18px;border-radius:8px;cursor:pointer}
-.tab-btn.active{background:var(--accent);color:#07140f;border-color:var(--accent)}
-
-.admin-pagination{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:18px;padding-top:12px;border-top:1px solid var(--line)}
-.admin-pagination button{background:#1a2535;color:var(--text);border:1px solid var(--line);padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600}
-.admin-pagination button:hover:not(:disabled){background:#243248;border-color:var(--accent)}
-.admin-pagination button:disabled{opacity:0.4;cursor:not-allowed}
-.admin-pagination span{color:var(--muted);font-size:12px}
-
-@media(max-width:760px){.grid{grid-template-columns:1fr}header{padding:15px}}
+html{scroll-behavior:smooth;scroll-padding-top:110px}
+ 
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  line-height:1.7;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+ 
+a{color:inherit;text-decoration:none}
+button,input,select{font:inherit}
+.container{width:min(var(--max),calc(100% - 40px));margin:auto}
+.hidden{display:none!important}
+ 
+.topbar{position:sticky;top:0;z-index:20;background:#0c1017f5;border-bottom:1px solid var(--line)}
+.ticker-tape-container{width:100%;background:#080b10;border-bottom:1px solid var(--line);min-height:46px;overflow:hidden}
+ 
+.nav{min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{font-size:25px;font-weight:850;letter-spacing:-1.2px}
+.brand span{color:var(--accent)}
+.navlinks,.footer-links{display:flex;align-items:center;flex-wrap:wrap;gap:18px;color:var(--muted);font-size:13px}
+ 
+.hero{
+  position: relative;
+  padding: 85px 0 65px;
+  background: linear-gradient(90deg, rgba(12, 16, 23, 0.92) 0%, rgba(12, 16, 23, 0.75) 50%, rgba(12, 16, 23, 0.4) 100%), url('/IMG_1210.jpeg');
+  background-size: cover;
+  background-position: center right;
+  background-repeat: no-repeat;
+  border-bottom: 1px solid var(--line);
+}
+ 
+.eyebrow{color:var(--accent);font-size:11px;letter-spacing:2px;font-weight:800;text-transform:uppercase}
+h1,h2,h3,p{margin-top:0}
+.hero h1{max-width:780px;margin:16px 0;font-size:clamp(36px,6vw,60px);line-height:1.1;letter-spacing:-1.8px;text-shadow: 0 2px 10px rgba(0,0,0,0.7)}
+.hero p{max-width:640px;color:#d0d9e5;font-size:17px;min-height:65px;text-shadow: 0 1px 5px rgba(0,0,0,0.8)}
+.hero-note{display:inline-block;border:1px solid var(--line);border-radius:30px;padding:7px 13px;color:var(--muted);font-size:12px;background: rgba(12, 16, 23, 0.6);backdrop-filter: blur(4px)}
+ 
+.screener-section{padding:30px 0 20px;border-top:1px solid var(--line)}
+.screener-panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:0 10px 25px -5px rgba(0,0,0,0.3)}
+ 
+.section,.article-page{padding:42px 0}
+.section-heading{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:22px}
+.section-heading h2{font-size:25px;margin:0}
+.muted,.excerpt{color:var(--muted)}
+.small{font-size:12px}
+.featured-grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(260px,.8fr);gap:22px}
+.feature-main,.feature-side,.article-card,.panel,.contact-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.cover{width:100%;height:auto;object-fit:contain;background:#0c1017}
+.feature-main .body,.article-card .body{padding:20px}
+.feature-main h3{font-size:clamp(22px,3vw,31px);line-height:1.3;margin:10px 0}
+.feature-side{display:flex;flex-direction:column}
+.side-story{display:grid;grid-template-columns:100px minmax(0,1fr);gap:14px;padding:15px;border-bottom:1px solid var(--line)}
+.side-story:last-child{border:0}
+.side-story img{width:100%;height:auto;object-fit:contain;background:#0c1017}
+.side-story h3{font-size:14px;line-height:1.45;margin:6px 0}
+.tag{display:inline-block;color:var(--accent);background:#183e35;border-radius:5px;padding:3px 7px;font-size:10px;text-transform:uppercase;letter-spacing:.7px;font-weight:800}
+.meta{display:flex;flex-wrap:wrap;gap:8px 13px;color:var(--muted);font-size:11px}
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px}
+.filters input,.filters select{color:var(--text);background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:12px;outline:none}
+.filters input{flex:1;min-width:200px}
+.article-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.article-card{transition:transform .18s,border-color .18s}
+.article-card:hover{transform:translateY(-3px);border-color:#55796e}
+.article-card h3{font-size:19px;line-height:1.4;margin:11px 0}
+.excerpt{font-size:13px;line-height:1.7}
+.read-more,.back-link{display:inline-block;color:var(--accent);font-size:12px;font-weight:750;margin-top:9px}
+.notice,.empty{border:1px dashed var(--line);border-radius:12px;padding:24px;color:var(--muted);text-align:center}
+.article-page{min-height:60vh;padding-top:40px}
+.back-link{margin:0 0 24px}
+.article-header{max-width:850px;margin-bottom:26px}
+.article-header h1{font-size:clamp(32px,5vw,52px);line-height:1.15;margin:13px 0}
+.article-lead{color:var(--muted);font-size:18px}
+.article-hero{display:block;max-width:100%;height:auto;max-height:700px;object-fit:contain;margin:0 auto 30px;border-radius:12px}
+.article-layout{display:grid;grid-template-columns:minmax(0,780px) minmax(180px,1fr);gap:35px;align-items:start}
+.article-content{font-size:16px;color:#dbe2ed;overflow-wrap:anywhere}
+.article-content h2{color:var(--text);font-size:25px;margin:30px 0 12px}
+.article-content h3{color:var(--text);font-size:20px;margin:25px 0 10px}
+.article-content p{margin-bottom:20px;white-space:normal}
+.article-content img{max-width:100%;height:auto;margin:20px auto;border-radius:10px}
+.article-content a,.legal-content a{color:var(--accent);text-decoration:underline}
+.article-content ul,.article-content ol{padding-left:24px}
+ 
+.sidebar{position:sticky;top:120px}
+.sidebar .panel{padding:18px;margin-bottom:16px}
+.sidebar p{color:var(--muted);font-size:12px}
+.legal-content{max-width:820px}
+.legal-content h1{font-size:clamp(32px,5vw,44px);line-height:1.2}
+.legal-content h2{font-size:22px;margin-top:30px}
+.legal-content p,.legal-content li{color:#dbe2ed}
+.contact-card{padding:24px;margin:24px 0}
+.email-link{color:var(--accent);font-weight:700;overflow-wrap:anywhere}
+.button-link{display:inline-block;background:var(--accent);color:#0c1017!important;padding:11px 18px;border-radius:8px;font-weight:800;margin-top:10px}
+.footer{border-top:1px solid var(--line);padding:35px 0;color:var(--muted);font-size:12px}
+.footer-row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:24px}
+.footer-links{max-width:600px;align-items:flex-start}
+ 
+.related-research-section{margin-top:45px;border-top:1px solid var(--line);padding-top:30px}
+.related-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:20px}
+.related-card{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;transition:transform .15s,border-color .15s}
+.related-card:hover{transform:translateY(-2px);border-color:#55796e}
+.related-thumb{width:100%;height:130px;object-fit:cover;background:#0c1017}
+.related-body{padding:12px;display:flex;flex-direction:column;flex:1}
+.related-date{font-size:11px;color:var(--muted);margin-bottom:6px}
+.related-title{font-size:13px;font-weight:600;line-height:1.35;color:var(--text);margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+ 
+.pagination{display:flex;justify-content:center;align-items:center;gap:12px;margin-top:35px}
+.pagination button{background:var(--panel);color:var(--text);border:1px solid var(--line);padding:10px 18px;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px;transition:background .15s,border-color .15s}
+.pagination button:hover:not(:disabled){background:#1c2636;border-color:var(--accent)}
+.pagination button:disabled{opacity:0.4;cursor:not-allowed}
+.pagination span{color:var(--muted);font-size:13px}
+ 
+.text-rotator {
+  opacity: 1;
+  transition: opacity 0.6s ease-in-out;
+}
+.text-rotator.fade-out {
+  opacity: 0;
+}
+ 
+@media(max-width:850px){
+  .featured-grid{grid-template-columns:1fr}
+  .article-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .article-layout{grid-template-columns:1fr}
+  .sidebar{position:static}
+  .related-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:580px){
+  .container{width:calc(100% - 28px)}
+  .nav{min-height:60px}
+  .brand{font-size:22px}
+  .navlinks{gap:12px;font-size:12px}
+ 
+  .hero{
+    padding: 50px 0 40px;
+    background: linear-gradient(180deg, rgba(12, 16, 23, 0.94) 0%, rgba(12, 16, 23, 0.86) 65%, rgba(12, 16, 23, 0.7) 100%), url('/IMG_1210.jpeg');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    min-height: 360px;
+  }
+  .hero h1{
+    font-size: 28px;
+    line-height: 1.2;
+    letter-spacing: -0.8px;
+    margin: 12px 0;
+  }
+  .hero p{
+    font-size: 14px;
+    min-height: auto;
+    line-height: 1.6;
+  }
+ 
+  .article-grid{grid-template-columns:1fr}
+  .side-story{grid-template-columns:90px minmax(0,1fr)}
+  .section,.article-page{padding:30px 0}
+  .related-grid{grid-template-columns:1fr}
+}
 </style>
 </head>
+ 
 <body>
-<header>
-  <div class="brand">SATISFY<span>NEX</span> <span style="color:#94a3b8;font-size:12px;font-weight:500">/ ADMIN</span></div>
-  <div class="row">
-    <a class="link small" href="/" target="_blank" rel="noopener">View website ↗</a>
-    <button id="logoutBtn" class="small" hidden>Log out</button>
+<header class="topbar">
+ <div class="ticker-tape-container">
+  <div class="tradingview-widget-container">
+   <div class="tradingview-widget-container__widget"></div>
+   <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+   {
+   "symbols": [
+     { "proName": "FOREXCOM:SPXUSD", "title": "S&P 500" },
+     { "proName": "FOREXCOM:NSXUSD", "title": "Nasdaq 100" },
+     { "proName": "FOREXCOM:DJI", "title": "Dow 30" },
+     { "proName": "INDEX:RUT", "title": "Russell 2000" },
+     { "proName": "INDEX:VIX", "title": "VIX" },
+     { "proName": "TVC:GOLD", "title": "Gold" },
+     { "proName": "TVC:SILVER", "title": "Silver" },
+     { "proName": "TVC:USOIL", "title": "Crude Oil (WTI)" },
+     { "proName": "TVC:UKOIL", "title": "Brent Oil" },
+     { "proName": "CAPITALCOM:NATURALGAS", "title": "Natural Gas" },
+     { "proName": "TVC:US10Y", "title": "US 10Y Yield" },
+     { "proName": "CAPITALCOM:DXY", "title": "Dollar Index (DXY)" },
+     { "proName": "BITSTAMP:BTCUSD", "title": "Bitcoin" }
+   ],
+   "showSymbolLogo": true,
+   "isTransparent": true,
+   "displayMode": "adaptive",
+   "colorTheme": "dark",
+   "locale": "en"
+   }
+   </script>
   </div>
+ </div>
+ 
+ <div class="container nav">
+  <a class="brand" href="/">satisfy<span>nex</span></a>
+  <nav class="navlinks" aria-label="Main navigation">
+   <a href="/global-markets">Global Markets</a>
+   <a href="/">Research</a>
+   <a href="/#latest">Latest</a>
+   <a href="/about">About</a>
+  </nav>
+ </div>
 </header>
-
+ 
 <main>
-<section id="loginPanel" class="panel">
-  <h1>Admin login</h1>
-  <p>Sign in to manage Satisfynex research and news.</p>
-  <form id="loginForm">
-    <label for="email">Admin email</label>
-    <input id="email" type="email" autocomplete="username" required>
-    <label for="password">Password</label>
-    <input id="password" type="password" autocomplete="current-password" required>
-    <div class="row" style="margin-top:18px">
-      <button class="primary" type="submit">Sign in</button>
-    </div>
-  </form>
-  <div id="loginStatus" class="status" role="status">Loading admin tools…</div>
-</section>
-
-<section id="app">
-  <h1>Dashboard</h1>
-  <p>Create, edit, and publish your research or curated market news.</p>
-
-  <!-- TAB SWITCHER -->
-  <div class="tab-nav">
-    <button type="button" id="tabResearchBtn" class="tab-btn active">📑 Write Research</button>
-    <button type="button" id="tabNewsBtn" class="tab-btn">📰 Write News</button>
+<div id="homeView">
+ <section class="hero"><div class="container">
+  <div class="eyebrow">Independent market research</div>
+  <h1>Understand the business behind the stock.</h1>
+  <p id="dynamicHeroText" class="text-rotator">Satisfynex delivers daily visual chart breakdowns and technical price action research on high-momentum US equities.</p>
+  <div class="hero-note">Research and education · Not financial advice</div>
+ </div></section>
+ 
+ <section class="section"><div class="container">
+  <div class="section-heading"><div><div class="eyebrow">Editor's selection</div><h2>Featured research</h2></div></div>
+  <div id="featuredGrid" class="featured-grid"><div class="notice">Loading published research...</div></div>
+ </div></section>
+ 
+ <!-- SECTION 1: LATEST ARTICLES & FILTER KATEGORI -->
+ <section class="section" id="latest"><div class="container">
+  <div class="section-heading"><div><div class="eyebrow">Explore the research</div><h2>Latest articles</h2></div><div id="articleCount" class="muted small"></div></div>
+  <div class="filters">
+   <input id="searchInput" type="search" placeholder="Search company, ticker, or topic..." aria-label="Search articles">
+   <!-- DROPDOWN KATEGORI TERMASUK GLOBAL MARKETS -->
+   <select id="categoryFilter" aria-label="Filter by category">
+     <option value="">All categories</option>
+     <option value="Stock Analysis">Stock Analysis</option>
+     <option value="GLOBAL MARKETS">Global Markets</option>
+   </select>
   </div>
-
-  <div class="grid">
-    <!-- KOLOM KIRI: EDITOR (RESEARCH / NEWS) -->
-    <section class="panel">
-      
-      <!-- FORM 1: WRITE RESEARCH (Tabel articles) -->
-      <div id="researchSection">
-        <div class="row" style="justify-content:space-between">
-          <h2 id="editorHeading">Write an article</h2>
-          <button id="newBtn" type="button" class="small">New article</button>
-        </div>
-        <form id="articleForm">
-          <input id="articleId" type="hidden">
-
-          <!-- PILIHAN TARGET HALAMAN DI WEBSITE -->
-          <label for="targetSection" style="color:var(--accent); font-weight:700;">Target Section / Website Page *</label>
-          <select id="targetSection" required style="border-color:var(--accent);">
-            <option value="research">Homepage / US Stock Research (Default)</option>
-            <option value="global">Global Markets Page ($SSEC, IHSG, Gold, Indices)</option>
-          </select>
-          <div class="hint">Pilih di mana artikel ini akan ditampilkan secara khusus di website.</div>
-
-          <label for="title">Title *</label>
-          <input id="title" maxlength="200" required placeholder="Why AI Infrastructure Stocks Could Benefit">
-
-          <label for="ticker">Ticker</label>
-          <input id="ticker" maxlength="30" placeholder="NVDA, MU, XOM, $SSEC...">
-
-          <label for="category">Category *</label>
-          <select id="category" required>
-            <option>Stock Analysis</option>
-            <option>Global Markets</option>
-            <option>AI &amp; Technology</option>
-            <option>Energy</option>
-            <option>Semiconductors</option>
-            <option>Market Insights</option>
-            <option>Earnings</option>
-            <option>Risk Analysis</option>
-          </select>
-
-          <label for="slug">URL slug *</label>
-          <input id="slug" maxlength="220" required placeholder="ai-infrastructure-stocks">
-          <div class="hint">Generated from the title; editable.</div>
-
-          <label for="excerpt">Short summary</label>
-          <textarea id="excerpt" maxlength="2000" style="min-height:130px" placeholder="A comprehensive summary of the research (up to 2000 characters)."></textarea>
-
-          <div class="row" style="justify-content:space-between; align-items:center; margin-top:14px;">
-            <label for="content" style="margin:0;">Article content *</label>
-            <button type="button" id="formatMarkdownBtn" class="small" style="background:#203a30; color:var(--accent); border-color:#2a5242;">🪄 Convert Copied Text to HTML</button>
-          </div>
-          <div class="hint" style="margin-bottom:6px;">Tip: Copas teks dari hasil Gemini, lalu klik tombol hijau di atas agar otomatis menjadi format HTML (h2, p, ul, li, strong).</div>
-          <textarea id="content" required placeholder="Paste your generated text here..."></textarea>
-
-          <label for="imageFile">Cover image / chart</label>
-          <input id="imageFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif">
-          <div class="hint">JPG, PNG, WebP, or GIF. Maximum 8 MB.</div>
-          <div id="imageStatus" class="hint"></div>
-          <img id="imagePreview" class="preview" alt="Article image preview" hidden>
-          <div class="row" style="margin-top:8px">
-            <button id="removeImageBtn" type="button" class="small" hidden>Remove image</button>
-          </div>
-
-          <div class="row" style="margin-top:20px">
-            <button id="draftBtn" type="button">Save draft</button>
-            <button id="publishBtn" type="button" class="primary">Publish article</button>
-          </div>
-
-          <div id="saveStatus" class="status" role="status"></div>
-        </form>
-      </div>
-
-      <!-- FORM 2: WRITE NEWS (Tabel news) -->
-      <div id="newsSection" style="display:none;">
-        <div class="row" style="justify-content:space-between">
-          <h2 id="newsEditorHeading">Write News Update</h2>
-          <button id="newNewsBtn" type="button" class="small">New news</button>
-        </div>
-        <form id="newsForm">
-          <input id="newsId" type="hidden">
-          <input id="newsSlug" type="hidden">
-
-          <label for="newsTitle">News Title *</label>
-          <input id="newsTitle" maxlength="250" required placeholder="Global market updates and economic shifts...">
-
-          <label for="newsCategory">Category *</label>
-          <select id="newsCategory" required>
-            <option>Market Insights</option>
-            <option>Macro</option>
-            <option>Energy</option>
-            <option>Technology</option>
-            <option>Commodities</option>
-          </select>
-
-          <label for="newsSummary">Summary / Short Excerpt *</label>
-          <textarea id="newsSummary" maxlength="2000" style="min-height:130px" required placeholder="A comprehensive summary of the news update (up to 2000 characters)."></textarea>
-
-          <label for="newsAnalysis">News Analysis / Content *</label>
-          <textarea id="newsAnalysis" required placeholder="Write your curated news analysis here..."></textarea>
-
-          <label for="newsSourceName">Source Name</label>
-          <input id="newsSourceName" placeholder="e.g. CNBC, Bloomberg, Reuters">
-
-          <label for="newsSourceUrl">Source URL</label>
-          <input id="newsSourceUrl" type="url" placeholder="https://...">
-
-          <label for="newsImageFile">News Image</label>
-          <input id="newsImageFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif">
-          <div class="hint">JPG, PNG, WebP, or GIF. Maximum 8 MB.</div>
-          <div id="newsImageStatus" class="hint"></div>
-          <img id="newsImagePreview" class="preview" alt="News image preview" hidden>
-          <div class="row" style="margin-top:8px">
-            <button id="newsRemoveImageBtn" type="button" class="small" hidden>Remove image</button>
-          </div>
-
-          <div class="row" style="margin-top:20px">
-            <button id="publishNewsBtn" type="button" class="primary">Publish News</button>
-          </div>
-
-          <div id="newsSaveStatus" class="status" role="status"></div>
-        </form>
-      </div>
-
-    </section>
-
-    <!-- KOLOM KANAN: DAFTAR KONTEN (RESEARCH / NEWS) -->
-    <aside class="panel">
-      <div class="row" style="justify-content:space-between">
-        <h2 id="sidebarListTitle">Articles</h2>
-        <button id="refreshBtn" class="small" type="button">Refresh</button>
-      </div>
-      <div id="articleList">Sign in to load articles.</div>
-      <div id="adminPaginationContainer"></div>
-    </aside>
+  <div id="articleGrid" class="article-grid"><div class="notice">Loading articles...</div></div>
+  <div id="paginationContainer"></div>
+ </div></section>
+ 
+ <!-- SECTION 2: KOLOM KHUSUS 5 ANALISIS GLOBAL TERBARU -->
+ <section class="section" style="border-top: 1px solid var(--line); background: rgba(19, 26, 37, 0.4);"><div class="container">
+  <div class="section-heading">
+    <div><div class="eyebrow">Macro & Indices</div><h2>Global Markets Insights</h2></div>
+    <a class="read-more" href="/global-markets" style="margin: 0;">View all global markets →</a>
   </div>
+  <div id="homeGlobalGrid" class="article-grid"><div class="notice">Loading global insights...</div></div>
+ </div></section>
+ 
+ <section class="screener-section"><div class="container">
+  <div class="screener-panel">
+   <div style="padding: 10px 10px 15px;">
+    <div class="eyebrow">Market Quotes Data</div>
+    <h2 style="font-size: 22px; margin: 4px 0 0 0;">Global Markets Overview & Sectors</h2>
+   </div>
+   <div style="padding: 0 10px 10px;">
+    <script type="module" src="https://widgets.tradingview-widget.com/w/en/tv-market-data.js"></script>
+    <tv-market-data symbol-sectors='[{"sectionName":"Indices","symbols":["FOREXCOM:SPXUSD","FOREXCOM:NSXUSD","FOREXCOM:DJI","INDEX:NKY","INDEX:DEU40","FOREXCOM:UKXGBP"]},{"sectionName":"Futures","symbols":["BMFBOVESPA:ISP1!","BMFBOVESPA:EUR1!","CMCMARKETS:GOLD","TVC:USOIL","BMFBOVESPA:CCM1!"]},{"sectionName":"Bonds","symbols":["EUREX:FGBL1!","EUREX:FBTP1!","EUREX:FGBM1!"]},{"sectionName":"Forex","symbols":["FX:EURUSD","FX:GBPUSD","FX:USDJPY","FX:USDCHF","FX:AUDUSD","FX:USDCAD"]}]' theme="dark"></tv-market-data>
+   </div>
+  </div>
+ </div></section>
+ 
+ <section class="screener-section" style="padding-top: 10px;"><div class="container">
+  <div class="screener-panel">
+   <div style="padding: 10px 10px 15px;">
+    <div class="eyebrow">Market Movers</div>
+    <h2 style="font-size: 22px; margin: 4px 0 0 0;">Active Equities & Performance Overview</h2>
+   </div>
+   <div style="padding: 0 10px 10px;">
+    <script type="module" src="https://widgets.tradingview-widget.com/w/en/tv-market-overview.js"></script>
+    <tv-market-overview exchange="NASDAQ" time-frame="1D" mode="market-movers" theme="dark"></tv-market-overview>
+   </div>
+  </div>
+ </div></section>
+</div>
+ 
+<section id="globalView" class="article-page hidden">
+ <div class="container">
+  <a class="back-link" href="/">← Back to research</a>
+  <div class="article-header">
+   <span class="tag">Global Markets & Macro</span>
+   <h1>Sovereign Indices, Country Benchmarks & Commodity Action</h1>
+   <p class="article-lead">Macroeconomic trends, global index breakdowns, and commodity liquidity flows.</p>
+  </div>
+  <div id="globalGrid" class="article-grid" style="margin-top: 25px;">
+   <div class="notice">Loading global market insights...</div>
+  </div>
+ </div>
 </section>
+ 
+<section id="articleView" class="article-page hidden"><div class="container">
+ <a class="back-link" href="/">← Back to research</a><div id="articleDetail"></div>
+</div></section>
+ 
+<section id="pageView" class="article-page hidden"><div class="container legal-content">
+ <a class="back-link" href="/">← Back to research</a><div id="pageDetail"></div>
+</div></section>
 </main>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+ 
+<footer class="footer"><div class="container">
+ <div class="footer-row"><div>
+  <a class="brand" href="/">satisfy<span>nex</span></a>
+  <p style="margin:8px 0">Independent US stock research and investing education.</p>
+  <p>Questions? <a class="email-link" href="mailto:research@satisfynex.com">research@satisfynex.com</a></p>
+ </div>
+ <nav class="footer-links" aria-label="Policies and information">
+  <a href="/global-markets">Global Markets</a>
+  <a href="/privacy-policy">Privacy Policy</a>
+  <a href="/terms-of-service">Terms of Service</a>
+  <a href="/about">About Us</a>
+  <a href="/contact">Contact Us</a>
+  <a href="/disclaimer">Investment Disclaimer</a>
+ </nav></div>
+ <p>© <span id="year"></span> Satisfynex. All rights reserved. Market analysis is for educational purposes only.</p>
+</div></footer>
+ 
 <script>
-(() => {
-  const URL = "https://ngysrsypmieuvucqupgd.supabase.co";
-  const KEY = "sb_publishable_U05M_WQFKioCZ1LNSfyNbQ_jUoJTQvd";
-  const ADMIN_UID = "27b4b511-aa7a-42cd-888b-f2cf2183aa02";
-  const BUCKET = "article-images";
-  const $ = id => document.getElementById(id);
-
-  if (!window.supabase) {
-    $("loginStatus").textContent = "Supabase library failed to load.";
-    $("loginStatus").classList.add("error");
+"use strict";
+ 
+document.addEventListener("contextmenu", function(e) {
+  e.preventDefault();
+});
+ 
+function applyWatermark(imgElement) {
+  if (!imgElement || imgElement.dataset.watermarked === "true") return;
+ 
+  if (!imgElement.complete || imgElement.naturalWidth === 0) {
+    imgElement.onload = () => applyWatermark(imgElement);
     return;
   }
-
-  const db = window.supabase.createClient(URL, KEY);
-  let user = null;
-  let currentTab = "research";
-  
-  let imageUrl = "";
-  let removeImage = false;
-  let busy = false;
-
-  let newsImageUrl = "";
-  let newsRemoveImage = false;
-  
-  let adminArticles = [];
-  let adminNewsList = [];
-  let adminCurrentPage = 1;
-  const ADMIN_ARTICLES_PER_PAGE = 20;
-
-  function status(id, message, error = false) {
-    $(id).textContent = message;
-    $(id).classList.toggle("error", error);
-  }
-
-  function slugify(value) {
-    return value.toLowerCase().trim()
-      .normalize("NFKD").replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")
-      .slice(0, 200);
-  }
-
-  function convertMarkdownToHtml() {
-    let text = $("content").value;
-    if (!text.trim()) return;
-    text = text.replace(/\r\n/g, "\n");
-    let lines = text.split("\n");
-    let htmlOutput = [];
-    let inList = false;
-
-    for (let i = 0; i < lines.length; i++) {
-      let line = lines[i].trim();
-      if (!line) {
-        if (inList) { htmlOutput.push("</ul>"); inList = false; }
-        continue;
-      }
-      if (line.startsWith("### ")) {
-        if (inList) { htmlOutput.push("</ul>"); inList = false; }
-        htmlOutput.push(`<h3>${line.replace("### ", "").trim()}</h3>`);
-      } else if (line.startsWith("## ") || (!line.startsWith("- ") && line.length < 60 && !line.endsWith(".") && i < lines.length - 1 && lines[i+1].trim() === "")) {
-        if (inList) { htmlOutput.push("</ul>"); inList = false; }
-        let headingText = line.replace(/^##\s*/, "");
-        htmlOutput.push(`<h2>${headingText}</h2>`);
-      } else if (line.startsWith("- ") || line.startsWith("* ")) {
-        if (!inList) { htmlOutput.push("<ul>"); inList = true; }
-        let bulletText = line.replace(/^[-*]\s*/, "");
-        bulletText = bulletText.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
-        bulletText = bulletText.replace(/^([A-Za-z\s/]+):/, "<strong>$1:</strong>");
-        htmlOutput.push(`<li>${bulletText}</li>`);
-      } else {
-        if (inList) { htmlOutput.push("</ul>"); inList = false; }
-        let pText = line.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
-        htmlOutput.push(`<p>${pText}</p>`);
-      }
-    }
-    if (inList) htmlOutput.push("</ul>");
-    $("content").value = htmlOutput.join("\n");
-  }
-
-  $("formatMarkdownBtn").addEventListener("click", convertMarkdownToHtml);
-
-  function preview(url) {
-    $("imagePreview").hidden = !url;
-    $("removeImageBtn").hidden = !url;
-    if (url) $("imagePreview").src = url;
-    else $("imagePreview").removeAttribute("src");
-  }
-
-  function newsPreview(url) {
-    $("newsImagePreview").hidden = !url;
-    $("newsRemoveImageBtn").hidden = !url;
-    if (url) $("newsImagePreview").src = url;
-    else $("newsImagePreview").removeAttribute("src");
-  }
-
-  function loginView() {
-    user = null;
-    $("loginPanel").style.display = "block";
-    $("app").style.display = "none";
-    $("logoutBtn").hidden = true;
-  }
-
-  async function enter(userData) {
-    if (!userData) return loginView();
-    if (userData.id !== ADMIN_UID) {
-      await db.auth.signOut();
-      loginView();
-      status("loginStatus", "This account is not authorized.", true);
-      return;
-    }
-    user = userData;
-    $("loginPanel").style.display = "none";
-    $("app").style.display = "block";
-    $("logoutBtn").hidden = false;
-    await loadAllData();
-  }
-
-  $("loginForm").addEventListener("submit", async event => {
-    event.preventDefault();
-    status("loginStatus", "Signing in…");
-    const dataAuth = await db.auth.signInWithPassword({
-      email: $("email").value.trim(),
-      password: $("password").value
-    });
-    if (dataAuth.error) return status("loginStatus", dataAuth.error.message, true);
-    await enter(dataAuth.data.user);
-  });
-
-  $("logoutBtn").addEventListener("click", async () => {
-    await db.auth.signOut();
-    loginView();
-    status("loginStatus", "You have been logged out.");
-  });
-
-  $("tabResearchBtn").addEventListener("click", () => {
-    currentTab = "research";
-    $("tabResearchBtn").classList.add("active");
-    $("tabNewsBtn").classList.remove("active");
-    $("researchSection").style.display = "block";
-    $("newsSection").style.display = "none";
-    $("sidebarListTitle").textContent = "Articles";
-    adminCurrentPage = 1;
-    renderAdminList();
-  });
-
-  $("tabNewsBtn").addEventListener("click", () => {
-    currentTab = "news";
-    $("tabNewsBtn").classList.add("active");
-    $("tabResearchBtn").classList.remove("active");
-    $("newsSection").style.display = "block";
-    $("researchSection").style.display = "none";
-    $("sidebarListTitle").textContent = "News Updates";
-    adminCurrentPage = 1;
-    renderAdminList();
-  });
-
-  $("title").addEventListener("input", () => {
-    if (!$("slug").dataset.edited) $("slug").value = slugify($("title").value);
-  });
-  $("slug").addEventListener("input", () => $("slug").dataset.edited = "1");
-
-  function resetEditor() {
-    $("articleForm").reset();
-    $("articleId").value = "";
-    $("slug").dataset.edited = "";
-    imageUrl = "";
-    removeImage = false;
-    $("imageFile").value = "";
-    $("imageStatus").textContent = "";
-    preview("");
-    $("editorHeading").textContent = "Write an article";
-    status("saveStatus", "");
-  }
-  $("newBtn").addEventListener("click", resetEditor);
-
-  function resetNewsEditor() {
-    $("newsForm").reset();
-    $("newsId").value = "";
-    $("newsSlug").value = "";
-    newsImageUrl = "";
-    newsRemoveImage = false;
-    $("newsImageFile").value = "";
-    $("newsImageStatus").textContent = "";
-    newsPreview("");
-    $("newsEditorHeading").textContent = "Write News Update";
-    status("newsSaveStatus", "");
-  }
-  $("newNewsBtn").addEventListener("click", resetNewsEditor);
-
-  $("removeImageBtn").addEventListener("click", () => {
-    imageUrl = "";
-    removeImage = true;
-    $("imageFile").value = "";
-    $("imageStatus").textContent = "Image will be removed when saved.";
-    preview("");
-  });
-
-  $("newsRemoveImageBtn").addEventListener("click", () => {
-    newsImageUrl = "";
-    newsRemoveImage = true;
-    $("newsImageFile").value = "";
-    $("newsImageStatus").textContent = "Image will be removed when saved.";
-    newsPreview("");
-  });
-
-  $("imageFile").addEventListener("change", () => {
-    const file = $("imageFile").files[0];
-    if (!file) return;
-    if (file.size > 8 * 1024 * 1024) {
-      $("imageFile").value = "";
-      return status("saveStatus", "Image exceeds 8 MB limit.", true);
-    }
-    const reader = new FileReader();
-    reader.onload = e => { $("imagePreview").src = e.target.result; };
-    reader.readAsDataURL(file);
-    $("imagePreview").hidden = false;
-    $("removeImageBtn").hidden = false;
-    $("imageStatus").textContent = "Ready: " + file.name;
-    removeImage = false;
-  });
-
-  $("newsImageFile").addEventListener("change", () => {
-    const file = $("newsImageFile").files[0];
-    if (!file) return;
-    if (file.size > 8 * 1024 * 1024) {
-      $("newsImageFile").value = "";
-      return status("newsSaveStatus", "Image exceeds 8 MB limit.", true);
-    }
-    const reader = new FileReader();
-    reader.onload = e => { $("newsImagePreview").src = e.target.result; };
-    reader.readAsDataURL(file);
-    $("newsImagePreview").hidden = false;
-    $("newsRemoveImageBtn").hidden = false;
-    $("newsImageStatus").textContent = "Ready: " + file.name;
-    newsRemoveImage = false;
-  });
-
-  async function uploadImage(file) {
-    const name = file.name.replace(/[^a-zA-Z0-9._-]/g, "-");
-    const path = user.id + "/" + Date.now() + "-" + name;
-    const { error } = await db.storage.from(BUCKET).upload(path, file, {
-      cacheControl: "3600", upsert: false, contentType: file.type
-    });
-    if (error) throw error;
-    return db.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
-  }
-
-  async function save(statusValue) {
-    if (busy) return;
-    const title = $("title").value.trim();
-    const slug = slugify($("slug").value);
-    const content = $("content").value.trim();
-    const targetSection = $("targetSection").value;
-
-    if (!title || !slug || !content) {
-      return status("saveStatus", "Title, slug, and content are required.", true);
-    }
-
-    busy = true;
-    $("draftBtn").disabled = $("publishBtn").disabled = true;
-    status("saveStatus", "Saving article…");
-
+ 
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+ 
+  const img = new Image();
+  img.crossOrigin = "anonymous";
+ 
+  img.onload = () => {
     try {
-      let finalImage = removeImage ? null : imageUrl;
-      const file = $("imageFile").files[0];
-      if (file) {
-        status("saveStatus", "Uploading image…");
-        finalImage = await uploadImage(file);
-      }
-
-      let userTicker = $("ticker").value.trim().toUpperCase();
-      let selectedCategory = $("category").value;
-      if (targetSection === "global") {
-        selectedCategory = "GLOBAL MARKETS";
-        if (!userTicker.includes("$SSEC") && !userTicker.includes("$COMPOSITE") && !userTicker.includes("$XAUUSD")) {
-          userTicker = userTicker ? userTicker + " $SSEC" : "$SSEC";
-        }
-      }
-
-      const article = {
-        title,
-        slug,
-        ticker: userTicker || null,
-        category: selectedCategory,
-        excerpt: $("excerpt").value.trim() || null,
-        content,
-        image_url: finalImage,
-        status: statusValue,
-        updated_at: new Date().toISOString()
-      };
-
-      const id = $("articleId").value;
-      const result = id
-        ? await db.from("articles").update(article).eq("id", id).select().single()
-        : await db.from("articles").insert(article).select().single();
-
-      if (result.error) throw result.error;
-
-      $("articleId").value = result.data.id;
-      imageUrl = finalImage || "";
-      removeImage = false;
-      $("imageFile").value = "";
-      $("imageStatus").textContent = "";
-      preview(imageUrl);
-      $("slug").dataset.edited = "1";
-      $("editorHeading").textContent = "Edit article";
-      status("saveStatus", statusValue === "published" ? "Article published successfully." : "Draft saved successfully.");
-      await loadAllData();
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      ctx.drawImage(img, 0, 0);
+ 
+      const fontSize = Math.max(22, Math.floor(canvas.width * 0.065)); 
+      ctx.font = `bold ${fontSize}px Inter, sans-serif`;
+      ctx.fillStyle = "rgba(255, 255, 255, 0.25)"; 
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+ 
+      ctx.shadowColor = "rgba(0, 0, 0, 0.4)";
+      ctx.shadowBlur = 10;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 0;
+ 
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      ctx.fillText("satisfynex.com", centerX, centerY);
+ 
+      imgElement.src = canvas.toDataURL("image/png");
+      imgElement.dataset.watermarked = "true";
     } catch (err) {
-      status("saveStatus", err.message || "Unable to save article.", true);
-    } finally {
-      busy = false;
-      $("draftBtn").disabled = $("publishBtn").disabled = false;
+      console.warn("Watermark terhalang isu CORS Supabase:", err);
     }
-  }
-
-  $("draftBtn").addEventListener("click", () => save("draft"));
-  $("publishBtn").addEventListener("click", () => save("published"));
-
-  $("publishNewsBtn").addEventListener("click", async () => {
-    if (busy) return;
-    const title = $("newsTitle").value.trim();
-    const summary = $("newsSummary").value.trim();
-    const analysis = $("newsAnalysis").value.trim();
-
-    if (!title || !summary || !analysis) {
-      return status("newsSaveStatus", "Title, summary, and analysis are required.", true);
-    }
-
-    const slug = slugify(title);
-    $("newsSlug").value = slug;
-
-    busy = true;
-    $("publishNewsBtn").disabled = true;
-    status("newsSaveStatus", "Publishing news…");
-
-    try {
-      let finalImage = newsRemoveImage ? null : newsImageUrl;
-      const file = $("newsImageFile").files[0];
-      if (file) {
-        status("newsSaveStatus", "Uploading news image…");
-        finalImage = await uploadImage(file);
-      }
-
-      const newsItem = {
-        title,
-        slug,
-        summary,
-        analysis,
-        category: $("newsCategory").value,
-        source_name: $("newsSourceName").value.trim() || "Satisfynex Editorial",
-        source_url: $("newsSourceUrl").value.trim() || null,
-        image_url: finalImage,
-        created_at: new Date().toISOString()
-      };
-
-      const id = $("newsId").value;
-      const result = id
-        ? await db.from("news").update(newsItem).eq("id", id).select().single()
-        : await db.from("news").insert(newsItem).select().single();
-
-      if (result.error) throw result.error;
-
-      $("newsId").value = result.data.id;
-      newsImageUrl = finalImage || "";
-      newsRemoveImage = false;
-      $("newsImageFile").value = "";
-      $("newsImageStatus").textContent = "";
-      newsPreview(newsImageUrl);
-      $("newsEditorHeading").textContent = "Edit News Update";
-      status("newsSaveStatus", "News published successfully!");
-      await loadAllData();
-    } catch (err) {
-      status("newsSaveStatus", err.message || "Unable to save news.", true);
-    } finally {
-      busy = false;
-      $("publishNewsBtn").disabled = false;
-    }
+  };
+ 
+  img.onerror = () => {
+    console.warn("Gagal memuat gambar untuk watermark.");
+  };
+ 
+  if (imgElement.src.startsWith("data:")) return;
+  img.src = imgElement.src + (imgElement.src.includes("?") ? "&" : "?") + "cors=1";
+}
+ 
+function processAllImages() {
+  const images = document.querySelectorAll("img.cover, img.article-hero, .article-content img, .side-story img, .related-thumb");
+  images.forEach(img => applyWatermark(img));
+}
+ 
+const SUPABASE_URL="https://ngysrsypmieuvucqupgd.supabase.co";
+const SUPABASE_KEY="sb_publishable_U05M_WQFKioCZ1LNSfyNbQ_jUoJTQvd";
+const SITE_URL="https://www.satisfynex.com";
+const FALLBACK_IMAGE="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80";
+ 
+let articles=[];
+let currentPage=1;
+const ARTICLES_PER_PAGE=20;
+ 
+const $=s=>document.querySelector(s);
+ 
+const rotatingSentences = [
+  "Satisfynex delivers daily visual chart breakdowns and technical price action research on high-momentum US equities.",
+  "At Satisfynex, we bridge the gap between underlying business fundamentals and technical chart structures for US-listed companies.",
+  "Satisfynex provides independent market coverage, analyzing technical breakouts, moving average supports, and risk boundaries across Wall Street.",
+  "Welcome to Satisfynex research, where we highlight key resistance channels, volume expansion, and structural trend levels on US stocks.",
+  "Satisfynex tracks daily price action and quarterly earnings momentum to identify critical technical inflection points across US markets."
+];
+ 
+function initTextRotator() {
+  const targetElement = $("#dynamicHeroText");
+  if (!targetElement) return;
+  let currentIndex = 0;
+  setInterval(() => {
+    targetElement.classList.add("fade-out");
+    setTimeout(() => {
+      currentIndex = (currentIndex + 1) % rotatingSentences.length;
+      targetElement.textContent = rotatingSentences[currentIndex];
+      targetElement.classList.remove("fade-out");
+    }, 600);
+  }, 3800);
+}
+ 
+function escapeHTML(v){
+ return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+ 
+function slugify(v){
+ return String(v||"").normalize("NFKD").toLowerCase().trim()
+  .replace(/[\u0300-\u036f]/g,"")
+  .replace(/[^a-z0-9]+/g,"-")
+  .replace(/^-+|-+$/g,"")
+  .slice(0,180);
+}
+ 
+function normalizeSlug(value){
+ if(value===null||value===undefined)return "";
+ let raw=String(value).trim();
+ if(!raw)return "";
+ if(/^https?:\/\//i.test(raw)){
+  try{raw=new URL(raw).pathname;}catch(e){raw=raw.replace(/^https?:\/\/[^/]+/i,"");}
+ }
+ raw=raw.split(/[?#]/)[0].trim();
+ raw=raw.replace(/^https?:\/\/[^/]+/i,"");
+ raw=raw.replace(/^\/+/,"");
+ raw=raw.replace(/^www\.satisfynex\.com\/?/i,"");
+ raw=raw.replace(/^satisfynex\.com\/?/i,"");
+ raw=raw.replace(/^articles\//i,"");
+ raw=raw.replace(/\/+$/,"");
+ raw=raw.split("/").filter(Boolean).pop()||"";
+ try{raw=decodeURIComponent(raw);}catch(e){}
+ return slugify(raw);
+}
+ 
+function articleUrl(value){
+ const slug=normalizeSlug(value);
+ if(!slug)return "/";
+ return "/articles/"+encodeURIComponent(slug);
+}
+ 
+function safeImage(value){
+ try{
+  const u=new URL(value||FALLBACK_IMAGE,SITE_URL);
+  if(["https:","http:"].includes(u.protocol))return u.href;
+ }catch(e){}
+ return FALLBACK_IMAGE;
+}
+ 
+function formatDate(value){
+ if(!value)return "Research";
+ const d=new Date(value);
+ if(Number.isNaN(d.getTime()))return "Research";
+ return new Intl.DateTimeFormat("en-US",{month:"short",day:"numeric",year:"numeric",timeZone:"UTC"}).format(d);
+}
+ 
+function contentToText(content){
+ if(Array.isArray(content)){
+  return content.map(x=>typeof x==="string"?x:(x.text||x.content||"")).join("\n\n");
+ }
+ return String(content||"");
+}
+ 
+function toArticle(row){
+ const content=contentToText(row.content);
+ const words=content.trim().split(/\s+/).filter(Boolean).length;
+ const id=normalizeSlug(row.slug)||slugify(row.title)||String(row.id);
+ const tickerVal = (row.ticker || "").toUpperCase();
+ const catVal = (row.category || "").toUpperCase();
+ 
+ const isGlobal = ['$SSEC', '$COMPOSITE', '$IHSG', '$NYA', '$NDX', '$DJI', '$SPX', '$XAUUSD', '$KOSPI'].some(t => tickerVal.includes(t)) || catVal.includes("GLOBAL");
+ 
+ return {
+  id,
+  title:row.title||"Untitled Article",
+  ticker:row.ticker||"",
+  category: isGlobal ? "GLOBAL MARKETS" : (row.category||"Stock Analysis"),
+  date:formatDate(row.created_at),
+  image:safeImage(row.image_url),
+  read:Math.max(1,Math.ceil(words/200))+" min read",
+  excerpt:row.excerpt||content.slice(0,220)||"Read the latest Satisfynex research.",
+  content,
+  isGlobal,
+  created_at: row.created_at
+ };
+}
+ 
+function cardMarkup(a){
+ const url=articleUrl(a.id);
+ return `<article class="article-card">
+ <a href="${escapeHTML(url)}" data-article="${escapeHTML(a.id)}"><img class="cover" src="${escapeHTML(a.image)}" alt="${escapeHTML(a.title)}" loading="lazy"></a>
+ <div class="body"><span class="tag">${escapeHTML(a.category)}</span>
+ <h3><a href="${escapeHTML(url)}" data-article="${escapeHTML(a.id)}">${escapeHTML(a.title)}</a></h3>
+ <div class="meta"><span>${escapeHTML(a.ticker)}</span><span>${escapeHTML(a.date)}</span><span>${escapeHTML(a.read)}</span></div>
+ <p class="excerpt">${escapeHTML(a.excerpt)}</p><a class="read-more" href="${escapeHTML(url)}" data-article="${escapeHTML(a.id)}">Read analysis →</a></div></article>`;
+}
+ 
+function renderFeatured(){
+ const target=$("#featuredGrid");
+ const normalArticles = articles.filter(a => !a.isGlobal);
+ 
+ if(!normalArticles.length){
+  target.innerHTML='<div class="notice">No published articles yet. Publish an article through your admin page.</div>';
+  return;
+ }
+ 
+ const main=normalArticles[0],side=normalArticles.slice(1,4);
+ const mainUrl=articleUrl(main.id);
+ 
+ target.innerHTML=`<article class="feature-main">
+ <a href="${escapeHTML(mainUrl)}" data-article="${escapeHTML(main.id)}"><img class="cover" src="${escapeHTML(main.image)}" alt="${escapeHTML(main.title)}"></a>
+ <div class="body"><span class="tag">${escapeHTML(main.category)}</span><h3><a href="${escapeHTML(mainUrl)}" data-article="${escapeHTML(main.id)}">${escapeHTML(main.title)}</a></h3>
+ <div class="meta"><span>${escapeHTML(main.ticker)}</span><span>${escapeHTML(main.date)}</span><span>${escapeHTML(main.read)}</span></div>
+ <p class="excerpt">${escapeHTML(main.excerpt)}</p><a class="read-more" href="${escapeHTML(mainUrl)}" data-article="${escapeHTML(main.id)}">Read full analysis →</a></div></article>
+ <div class="feature-side">${side.length?side.map(a=>`<article class="side-story"><a href="${escapeHTML(articleUrl(a.id))}" data-article="${escapeHTML(a.id)}"><img src="${escapeHTML(a.image)}" alt="${escapeHTML(a.title)}" loading="lazy"></a><div><span class="tag">${escapeHTML(a.category)}</span><h3><a href="${escapeHTML(articleUrl(a.id))}" data-article="${escapeHTML(a.id)}">${escapeHTML(a.title)}</a></h3><div class="meta">${escapeHTML(a.date)}</div></div></article>`).join(""):'<div class="notice">More research coming soon.</div>'}</div>`;
+ 
+ setTimeout(processAllImages, 300);
+}
+ 
+function renderCategories(){
+ const s=$("#categoryFilter"),old=s.value;
+ const categories=[...new Set(articles.map(a=>a.category))].filter(Boolean).sort();
+ s.innerHTML='<option value="">All categories</option>'+categories.map(c=>`<option value="${escapeHTML(c)}">${escapeHTML(c)}</option>`).join("");
+ if(categories.includes(old))s.value=old;
+}
+ 
+function renderArticles(){
+ const search=($("#searchInput").value||"").trim().toLowerCase();
+ const cat=$("#categoryFilter").value;
+ 
+ // Render artikel di grid utama berdasarkan filter yang dipilih
+ const filtered = articles.filter(a => 
+   (!search || [a.title, a.ticker, a.category, a.excerpt, a.content].join(" ").toLowerCase().includes(search)) && 
+   (!cat || a.category.toUpperCase() === cat.toUpperCase())
+ );
+ 
+ const totalPages=Math.ceil(filtered.length/ARTICLES_PER_PAGE)||1;
+ if(currentPage>totalPages)currentPage=totalPages;
+ if(currentPage<1)currentPage=1;
+ 
+ const start=(currentPage-1)*ARTICLES_PER_PAGE;
+ const paginated=filtered.slice(start,start+ARTICLES_PER_PAGE);
+ 
+ $("#articleCount").textContent=filtered.length+(filtered.length===1?" article":" articles");
+ $("#articleGrid").innerHTML=paginated.length?paginated.map(cardMarkup).join(""):'<div class="empty" style="grid-column:1/-1">No matching articles found.</div>';
+ 
+ // Render 5 Artikel Global Terbaru di Section Bawah
+ const globalArticles = articles.filter(a => a.isGlobal).slice(0, 5);
+ const homeGlobalGrid = $("#homeGlobalGrid");
+ if(homeGlobalGrid){
+   if(globalArticles.length > 0){
+     homeGlobalGrid.innerHTML = globalArticles.map(cardMarkup).join("");
+   } else {
+     homeGlobalGrid.innerHTML = '<div class="notice" style="grid-column:1/-1">No global market insights published yet.</div>';
+   }
+ }
+ 
+ setTimeout(processAllImages, 300);
+ 
+ const pagContainer=$("#paginationContainer");
+ if(totalPages>1){
+  pagContainer.innerHTML=`<div class="pagination">
+   <button id="prevPageBtn" ${currentPage===1?"disabled":""}>← Previous</button>
+   <span>Page ${currentPage} of ${totalPages}</span>
+   <button id="nextPageBtn" ${currentPage===totalPages?"disabled":""}>Next →</button>
+  </div>`;
+ 
+  $("#prevPageBtn")?.addEventListener("click",()=>{
+   if(currentPage>1){currentPage--;renderArticles();$("#latest").scrollIntoView({behavior:"smooth"});}
   });
-
-  $("refreshBtn").addEventListener("click", loadAllData);
-
-  async function loadAllData() {
-    if (!user || user.id !== ADMIN_UID) return;
-    $("articleList").textContent = "Loading data…";
-    
-    const [resArticles, resNews] = await Promise.all([
-      db.from("articles").select("id,title,slug,ticker,category,status,created_at").order("created_at", { ascending: false }),
-      db.from("news").select("id,title,category,source_name,created_at").order("created_at", { ascending: false })
-    ]);
-
-    if (resArticles.error) console.error(resArticles.error.message);
-    if (resNews.error) console.error(resNews.error.message);
-
-    adminArticles = resArticles.data || [];
-    adminNewsList = resNews.data || [];
-    renderAdminList();
-  }
-
-  async function deleteItem(id, type) {
-    const isArticle = type === "research";
-    const itemTitle = isArticle 
-      ? adminArticles.find(a => a.id === id)?.title 
-      : adminNewsList.find(n => n.id === id)?.title;
-
-    if (!confirm(`Are you sure you want to delete "${itemTitle}"? This cannot be undone.`)) return;
-
-    const statusId = isArticle ? "saveStatus" : "newsSaveStatus";
-    status(statusId, "Deleting item…");
-
-    try {
-      const table = isArticle ? "articles" : "news";
-      const { error } = await db.from(table).delete().eq("id", id);
-      if (error) throw error;
-
-      status(statusId, "Item deleted successfully.");
-      if (isArticle && $("articleId").value === String(id)) resetEditor();
-      if (!isArticle && $("newsId").value === String(id)) resetNewsEditor();
-
-      await loadAllData();
-    } catch (err) {
-      status(statusId, err.message || "Failed to delete item.", true);
-    }
-  }
-
-  function renderAdminList() {
-    const listContainer = $("articleList");
-    listContainer.replaceChildren();
-
-    const dataList = currentTab === "research" ? adminArticles : adminNewsList;
-    const totalPages = Math.ceil(dataList.length / ADMIN_ARTICLES_PER_PAGE) || 1;
-    if (adminCurrentPage > totalPages) adminCurrentPage = totalPages;
-    if (adminCurrentPage < 1) adminCurrentPage = 1;
-
-    const start = (adminCurrentPage - 1) * ADMIN_ARTICLES_PER_PAGE;
-    const paginated = dataList.slice(start, start + ADMIN_ARTICLES_PER_PAGE);
-
-    if (!paginated.length) {
-      listContainer.textContent = currentTab === "research" ? "No articles yet." : "No news published yet.";
-      $("adminPaginationContainer").innerHTML = "";
-      return;
-    }
-
-    paginated.forEach(item => {
-      const wrapper = document.createElement("div");
-      wrapper.className = "article";
-      const title = document.createElement("div");
-      title.className = "article-title";
-      title.textContent = item.title;
-      const meta = document.createElement("div");
-      meta.className = "meta";
-      meta.textContent = currentTab === "research" 
-        ? [item.ticker || "No ticker", item.category, item.status, new Date(item.created_at).toLocaleDateString()].join(" · ")
-        : [item.source_name || "Satisfynex", item.category, new Date(item.created_at).toLocaleDateString()].join(" · ");
-      
-      const btnRow = document.createElement("div");
-      btnRow.className = "row";
-      btnRow.style.marginTop = "6px";
-
-      const edit = document.createElement("button");
-      edit.type = "button";
-      edit.className = "small";
-      edit.textContent = "Edit";
-      edit.addEventListener("click", () => {
-        if (currentTab === "research") editArticle(item.id);
-        else editNews(item.id);
-      });
-
-      const del = document.createElement("button");
-      del.type = "button";
-      del.className = "small danger";
-      del.textContent = "Delete";
-      del.addEventListener("click", () => deleteItem(item.id, currentTab));
-
-      btnRow.append(edit, del);
-      wrapper.append(title, meta, btnRow);
-      listContainer.append(wrapper);
-    });
-
-    const pagContainer = $("adminPaginationContainer");
-    if (totalPages > 1) {
-      pagContainer.innerHTML = `<div class="admin-pagination">
-        <button id="adminPrevBtn" ${adminCurrentPage === 1 ? "disabled" : ""}>← Prev</button>
-        <span>Page ${adminCurrentPage} of ${totalPages}</span>
-        <button id="adminNextBtn" ${adminCurrentPage === totalPages ? "disabled" : ""}>Next →</button>
-      </div>`;
-
-      $("adminPrevBtn")?.addEventListener("click", () => {
-        if (adminCurrentPage > 1) { adminCurrentPage--; renderAdminList(); }
-      });
-      $("adminNextBtn")?.addEventListener("click", () => {
-        if (adminCurrentPage < totalPages) { adminCurrentPage++; renderAdminList(); }
-      });
-    } else {
-      pagContainer.innerHTML = "";
-    }
-  }
-
-  async function editArticle(id) {
-    status("saveStatus", "Loading article…");
-    const { data, error } = await db.from("articles").select("*").eq("id", id).single();
-    if (error) return status("saveStatus", error.message, true);
-
-    $("articleId").value = data.id;
-    $("title").value = data.title || "";
-    $("ticker").value = data.ticker || "";
-    $("category").value = data.category || "Stock Analysis";
-    $("slug").value = data.slug || "";
-    $("slug").dataset.edited = "1";
-    $("excerpt").value = data.excerpt || "";
-    $("content").value = data.content || "";
-    
-    const hasGlobalTicker = ['$SSEC', '$COMPOSITE', '$IHSG', '$NYA', '$NDX', '$DJI', '$SPX', '$XAUUSD'].some(t => (data.ticker || "").toUpperCase().includes(t)) || (data.category || "").toUpperCase().includes("GLOBAL");
-    $("targetSection").value = hasGlobalTicker ? "global" : "research";
-
-    imageUrl = data.image_url || "";
-    removeImage = false;
-    $("imageFile").value = "";
-    $("imageStatus").textContent = imageUrl ? "Current image loaded." : "No image attached.";
-    preview(imageUrl);
-    $("editorHeading").textContent = "Edit article";
-    status("saveStatus", "Editing article #" + data.id);
-    window.scrollTo({top:0,behavior:"smooth"});
-  }
-
-  async function editNews(id) {
-    status("newsSaveStatus", "Loading news…");
-    const { data, error } = await db.from("news").select("*").eq("id", id).single();
-    if (error) return status("newsSaveStatus", error.message, true);
-
-    $("newsId").value = data.id;
-    $("newsSlug").value = data.slug || "";
-    $("newsTitle").value = data.title || "";
-    $("newsCategory").value = data.category || "Market Insights";
-    $("newsSummary").value = data.summary || "";
-    $("newsAnalysis").value = data.analysis || "";
-    $("newsSourceName").value = data.source_name || "";
-    $("newsSourceUrl").value = data.source_url || "";
-    newsImageUrl = data.image_url || "";
-    newsRemoveImage = false;
-    $("newsImageFile").value = "";
-    $("newsImageStatus").textContent = newsImageUrl ? "Current image loaded." : "No image attached.";
-    newsPreview(newsImageUrl);
-    $("newsEditorHeading").textContent = "Edit News Update";
-    status("newsSaveStatus", "Editing news item #" + data.id);
-    window.scrollTo({top:0,behavior:"smooth"});
-  }
-
-  db.auth.getSession().then(() => {});
-  db.auth.getSession().then(({data,error}) => {
-    if (error) {
-      status("loginStatus", error.message, true);
-      return loginView();
-    }
-    enter(data.session?.user || null);
-  }).catch(error => {
-    status("loginStatus", "Startup error: " + error.message, true);
+  $("#nextPageBtn")?.addEventListener("click",()=>{
+   if(currentPage<totalPages){currentPage++;renderArticles();$("#latest").scrollIntoView({behavior:"smooth"});}
   });
-
-  db.auth.onAuthStateChange((_event, session) => {
-    if (!session?.user) loginView();
-    else if (session.user.id !== ADMIN_UID) enter(session.user);
-  });
-})();
+ }else{
+  pagContainer.innerHTML="";
+ }
+}
+ 
+function renderGlobalMarkets(){
+ const grid = $("#globalGrid");
+ if(!grid) return;
+ 
+ const globalFiltered = articles.filter(a => a.isGlobal);
+ 
+ if(globalFiltered.length === 0){
+  grid.innerHTML = '<div class="notice" style="grid-column:1/-1">No global market indices analysis published yet.</div>';
+  return;
+ }
+ 
+ grid.innerHTML = globalFiltered.map(cardMarkup).join("");
+ setTimeout(processAllImages, 300);
+}
+ 
+function updateDynamicCanonical() {
+  let c = document.querySelector('link[rel="canonical"]');
+  if (!c) {
+    c = document.createElement("link");
+    c.rel = "canonical";
+    document.head.appendChild(c);
+  }
+  c.href = window.location.origin + window.location.pathname;
+}
+ 
+function setMeta(article=null,pageTitle=null){
+ const title=article?`${article.title} | Satisfynex`:pageTitle?`${pageTitle} | Satisfynex`:"Satisfynex — Independent US Stock Research";
+ const description=String(article?.excerpt||"Independent US stock analysis, company research, technical charts, and investing education.").replace(/\s+/g," ").slice(0,155);
+ 
+ document.title=title;
+ let d=document.querySelector('meta[name="description"]');
+ if(d)d.content=description;
+ 
+ updateDynamicCanonical();
+ 
+ let og=document.querySelector('meta[property="og:title"]');
+ if(og)og.content=title;
+ og=document.querySelector('meta[property="og:description"]');
+ if(og)og.content=description;
+ og=document.querySelector('meta[property="og:url"]');
+ if(og)og.content=document.querySelector('link[rel="canonical"]')?.href || window.location.href;
+}
+ 
+function showView(view){
+ $("#homeView").classList.toggle("hidden",view!=="home");
+ $("#globalView").classList.toggle("hidden",view!=="global");
+ $("#articleView").classList.toggle("hidden",view!=="article");
+ $("#pageView").classList.toggle("hidden",view!=="page");
+}
+ 
+function showHome(push=true,hash=""){
+ showView("home");
+ setMeta();
+ updateDynamicCanonical();
+ if(push)history.pushState({view:"home"},"","/"+hash);
+ if(hash==="#latest")setTimeout(()=>$("#latest").scrollIntoView({behavior:"smooth"}),0);
+ else window.scrollTo({top:0,behavior:"auto"});
+}
+ 
+function showGlobalMarkets(push=true){
+ showView("global");
+ renderGlobalMarkets();
+ setMeta(null, "Global Markets & Macro Analysis");
+ updateDynamicCanonical();
+ if(push)history.pushState({view:"global"},"","/global-markets");
+ window.scrollTo({top:0,behavior:"auto"});
+}
+ 
+function openArticleById(id,push=true){
+ const normalized=normalizeSlug(id);
+ const article=articles.find(a=>a.id===normalized);
+ 
+ if(!article){
+  showView("home");
+  setMeta();
+  updateDynamicCanonical();
+  $("#articleGrid").insertAdjacentHTML("afterbegin",'<div class="notice" style="grid-column:1/-1">This article could not be found. Check that its published slug matches the URL.</div>');
+  if(push)history.pushState({view:"home"},"","/");
+  return;
+ }
+ 
+ showView("article");
+ const articleContentHtml = article.content || "<p>Full analysis coming soon.</p>";
+ 
+ const sameCategoryArticles = articles.filter(a => a.id !== article.id && a.category === article.category);
+ const otherArticles = articles.filter(a => a.id !== article.id && a.category !== article.category);
+ const relatedArticles = [...sameCategoryArticles, ...otherArticles].slice(0, 3);
+ 
+ const relatedHtml = relatedArticles.length > 0 ? `
+ <div class="related-research-section">
+   <div class="eyebrow" style="margin-bottom: 4px;">Keep Researching</div>
+   <h3 style="font-size: 20px; margin: 0 0 12px 0;">Related Research</h3>
+   <div class="related-grid">
+     ${relatedArticles.map(rel => `
+       <article class="related-card">
+         <a href="${escapeHTML(articleUrl(rel.id))}" data-article="${escapeHTML(rel.id)}">
+           <img class="related-thumb" src="${escapeHTML(rel.image)}" alt="${escapeHTML(rel.title)}" loading="lazy">
+         </a>
+         <div class="related-body">
+           <span class="related-date">${escapeHTML(rel.date)}</span>
+           <h4 class="related-title">
+             <a href="${escapeHTML(articleUrl(rel.id))}" data-article="${escapeHTML(rel.id)}">${escapeHTML(rel.title)}</a>
+           </h4>
+         </div>
+       </article>
+     `).join("")}
+   </div>
+ </div>` : "";
+ 
+ $("#articleDetail").innerHTML=`<article><header class="article-header"><span class="tag">${escapeHTML(article.category)}</span><h1>${escapeHTML(article.title)}</h1><p class="article-lead">${escapeHTML(article.excerpt)}</p><div class="meta"><span>${escapeHTML(article.ticker)}</span><span>${escapeHTML(article.date)}</span><span>${escapeHTML(article.read)}</span></div></header>
+ <img class="article-hero" src="${escapeHTML(article.image)}" alt="${escapeHTML(article.title)}">
+ <div class="article-layout"><div class="article-content">
+ 
+ ${articleContentHtml}
+ 
+ <div class="satisfynex-author-card" itemscope itemtype="https://schema.org/Person" style="margin: 30px 0 20px 0; padding: 20px; background-color: var(--panel); border: 1px solid var(--line); border-radius: 12px; display: flex; gap: 16px; align-items: flex-start; color: var(--text);">
+   <div style="flex-shrink: 0;">
+     <img src="/Icon.png" alt="Ketut Gede Ariyasa" itemprop="image" style="width: 50px; height: 50px; border-radius: 50%; border: 1px solid var(--line); object-fit: cover; background: #0c1017;" />
+   </div>
+   <div style="display: flex; flex-direction: column; gap: 4px;">
+     <span style="font-size: 0.7rem; font-weight: 800; letter-spacing: 0.8px; color: var(--accent); text-transform: uppercase;">WRITTEN BY</span>
+     <h4 style="margin: 0; font-size: 1.05rem; font-weight: 600; color: var(--text);" itemprop="name">Ketut Gede Ariyasa</h4>
+     <p style="margin: 4px 0 0; font-size: 0.85rem; line-height: 1.45; color: var(--muted);" itemprop="description">
+       Independent financial analyst and founder of Satisfynex, specializing in US equities technical analysis, market data visualization, and risk-first research.
+     </p>
+     <div style="margin-top: 6px; font-size: 0.8rem; color: var(--muted);">
+       <span itemprop="jobTitle">Independent Financial Analyst</span> • <a href="/about" style="color: var(--accent); text-decoration: underline;">Learn about our research methodology &rarr;</a>
+     </div>
+   </div>
+ </div>
+ 
+ <div style="margin: 20px 0; padding: 12px; background: rgba(142, 224, 189, 0.03); border-left: 3px solid var(--accent); font-size: 0.85rem; color: var(--muted);">
+   <span>Primary Source Verification: </span>
+   <a href="https://www.sec.gov" target="_blank" rel="noopener" style="color: var(--accent);">SEC EDGAR Database</a> &bull; 
+   <a href="https://www.investor.gov" target="_blank" rel="noopener" style="color: var(--accent);">Investor Relations Portal</a>
+ </div>
+ 
+ <hr style="border:0;border-top:1px solid var(--line);margin:35px 0"><p class="muted small">This article is provided for informational and educational purposes only. It is not a recommendation to buy or sell any security.</p>
+ 
+ ${relatedHtml}
+ 
+ </div>
+ <aside class="sidebar"><div class="panel"><h3>About this research</h3><p>Satisfynex explores company fundamentals, market developments, technical evidence, and investment risks.</p></div><div class="panel"><h3>Explore more</h3><a class="read-more" href="/#latest">Browse all articles →</a></div></aside></div></article>`;
+ 
+ setMeta(article);
+ updateDynamicCanonical();
+ setTimeout(processAllImages, 300);
+ 
+ if(push)history.pushState({view:"article",id:article.id},"",articleUrl(article.id));
+ window.scrollTo(0, 0);
+}
+ 
+const pages={
+ privacy:{title:"Privacy Policy",body:`<p><strong>Last updated: October 20, 2026</strong></p><p>This Privacy Policy explains how Satisfynex handles information when you visit our website.</p><h2>Information we may collect</h2><p>Our hosting and website services may process technical information such as IP address, browser type, device information, and request logs to operate and secure the website.</p><h2>Contacting us</h2><p>If you email us, we receive the information you choose to include and use it to respond.</p><h2>Cookies and advertising</h2><p>If analytics or advertising services are enabled, those services may use cookies or similar technologies under their own policies. Actual use depends on the services enabled on this website.</p><h2>Third-party services</h2><p>Hosting, database, analytics, and advertising providers may process information under their own policies.</p><h2>Your choices</h2><p>Depending on applicable law, you may request access to, correction of, or deletion of personal information.</p><h2>Contact</h2><p>Privacy questions: <a href="mailto:research@satisfynex.com">research@satisfynex.com</a>.</p>`},
+ terms:{title:"Terms of Service",body:`<p><strong>Last updated: October 20, 2026</strong></p><p>By using Satisfynex, you agree to these terms.</p><h2>Purpose</h2><p>Satisfynex publishes general information and educational research about US-listed companies, financial results, industries, and markets.</p><h2>No investment advice</h2><p>Content is not personalized financial, legal, or tax advice and is not an offer to buy or sell securities. You are responsible for your decisions.</p><h2>Accuracy and risks</h2><p>We do not guarantee content is complete, current, or error-free. Investing involves risk, including the possible loss of capital. Past performance does not guarantee future results.</p><h2>Intellectual property</h2><p>Do not republish substantial original content commercially without permission from the relevant rights holder.</p><h2>Third-party links</h2><p>We are not responsible for external websites or services.</p><h2>Contact</h2><p><a href="mailto:research@satisfynex.com">research@satisfynex.com</a></p>`},
+ about:{
+   title: "About Us",
+   body: `
+     <p>Satisfynex is an independent financial research platform dedicated to delivering clean, data-driven technical analysis and market insights on US-listed equities, energy sectors, and commodities. Founded in Bali, Indonesia, Satisfynex operates with a clear objective: to cut through market noise and provide retail investors with objective, actionable visual chart breakdowns.</p>
+     <h2>The Founder's Journey: Self-Taught Discipline & Market Precision</h2>
+     <p>Satisfynex is founded and operated by <strong>Ketut Gede Ariyasa</strong>, an independent financial analyst and self-taught market researcher based in Bali, Indonesia. Starting as an individual investor who spent years studying US stock market dynamics, technical charting workflows, and custom indicator development on TradingView, Tutde built this platform to document rigorous, hands-on market evaluations.</p>
+     <h2>Our Mission & Approach</h2>
+     <p>Our mission is to serve as an objective research journal, presenting clear technical indicators, fundamental business metrics, and structural chart analysis.</p>
+     <h2>Educational Disclaimer</h2>
+     <p>All articles, charts, commentary, and materials published by Satisfynex are strictly for educational and informational purposes.</p>
+     <h2>Contact</h2>
+     <p><a href="mailto:research@satisfynex.com">research@satisfynex.com</a></p>
+   `
+ },
+ contact:{title:"Contact Us",body:`<p>We welcome reader feedback, questions about published research, and correction requests.</p><div class="contact-card"><div class="eyebrow">Email</div><h2>Get in touch with Satisfynex</h2><p><a class="email-link" href="mailto:research@satisfynex.com">research@satisfynex.com</a></p></div>`},
+ disclaimer:{title:"Investment Disclaimer",body:`<p><strong>Last updated: October 20, 2026</strong></p><p>All articles, charts, commentary, and materials published by Satisfynex are for general informational and educational purposes only.</p>`}
+};
+ 
+function showPage(type,push=true){
+ const p=pages[type];
+ if(!p){showHome(false);return;}
+ showView("page");
+ $("#pageDetail").innerHTML=`<h1>${escapeHTML(p.title)}</h1>${p.body}`;
+ setMeta(null,p.title);
+ updateDynamicCanonical();
+ const paths={privacy:"/privacy-policy",terms:"/terms-of-service",about:"/about",contact:"/contact",disclaimer:"/disclaimer"};
+ if(push)history.pushState({view:"page",type},"",paths[type]);
+ window.scrollTo(0, 0);
+}
+ 
+function routeFromLocation(){
+ const path=location.pathname.replace(/\/+$/,"")||"/";
+ if(path==="/global-markets"){
+  showGlobalMarkets(false);
+  return;
+ }
+ if(path.startsWith("/articles/")){
+  const slug=path.slice("/articles/".length);
+  openArticleById(slug,false);
+  return;
+ }
+ const routes={"/privacy-policy":"privacy","/terms-of-service":"terms","/about":"about","/contact":"contact","/disclaimer":"disclaimer"};
+ if(routes[path]){
+  showPage(routes[path],false);
+  return;
+ }
+ showView("home");
+ setMeta();
+ updateDynamicCanonical();
+ if(location.hash==="#latest")setTimeout(()=>$("#latest").scrollIntoView(),0);
+}
+ 
+document.addEventListener("click",e=>{
+ const a=e.target.closest("a[data-article]");
+ if(a&&!e.ctrlKey&&!e.metaKey&&!e.shiftKey&&!e.altKey&&e.button===0){
+  e.preventDefault();
+  openArticleById(a.dataset.article,true);
+  return;
+ }
+ const link=e.target.closest("a");
+ if(!link||e.ctrlKey||e.metaKey||e.shiftKey||e.altKey||e.button!==0)return;
+ const url=new URL(link.href,location.href);
+ if(url.origin!==location.origin)return;
+ 
+ if(url.pathname==="/global-markets"){
+  e.preventDefault();
+  showGlobalMarkets(true);
+  return;
+ }
+ if(url.pathname==="/#latest"||link.getAttribute("href")==="/#latest"){
+  e.preventDefault();
+  showHome(true,"#latest");
+  return;
+ }
+ if(url.pathname==="/"&&!url.hash){
+  e.preventDefault();
+  showHome(true);
+  return;
+ }
+ const pathToType={"/privacy-policy":"privacy","/terms-of-service":"terms","/about":"about","/contact":"contact","/disclaimer":"disclaimer"};
+ if(pathToType[url.pathname]){
+  e.preventDefault();
+  showPage(pathToType[url.pathname],true);
+ }
+});
+ 
+window.addEventListener("popstate",routeFromLocation);
+$("#searchInput").addEventListener("input",()=>{currentPage=1;renderArticles();});
+$("#categoryFilter").addEventListener("change",()=>{currentPage=1;renderArticles();});
+$("#year").textContent=new Date().getFullYear();
+ 
+async function loadArticles(){
+ const headers = {
+   apikey: SUPABASE_KEY,
+   Authorization: "Bearer " + SUPABASE_KEY,
+   Accept: "application/json"
+ };
+ 
+ const articlesEndpoint = SUPABASE_URL + "/rest/v1/articles?select=id,title,slug,ticker,category,excerpt,content,image_url,status,created_at&status=eq.published&order=created_at.desc";
+ const newsEndpoint = SUPABASE_URL + "/rest/v1/news?select=id,title,summary,analysis,category,image_url,source_url,source_name,created_at&order=created_at.desc";
+ 
+ try{
+  const [resArticles, resNews] = await Promise.all([
+    fetch(articlesEndpoint, { headers }),
+    fetch(newsEndpoint, { headers })
+  ]);
+ 
+  let combinedRows = [];
+  if (resArticles.ok) {
+    const manualArticles = await resArticles.json();
+    if (Array.isArray(manualArticles)) combinedRows.push(...manualArticles);
+  }
+ 
+  if (resNews.ok) {
+    const autoNews = await resNews.json();
+    if (Array.isArray(autoNews)) {
+      const formattedNews = autoNews.map(item => ({
+        id: "news-" + item.id,
+        title: item.title,
+        slug: "news-" + item.id,
+        ticker: "MARKET",
+        category: item.category || "Market Insights",
+        excerpt: item.summary,
+        content: `${item.summary}\n\nKey Market Analysis:\n${item.analysis}\n\nSource: ${item.source_name || 'CNBC'}`,
+        image_url: item.image_url,
+        status: "published",
+        created_at: item.created_at
+      }));
+      combinedRows.push(...formattedNews);
+    }
+  }
+ 
+  combinedRows.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  articles = combinedRows.map(toArticle);
+ 
+  renderCategories();
+  renderFeatured();
+  renderArticles();
+  routeFromLocation();
+ }catch(err){
+  console.error("Satisfynex loading error:",err);
+  $("#featuredGrid").innerHTML='<div class="notice">Unable to load published research. Please try again later.</div>';
+  $("#articleGrid").innerHTML='<div class="notice" style="grid-column:1/-1">Articles could not be loaded.</div>';
+  $("#articleCount").textContent="Temporarily unavailable";
+  routeFromLocation();
+ }
+}
+ 
+loadArticles();
+initTextRotator();
 </script>
 </body>
 </html>
