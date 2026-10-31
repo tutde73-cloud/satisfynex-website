@@ -254,7 +254,6 @@ h1,h2,h3,p{margin-top:0}
   <div class="section-heading"><div><div class="eyebrow">Explore the research</div><h2>Latest articles</h2></div><div id="articleCount" class="muted small"></div></div>
   <div class="filters">
    <input id="searchInput" type="search" placeholder="Search company, ticker, or topic..." aria-label="Search articles">
-   <!-- DROPDOWN KATEGORI TERMASUK GLOBAL MARKETS -->
    <select id="categoryFilter" aria-label="Filter by category">
      <option value="">All categories</option>
      <option value="Stock Analysis">Stock Analysis</option>
@@ -562,7 +561,6 @@ function renderArticles(){
  const search=($("#searchInput").value||"").trim().toLowerCase();
  const cat=$("#categoryFilter").value;
  
- // Render artikel di grid utama berdasarkan filter yang dipilih
  const filtered = articles.filter(a => 
    (!search || [a.title, a.ticker, a.category, a.excerpt, a.content].join(" ").toLowerCase().includes(search)) && 
    (!cat || a.category.toUpperCase() === cat.toUpperCase())
@@ -578,7 +576,6 @@ function renderArticles(){
  $("#articleCount").textContent=filtered.length+(filtered.length===1?" article":" articles");
  $("#articleGrid").innerHTML=paginated.length?paginated.map(cardMarkup).join(""):'<div class="empty" style="grid-column:1/-1">No matching articles found.</div>';
  
- // Render 5 Artikel Global Terbaru di Section Bawah
  const globalArticles = articles.filter(a => a.isGlobal).slice(0, 5);
  const homeGlobalGrid = $("#homeGlobalGrid");
  if(homeGlobalGrid){
@@ -727,11 +724,11 @@ function openArticleById(id,push=true){
  
  <div class="satisfynex-author-card" itemscope itemtype="https://schema.org/Person" style="margin: 30px 0 20px 0; padding: 20px; background-color: var(--panel); border: 1px solid var(--line); border-radius: 12px; display: flex; gap: 16px; align-items: flex-start; color: var(--text);">
    <div style="flex-shrink: 0;">
-     <img src="/Icon.png" alt="Ketut Gede Ariyasa" itemprop="image" style="width: 50px; height: 50px; border-radius: 50%; border: 1px solid var(--line); object-fit: cover; background: #0c1017;" />
+     <img src="/Icon.png" alt="Tutde Ariyasa" itemprop="image" style="width: 50px; height: 50px; border-radius: 50%; border: 1px solid var(--line); object-fit: cover; background: #0c1017;" />
    </div>
    <div style="display: flex; flex-direction: column; gap: 4px;">
      <span style="font-size: 0.7rem; font-weight: 800; letter-spacing: 0.8px; color: var(--accent); text-transform: uppercase;">WRITTEN BY</span>
-     <h4 style="margin: 0; font-size: 1.05rem; font-weight: 600; color: var(--text);" itemprop="name">Ketut Gede Ariyasa</h4>
+     <h4 style="margin: 0; font-size: 1.05rem; font-weight: 600; color: var(--text);" itemprop="name">Tutde Ariyasa</h4>
      <p style="margin: 4px 0 0; font-size: 0.85rem; line-height: 1.45; color: var(--muted);" itemprop="description">
        Independent financial analyst and founder of Satisfynex, specializing in US equities technical analysis, market data visualization, and risk-first research.
      </p>
@@ -770,7 +767,7 @@ const pages={
    body: `
      <p>Satisfynex is an independent financial research platform dedicated to delivering clean, data-driven technical analysis and market insights on US-listed equities, energy sectors, and commodities. Founded in Bali, Indonesia, Satisfynex operates with a clear objective: to cut through market noise and provide retail investors with objective, actionable visual chart breakdowns.</p>
      <h2>The Founder's Journey: Self-Taught Discipline & Market Precision</h2>
-     <p>Satisfynex is founded and operated by <strong>Ketut Gede Ariyasa</strong>, an independent financial analyst and self-taught market researcher based in Bali, Indonesia. Starting as an individual investor who spent years studying US stock market dynamics, technical charting workflows, and custom indicator development on TradingView, Tutde built this platform to document rigorous, hands-on market evaluations.</p>
+     <p>Satisfynex is founded and operated by <strong>Tutde Ariyasa</strong>, an independent financial analyst and self-taught market researcher based in Bali, Indonesia. Starting as an individual investor who spent years studying US stock market dynamics, technical charting workflows, and custom indicator development on TradingView, Tutde built this platform to document rigorous, hands-on market evaluations.</p>
      <h2>Our Mission & Approach</h2>
      <p>Our mission is to serve as an objective research journal, presenting clear technical indicators, fundamental business metrics, and structural chart analysis.</p>
      <h2>Educational Disclaimer</h2>
