@@ -444,7 +444,7 @@ function initTextRotator() {
 }
  
 function escapeHTML(v){
- return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+ return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]);
 }
  
 function slugify(v){
@@ -502,32 +502,16 @@ function contentToText(content){
  return String(content||"");
 }
 
-// LOGIKA OTOMATIS BERDASARKAN PARAMETER ANGKA RISIKO (TP & INVALIDATION)
-function calculateSentimentFromContent(title, content) {
-  const fullText = (title + " " + content).toLowerCase();
-
-  // 1. Cari angka TP (Target Price / Downside Target)
-  const tpMatch = fullText.match(/(?:target|tp|tp1|downside crash target)\s*[:=]?\s*(?:above|below|to)?\s*([\d,.]+)/);
-  // 2. Cari angka Invalid (Invalidation Threshold)
-  const invMatch = fullText.match(/(?:invalidation|invalid|sl|stop)\s*[:=]?\s*(?:above|below|to)?\s*([\d,.]+)/);
-
-  if (tpMatch && invMatch) {
-    const tpVal = parseFloat(tpMatch[1].replace(/,/g, ''));
-    const invVal = parseFloat(invMatch[1].replace(/,/g, ''));
-
-    if (!isNaN(tpVal) && !isNaN(invVal)) {
-      // Jika TP > Invalid = BULLISH; jika TP < Invalid = BEARISH
-      return tpVal > invVal ? "BULLISH" : "BEARISH";
-    }
-  }
-
-  // 3. Fallback jika format angka tidak terdeteksi: cek kata kunci khusus pada judul artikel
-  const titleLower = (title || "").toLowerCase();
-  if (titleLower.includes("bearish") || titleLower.includes("crash") || titleLower.includes("collapse") || titleLower.includes("suffers")) {
+// LOGIKA SENTIMEN PRESISI DARI KATA KUNCI JUDUL
+function getSentimentFromTitle(title) {
+  const t = (title || "").toLowerCase();
+  if (t.includes("bearish") || t.includes("breakdown") || t.includes("crash") || t.includes("collapse") || t.includes("downside")) {
     return "BEARISH";
   }
-
-  return "BULLISH"; // Default Bullish
+  if (t.includes("bullish") || t.includes("momentum") || t.includes("expansion") || t.includes("rebound") || t.includes("breakout")) {
+    return "BULLISH";
+  }
+  return "BULLISH";
 }
 
 function renderSentimentBadge(sentiment) {
@@ -546,7 +530,7 @@ function toArticle(row){
  
  const isGlobal = ['$SSEC', '$COMPOSITE', '$IHSG', '$NYA', '$NDX', '$DJI', '$SPX', '$XAUUSD', '$KOSPI'].some(t => tickerVal.includes(t)) || catVal.includes("GLOBAL");
  
- const sentiment = calculateSentimentFromContent(row.title || "", content);
+ const sentiment = getSentimentFromTitle(row.title || "");
 
  return {
   id,
