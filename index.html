@@ -256,7 +256,6 @@ h1,h2,h3,p{margin-top:0}
   <div id="featuredGrid" class="featured-grid"><div class="notice">Loading published research...</div></div>
  </div></section>
  
- <!-- SECTION 1: LATEST ARTICLES & FILTER KATEGORI -->
  <section class="section" id="latest"><div class="container">
   <div class="section-heading"><div><div class="eyebrow">Explore the research</div><h2>Latest articles</h2></div><div id="articleCount" class="muted small"></div></div>
   <div class="filters">
@@ -271,7 +270,6 @@ h1,h2,h3,p{margin-top:0}
   <div id="paginationContainer"></div>
  </div></section>
  
- <!-- SECTION 2: KOLOM KHUSUS 5 ANALISIS GLOBAL TERBARU -->
  <section class="section" style="border-top: 1px solid var(--line); background: rgba(19, 26, 37, 0.4);"><div class="container">
   <div class="section-heading">
     <div><div class="eyebrow">Macro & Indices</div><h2>Global Markets Insights</h2></div>
@@ -501,19 +499,35 @@ function contentToText(content){
  return String(content||"");
 }
  
-// PEMINDAI SENTIMEN PRESISI: Hanya membaca judul agar tidak salah tangkap dari isi teks
-function getSentimentFromContent(title, content) {
-  const t = (title || "").toLowerCase();
+// PEMINDAI BERDASARKAN ANGKA TARGET VS INVALID DI DALAM TEKS
+function getSentimentFromText(content) {
+  const text = (content || "").toLowerCase();
   
-  // Hanya mendeteksi Bearish jika judulnya jelas-jelas menyatakan breakdown/penurunan
-  const bearishTitles = ["bearish", "breakdown", "crash", "collapse", "downturn", "downside risk", "structural breakdown"];
+  // Mencari pola angka setelah kata target dan invalid/stoploss di dalam teks artikel
+  // Contoh format di teks: "target 110" dan "invalid 155" atau "target: 110"
+  const targetMatch = text.match(/target\s*[:\-]?\s*([0-9]+\.?[0-9]*)/);
+  const invalidMatch = text.match(/(?:invalid|stop\s*loss|stoploss)\s*[:\-]?\s*([0-9]+\.?[0-9]*)/);
   
-  for (let word of bearishTitles) {
-    if (t.includes(word)) {
-      return "BEARISH";
+  if (targetMatch && invalidMatch) {
+    const targetVal = parseFloat(targetMatch[1]);
+    const invalidVal = parseFloat(invalidMatch[1]);
+    
+    // Jika target di bawah invalid, berarti Bearish. Jika di atas, berarti Bullish.
+    if (!isNaN(targetVal) && !isNaN(invalidVal)) {
+      if (targetVal < invalidVal) {
+        return "BEARISH";
+      } else {
+        return "BULLISH";
+      }
     }
   }
-  return "BULLISH"; // Default aman menjadi Bullish (Hijau)
+  
+  // Fallback jika format angka tidak tertulis secara eksplisit: cek kata kunci utama di judul/teks
+  if (text.includes("breakdown") || text.includes("crash") || text.includes("markdown") || text.includes("bearish")) {
+    return "BEARISH";
+  }
+  
+  return "BULLISH"; // Default Bullish (Hijau)
 }
 
 function renderSentimentBadge(sentiment) {
@@ -531,7 +545,9 @@ function toArticle(row){
  const catVal = (row.category || "").toUpperCase();
  
  const isGlobal = ['$SSEC', '$COMPOSITE', '$IHSG', '$NYA', '$NDX', '$DJI', '$SPX', '$XAUUSD', '$KOSPI'].some(t => tickerVal.includes(t)) || catVal.includes("GLOBAL");
- const sentiment = getSentimentFromContent(row.title || "", content);
+ 
+ // Mendeteksi sentimen langsung dari perbandingan angka Target vs Invalid di teks
+ const sentiment = getSentimentFromText(row.title + " " + content);
 
  return {
   id,
