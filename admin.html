@@ -89,6 +89,18 @@ button:disabled{opacity:.5}
     <button type="button" id="tabNewsBtn" class="tab-btn">📰 Write News</button>
   </div>
 
+  <!-- PANEL LIVE GOOGLE TRENDS -->
+  <section class="panel" style="border-color: var(--accent); margin-bottom: 25px;">
+    <div class="row" style="justify-content:space-between">
+      <h2>🔥 Live Market &amp; Google Trends Feed</h2>
+      <button id="fetchTrendsBtn" class="small" type="button">Refresh Trends</button>
+    </div>
+    <p class="muted">Pantau topik atau kata kunci pasar keuangan yang sedang naik daun untuk ide riset instan.</p>
+    <div id="trendsContainer" style="margin-top: 15px;">
+      <span class="muted">Memuat data tren pasar…</span>
+    </div>
+  </section>
+
   <div class="grid">
     <!-- KOLOM KIRI: EDITOR (RESEARCH / NEWS) -->
     <section class="panel">
@@ -307,6 +319,76 @@ button:disabled{opacity:.5}
 
   $("formatMarkdownBtn").addEventListener("click", convertMarkdownToHtml);
 
+  // --- FITUR TRENDING MARKET DI ADMIN ---
+  async function loadAdminMarketTrends() {
+    const container = $("trendsContainer");
+    if (!container) return;
+
+    container.innerHTML = '<span class="muted">Menghubungkan ke Google Trends RSS...</span>';
+
+    try {
+      const res = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://trends.google.com/trending/rss?geo=US');
+      const data = await res.json();
+
+      if (!data.items || data.items.length === 0) {
+        container.innerHTML = '<span class="muted">Gagal memuat tren saat ini.</span>';
+        return;
+      }
+
+      const financeKeywords = ['stock', 'nasdaq', 's&p', 'market', 'crypto', 'shares', 'earnings', 'sec', 'fed', 'inflation', 'bank', 'oil', 'gold', 'nvidia', 'apple'];
+      let relevantTrends = data.items.filter(item => 
+        financeKeywords.some(keyword => item.title.toLowerCase().includes(keyword))
+      );
+
+      if (relevantTrends.length === 0) {
+        relevantTrends = data.items.slice(0, 5);
+      }
+
+      container.innerHTML = "";
+      
+      const listWrapper = document.createElement("div");
+      listWrapper.style.display = "flex";
+      listWrapper.style.flexDirection = "column";
+      listWrapper.style.gap = "10px";
+
+      relevantTrends.slice(0, 6).forEach(trend => {
+        const itemBox = document.createElement("div");
+        itemBox.style.cssText = "display:flex; justify-content:space-between; align-items:center; background:#0b111b; padding:10px 14px; border-radius:8px; border:1px solid #263244;";
+
+        const titleSpan = document.createElement("span");
+        titleSpan.style.fontWeight = "600";
+        titleSpan.textContent = trend.title;
+
+        const actionRow = document.createElement("div");
+        actionRow.className = "row";
+
+        const useBtn = document.createElement("button");
+        useBtn.type = "button";
+        useBtn.className = "small primary";
+        useBtn.textContent = "Gunakan untuk Riset ✍️";
+        useBtn.addEventListener("click", () => {
+          $("title").value = `Analisis Pasar: ${trend.title} dan Dampaknya bagi Investor`;
+          $("title").dispatchEvent(new Event('input'));
+          $("category").value = "Market Insights";
+          window.scrollTo({top: 300, behavior: "smooth"});
+        });
+
+        actionRow.appendChild(useBtn);
+        itemBox.appendChild(titleSpan);
+        itemBox.appendChild(actionRow);
+        listWrapper.appendChild(itemBox);
+      });
+
+      container.appendChild(listWrapper);
+
+    } catch (err) {
+      console.error("Gagal memuat tren:", err);
+      container.innerHTML = '<span class="muted" style="color:var(--danger)">Gagal mengambil data tren pasar. Coba lagi nanti.</span>';
+    }
+  }
+
+  $("fetchTrendsBtn")?.addEventListener("click", loadAdminMarketTrends);
+
   function preview(url) {
     $("imagePreview").hidden = !url;
     $("removeImageBtn").hidden = !url;
@@ -341,6 +423,7 @@ button:disabled{opacity:.5}
     $("app").style.display = "block";
     $("logoutBtn").hidden = false;
     await loadAllData();
+    loadAdminMarketTrends(); // Panggil otomatis saat berhasil masuk
   }
 
   $("loginForm").addEventListener("submit", async event => {
@@ -621,7 +704,6 @@ button:disabled{opacity:.5}
     renderAdminList();
   }
 
-  /* FUNGSI HAPUS ARTIKEL / NEWS */
   async function deleteItem(id, type) {
     const isArticle = type === "research";
     const itemTitle = isArticle 
@@ -771,7 +853,6 @@ button:disabled{opacity:.5}
     window.scrollTo({top:0,behavior:"smooth"});
   }
 
-  db.auth.getSession().then(() => {});
   db.auth.getSession().then(({data,error}) => {
     if (error) {
       status("loginStatus", error.message, true);
