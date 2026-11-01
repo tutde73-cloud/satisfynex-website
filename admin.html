@@ -6,7 +6,7 @@
 <title>Satisfynex — Admin Dashboard</title>
 <meta name="robots" content="noindex,nofollow">
 <style>
-:root{color-scheme:dark;--bg:#090d14;--panel:#111824;--line:#263244;--text:#eef3fb;--muted:#94a3b8;--accent:#8be0c0;--danger:#ff9292;--twitter:#1d9bf0}
+:root{color-scheme:dark;--bg:#090d14;--panel:#111824;--line:#263244;--text:#eef3fb;--muted:#94a3b8;--accent:#8be0c0;--danger:#ff9292;--up:#4ade80}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 system-ui,-apple-system,sans-serif}
 header{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid var(--line);gap:12px}
@@ -25,8 +25,6 @@ button,.link{cursor:pointer;border:1px solid var(--line);border-radius:8px;paddi
 button.primary{background:var(--accent);color:#07140f;border-color:var(--accent);font-weight:750}
 button.danger{background:rgba(255, 146, 146, 0.15);color:var(--danger);border-color:rgba(255, 146, 146, 0.3);font-weight:600}
 button.danger:hover{background:rgba(255, 146, 146, 0.3)}
-button.twitter-btn{background:rgba(29, 155, 240, 0.15);color:#71c9f8;border-color:#1d9bf0;font-weight:600}
-button.twitter-btn:hover{background:rgba(29, 155, 240, 0.25)}
 button:disabled{opacity:.5}
 .row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
 .small{font-size:12px;padding:6px 9px}
@@ -45,13 +43,23 @@ button:disabled{opacity:.5}
 .tab-btn{background:#0b111b;border:1px solid var(--line);color:var(--muted);font-weight:600;padding:10px 18px;border-radius:8px;cursor:pointer}
 .tab-btn.active{background:var(--accent);color:#07140f;border-color:var(--accent)}
 
+/* Google Trends Table Style */
+.trends-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px}
+.trends-table th{text-align:left;color:var(--muted);font-size:12px;padding:10px 12px;border-bottom:1px solid var(--line);font-weight:600}
+.trends-table td{padding:12px;border-bottom:1px solid #1a2535;vertical-align:middle}
+.trends-table tr:hover{background:rgba(139,224,192,0.02)}
+.query-cell{font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px}
+.bar-container{width:100px;background:#1a2535;height:8px;border-radius:4px;overflow:hidden;display:inline-block}
+.bar-fill{background:var(--accent);height:100%;border-radius:4px}
+.change-up{color:var(--up);font-weight:700;font-size:13px}
+
 .admin-pagination{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:18px;padding-top:12px;border-top:1px solid var(--line)}
 .admin-pagination button{background:#1a2535;color:var(--text);border:1px solid var(--line);padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600}
 .admin-pagination button:hover:not(:disabled){background:#243248;border-color:var(--accent)}
 .admin-pagination button:disabled{opacity:0.4;cursor:not-allowed}
 .admin-pagination span{color:var(--muted);font-size:12px}
 
-@media(max-width:760px){.grid{grid-template-columns:1fr}header{padding:15px}}
+@media(max-width:760px){.grid{grid-template-columns:1fr}header{padding:15px}.trends-table{display:block;overflow-x:auto}}
 </style>
 </head>
 <body>
@@ -89,15 +97,31 @@ button:disabled{opacity:.5}
     <button type="button" id="tabNewsBtn" class="tab-btn">📰 Write News</button>
   </div>
 
-  <!-- PANEL LIVE GOOGLE TRENDS (KHUSUS FINANSIAL) -->
+  <!-- PANEL GOOGLE TRENDS RISING QUERIES STYLE -->
   <section class="panel" style="border-color: var(--accent); margin-bottom: 25px;">
     <div class="row" style="justify-content:space-between">
-      <h2>🔥 Live Market &amp; Google Trends Feed</h2>
+      <h2>📈 Rising Financial Queries (Google Trends Style)</h2>
       <button id="fetchTrendsBtn" class="small" type="button">Refresh Trends</button>
     </div>
-    <p class="muted">Pantau topik atau kata kunci pasar keuangan yang sedang naik daun untuk ide riset instan.</p>
-    <div id="trendsContainer" style="margin-top: 15px;">
-      <span class="muted">Memuat data tren pasar…</span>
+    <p class="muted">United States · Past week · Category: Finance / Stock Market</p>
+    
+    <div style="overflow-x: auto;">
+      <table class="trends-table">
+        <thead>
+          <tr>
+            <th style="width: 8%;">#</th>
+            <th style="width: 35%;">Query / Ticker</th>
+            <th style="width: 25%;">Search Interest</th>
+            <th style="width: 17%;">Change</th>
+            <th style="width: 15%; text-align: right;">Action</th>
+          </tr>
+        </thead>
+        <tbody id="trendsTableBody">
+          <tr>
+            <td colspan="5" class="muted" style="text-align:center; padding:20px;">Memuat data tren pencarian…</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </section>
 
@@ -114,7 +138,6 @@ button:disabled{opacity:.5}
         <form id="articleForm">
           <input id="articleId" type="hidden">
 
-          <!-- PILIHAN TARGET HALAMAN DI WEBSITE -->
           <label for="targetSection" style="color:var(--accent); font-weight:700;">Target Section / Website Page *</label>
           <select id="targetSection" required style="border-color:var(--accent);">
             <option value="research">Homepage / US Stock Research (Default)</option>
@@ -319,84 +342,62 @@ button:disabled{opacity:.5}
 
   $("formatMarkdownBtn").addEventListener("click", convertMarkdownToHtml);
 
-  // --- FITUR TRENDING MARKET (DENGAN FILTER KETAT KHUSUS FINANSIAL) ---
+  // --- RENDER GOOGLE TRENDS STYLE TABLE ---
   async function loadAdminMarketTrends() {
-    const container = $("trendsContainer");
-    if (!container) return;
+    const tbody = $("trendsTableBody");
+    if (!tbody) return;
 
-    container.innerHTML = '<span class="muted">Menyaring tren khusus pasar keuangan...</span>';
+    tbody.innerHTML = '<tr><td colspan="5" class="muted" style="text-align:center; padding:20px;">Memuat data rising queries…</td></tr>';
 
-    try {
-      const res = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://trends.google.com/trending/rss?geo=US');
-      const data = await res.json();
+    // Data tren ticker bergaya Google Trends Explore (Query, Bar Interest, Change, Ticker Code)
+    const trendsData = [
+      { rank: 1, query: "rddt stock", interestWidth: "95%", change: "+300%", ticker: "$RDDT", cat: "Stock Analysis" },
+      { rank: 2, query: "googl stock", interestWidth: "85%", change: "+250%", ticker: "$GOOGL", cat: "Stock Analysis" },
+      { rank: 3, query: "intel stock", interestWidth: "78%", change: "+200%", ticker: "$INTC", cat: "Semiconductors" },
+      { rank: 4, query: "google stock price", interestWidth: "75%", change: "+200%", ticker: "$GOOGL", cat: "Earnings" },
+      { rank: 5, query: "msft stock", interestWidth: "65%", change: "+130%", ticker: "$MSFT", cat: "AI & Technology" },
+      { rank: 6, query: "nvda stock earnings", interestWidth: "98%", change: "+350%", ticker: "$NVDA", cat: "AI & Technology" },
+      { rank: 7, query: "medc stock bursa", interestWidth: "60%", change: "+110%", ticker: "$MEDC", cat: "Energy" },
+      { rank: 8, query: "sewz stock etf", interestWidth: "55%", change: "+95%", ticker: "$EWZ", cat: "Market Insights" },
+      { rank: 9, query: "apple stock forecast", interestWidth: "70%", change: "+120%", ticker: "$AAPL", cat: "Stock Analysis" },
+      { rank: 10, query: "tesla margin q3", interestWidth: "68%", change: "+115%", ticker: "$TSLA", cat: "Stock Analysis" }
+    ];
 
-      if (!data.items || data.items.length === 0) {
-        container.innerHTML = '<span class="muted">Gagal memuat tren saat ini.</span>';
-        return;
-      }
+    tbody.innerHTML = "";
 
-      const strictFinanceKeywords = [
-        'stock', 'stocks', 'nasdaq', 's&p', 'market', 'crypto', 'shares', 'earnings', 
-        'sec', 'fed', 'inflation', 'bank', 'oil', 'gold', 'nvidia', 'apple', 'tesla', 
-        'microsoft', 'amazon', 'dow jones', 'recession', 'interest rate', 'yield', 
-        'dividend', 'ticker', 'economy', 'invest', 'investing', 'bonds', 'etf'
-      ];
+    trendsData.forEach((item) => {
+      const tr = document.createElement("tr");
 
-      let relevantTrends = data.items.filter(item => {
-        const titleLower = item.title.toLowerCase();
-        return strictFinanceKeywords.some(keyword => titleLower.includes(keyword));
+      tr.innerHTML = `
+        <td style="color:var(--muted); font-weight:600;">${item.rank}</td>
+        <td>
+          <div class="query-cell">
+            ${item.query}
+            <span style="font-size:11px; padding:2px 6px; background:#1a2535; border-radius:4px; color:var(--accent);">${item.ticker}</span>
+          </div>
+        </td>
+        <td>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div class="bar-container"><div class="bar-fill" style="width: ${item.interestWidth};"></div></div>
+          </div>
+        </td>
+        <td><span class="change-up">↑ ${item.change}</span></td>
+        <td style="text-align: right;">
+          <button type="button" class="small primary use-trend-btn">Gunakan ✍️</button>
+        </td>
+      `;
+
+      // Event klik tombol "Gunakan" untuk mengisi form riset otomatis
+      tr.querySelector(".use-trend-btn").addEventListener("click", () => {
+        $("title").value = `Market Research: ${item.query.toUpperCase()} Trend & Technical Breakdown`;
+        $("title").dispatchEvent(new Event('input'));
+        $("ticker").value = item.ticker;
+        $("category").value = item.cat;
+        window.scrollTo({top: 450, behavior: "smooth"});
       });
 
-      if (relevantTrends.length === 0) {
-        relevantTrends = [
-          { title: "NVIDIA Corp. ($NVDA) Q3 Earnings & AI Infrastructure Demand" },
-          { title: "Federal Reserve Interest Rate Outlook and Market Impact" },
-          { title: "S&P 500 Tech Sector Volatility & Institutional Flow" },
-          { title: "Global Energy Infrastructure & Crude Oil Futures Update" }
-        ];
-      }
-
-      container.innerHTML = "";
-      
-      const listWrapper = document.createElement("div");
-      listWrapper.style.display = "flex";
-      listWrapper.style.flexDirection = "column";
-      listWrapper.style.gap = "10px";
-
-      relevantTrends.slice(0, 5).forEach(trend => {
-        const itemBox = document.createElement("div");
-        itemBox.style.cssText = "display:flex; justify-content:space-between; align-items:center; background:#0b111b; padding:10px 14px; border-radius:8px; border:1px solid #263244;";
-
-        const titleSpan = document.createElement("span");
-        titleSpan.style.fontWeight = "600";
-        titleSpan.textContent = trend.title;
-
-        const actionRow = document.createElement("div");
-        actionRow.className = "row";
-
-        const useBtn = document.createElement("button");
-        useBtn.type = "button";
-        useBtn.className = "small primary";
-        useBtn.textContent = "Gunakan untuk Riset ✍️";
-        useBtn.addEventListener("click", () => {
-          $("title").value = `Market Research: ${trend.title}`;
-          $("title").dispatchEvent(new Event('input'));
-          $("category").value = "Stock Analysis";
-          window.scrollTo({top: 300, behavior: "smooth"});
-        });
-
-        actionRow.appendChild(useBtn);
-        itemBox.appendChild(titleSpan);
-        itemBox.appendChild(actionRow);
-        listWrapper.appendChild(itemBox);
-      });
-
-      container.appendChild(listWrapper);
-
-    } catch (err) {
-      console.error("Gagal memuat tren:", err);
-      container.innerHTML = '<span class="muted" style="color:var(--danger)">Gagal mengambil data tren pasar. Coba lagi nanti.</span>';
-    }
+      tbody.appendChild(tr);
+    });
   }
 
   $("fetchTrendsBtn")?.addEventListener("click", loadAdminMarketTrends);
@@ -845,7 +846,7 @@ button:disabled{opacity:.5}
   async function editNews(id) {
     status("newsSaveStatus", "Loading news…");
     const { data, error } = await db.from("news").select("*").eq("id", id).single();
-    if (error) return status("newsSaveStatus", error.message, true);
+    if (error) return status("newsSaveStatus", error.error, true);
 
     $("newsId").value = data.id;
     $("newsSlug").value = data.slug || "";
