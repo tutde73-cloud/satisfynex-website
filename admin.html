@@ -89,7 +89,7 @@ button:disabled{opacity:.5}
     <button type="button" id="tabNewsBtn" class="tab-btn">📰 Write News</button>
   </div>
 
-  <!-- PANEL LIVE GOOGLE TRENDS -->
+  <!-- PANEL LIVE GOOGLE TRENDS (KHUSUS FINANSIAL) -->
   <section class="panel" style="border-color: var(--accent); margin-bottom: 25px;">
     <div class="row" style="justify-content:space-between">
       <h2>🔥 Live Market &amp; Google Trends Feed</h2>
@@ -319,12 +319,12 @@ button:disabled{opacity:.5}
 
   $("formatMarkdownBtn").addEventListener("click", convertMarkdownToHtml);
 
-  // --- FITUR TRENDING MARKET DI ADMIN ---
+  // --- FITUR TRENDING MARKET (DENGAN FILTER KETAT KHUSUS FINANSIAL) ---
   async function loadAdminMarketTrends() {
     const container = $("trendsContainer");
     if (!container) return;
 
-    container.innerHTML = '<span class="muted">Menghubungkan ke Google Trends RSS...</span>';
+    container.innerHTML = '<span class="muted">Menyaring tren khusus pasar keuangan...</span>';
 
     try {
       const res = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://trends.google.com/trending/rss?geo=US');
@@ -335,13 +335,25 @@ button:disabled{opacity:.5}
         return;
       }
 
-      const financeKeywords = ['stock', 'nasdaq', 's&p', 'market', 'crypto', 'shares', 'earnings', 'sec', 'fed', 'inflation', 'bank', 'oil', 'gold', 'nvidia', 'apple'];
-      let relevantTrends = data.items.filter(item => 
-        financeKeywords.some(keyword => item.title.toLowerCase().includes(keyword))
-      );
+      const strictFinanceKeywords = [
+        'stock', 'stocks', 'nasdaq', 's&p', 'market', 'crypto', 'shares', 'earnings', 
+        'sec', 'fed', 'inflation', 'bank', 'oil', 'gold', 'nvidia', 'apple', 'tesla', 
+        'microsoft', 'amazon', 'dow jones', 'recession', 'interest rate', 'yield', 
+        'dividend', 'ticker', 'economy', 'invest', 'investing', 'bonds', 'etf'
+      ];
+
+      let relevantTrends = data.items.filter(item => {
+        const titleLower = item.title.toLowerCase();
+        return strictFinanceKeywords.some(keyword => titleLower.includes(keyword));
+      });
 
       if (relevantTrends.length === 0) {
-        relevantTrends = data.items.slice(0, 5);
+        relevantTrends = [
+          { title: "NVIDIA Corp. ($NVDA) Q3 Earnings & AI Infrastructure Demand" },
+          { title: "Federal Reserve Interest Rate Outlook and Market Impact" },
+          { title: "S&P 500 Tech Sector Volatility & Institutional Flow" },
+          { title: "Global Energy Infrastructure & Crude Oil Futures Update" }
+        ];
       }
 
       container.innerHTML = "";
@@ -351,7 +363,7 @@ button:disabled{opacity:.5}
       listWrapper.style.flexDirection = "column";
       listWrapper.style.gap = "10px";
 
-      relevantTrends.slice(0, 6).forEach(trend => {
+      relevantTrends.slice(0, 5).forEach(trend => {
         const itemBox = document.createElement("div");
         itemBox.style.cssText = "display:flex; justify-content:space-between; align-items:center; background:#0b111b; padding:10px 14px; border-radius:8px; border:1px solid #263244;";
 
@@ -367,9 +379,9 @@ button:disabled{opacity:.5}
         useBtn.className = "small primary";
         useBtn.textContent = "Gunakan untuk Riset ✍️";
         useBtn.addEventListener("click", () => {
-          $("title").value = `Analisis Pasar: ${trend.title} dan Dampaknya bagi Investor`;
+          $("title").value = `Market Research: ${trend.title}`;
           $("title").dispatchEvent(new Event('input'));
-          $("category").value = "Market Insights";
+          $("category").value = "Stock Analysis";
           window.scrollTo({top: 300, behavior: "smooth"});
         });
 
@@ -423,7 +435,7 @@ button:disabled{opacity:.5}
     $("app").style.display = "block";
     $("logoutBtn").hidden = false;
     await loadAllData();
-    loadAdminMarketTrends(); // Panggil otomatis saat berhasil masuk
+    loadAdminMarketTrends();
   }
 
   $("loginForm").addEventListener("submit", async event => {
