@@ -14,6 +14,9 @@
 <meta property="og:title" content="Satisfynex — Independent US Stock Research">
 <meta property="og:description" content="Independent research on US stocks, company fundamentals, technical charts and market trends.">
 <meta property="og:url" content="https://www.satisfynex.com/">
+
+<!-- Canonical URL Statis Resmi (Mencegah Risiko Duplikasi Konten) -->
+<link rel="canonical" href="https://www.satisfynex.com/">
  
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-742MNVD8XT"></script>
 <script>
@@ -629,7 +632,8 @@ function updateDynamicCanonical() {
     c.rel = "canonical";
     document.head.appendChild(c);
   }
-  c.href = window.location.origin + window.location.pathname;
+  // Mengunci URL dasar yang resmi untuk mencegah duplikasi parameter
+  c.href = SITE_URL + (window.location.pathname.toLowerCase() === "/index.html" ? "/" : window.location.pathname);
 }
  
 function setMeta(article=null,pageTitle=null){
