@@ -501,17 +501,19 @@ function contentToText(content){
  return String(content||"");
 }
  
-// PEMINDAI OTOMATIS SENTIMEN DARI ISI TEKS ARTIKEL
+// PEMINDAI SENTIMEN PRESISI: Hanya membaca judul agar tidak salah tangkap dari isi teks
 function getSentimentFromContent(title, content) {
-  const fullText = (title + " " + content).toLowerCase();
-  const bearishKeywords = ["bearish", "breakdown", "crash", "collapse", "downturn", "decay", "contraction", "liquidation", "downside", "correction", "sell-off", "pressure", "failure"];
+  const t = (title || "").toLowerCase();
   
-  for (let word of bearishKeywords) {
-    if (fullText.includes(word)) {
+  // Hanya mendeteksi Bearish jika judulnya jelas-jelas menyatakan breakdown/penurunan
+  const bearishTitles = ["bearish", "breakdown", "crash", "collapse", "downturn", "downside risk", "structural breakdown"];
+  
+  for (let word of bearishTitles) {
+    if (t.includes(word)) {
       return "BEARISH";
     }
   }
-  return "BULLISH";
+  return "BULLISH"; // Default aman menjadi Bullish (Hijau)
 }
 
 function renderSentimentBadge(sentiment) {
