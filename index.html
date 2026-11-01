@@ -499,35 +499,34 @@ function contentToText(content){
  return String(content||"");
 }
  
-// PEMINDAI BERDASARKAN ANGKA TARGET VS INVALID DI DALAM TEKS
-function getSentimentFromText(content) {
-  const text = (content || "").toLowerCase();
+// LOGIKA PEMBACAAN SELURUH HALAMAN (JUDUL + ISI ARTIKEL) DENGAN SISTEM SKOR KETAT
+function getSentimentFromFullArticle(title, content) {
+  const fullText = ((title || "") + " " + (content || "")).toLowerCase();
   
-  // Mencari pola angka setelah kata target dan invalid/stoploss di dalam teks artikel
-  // Contoh format di teks: "target 110" dan "invalid 155" atau "target: 110"
-  const targetMatch = text.match(/target\s*[:\-]?\s*([0-9]+\.?[0-9]*)/);
-  const invalidMatch = text.match(/(?:invalid|stop\s*loss|stoploss)\s*[:\-]?\s*([0-9]+\.?[0-9]*)/);
+  // Kata kunci mutlak yang benar-benar mengindikasikan struktur Bearish / Penurunan
+  const bearishSignals = [
+    "structural breakdown", "severe structural failure", "accelerated macro breakdown",
+    "capitulation", "prolonged markdown phase", "bearish trend alignment", 
+    "downside collapse", "heavy distribution phase"
+  ];
   
-  if (targetMatch && invalidMatch) {
-    const targetVal = parseFloat(targetMatch[1]);
-    const invalidVal = parseFloat(invalidMatch[1]);
-    
-    // Jika target di bawah invalid, berarti Bearish. Jika di atas, berarti Bullish.
-    if (!isNaN(targetVal) && !isNaN(invalidVal)) {
-      if (targetVal < invalidVal) {
-        return "BEARISH";
-      } else {
-        return "BULLISH";
-      }
+  let bearishScore = 0;
+  for (let signal of bearishSignals) {
+    if (fullText.includes(signal)) {
+      bearishScore += 2; // Bobot tinggi untuk kalimat penurunan struktural
     }
   }
   
-  // Fallback jika format angka tidak tertulis secara eksplisit: cek kata kunci utama di judul/teks
-  if (text.includes("breakdown") || text.includes("crash") || text.includes("markdown") || text.includes("bearish")) {
-    return "BEARISH";
+  // Periksa juga apakah judul atau awal teks dengan jelas menyatakan Bearish / Breakdown murni
+  if ((title || "").toLowerCase().includes("bearish") || (title || "").toLowerCase().includes("breakdown")) {
+    bearishScore += 3;
   }
   
-  return "BULLISH"; // Default Bullish (Hijau)
+  // Jika skor penurunan cukup tinggi, tetapkan BEARISH. Jika tidak, aman menjadi BULLISH (Hijau).
+  if (bearishScore >= 3) {
+    return "BEARISH";
+  }
+  return "BULLISH";
 }
 
 function renderSentimentBadge(sentiment) {
@@ -546,8 +545,8 @@ function toArticle(row){
  
  const isGlobal = ['$SSEC', '$COMPOSITE', '$IHSG', '$NYA', '$NDX', '$DJI', '$SPX', '$XAUUSD', '$KOSPI'].some(t => tickerVal.includes(t)) || catVal.includes("GLOBAL");
  
- // Mendeteksi sentimen langsung dari perbandingan angka Target vs Invalid di teks
- const sentiment = getSentimentFromText(row.title + " " + content);
+ // Membaca seluruh halaman (judul + isi artikel) dengan logika skor
+ const sentiment = getSentimentFromFullArticle(row.title, content);
 
  return {
   id,
@@ -940,7 +939,7 @@ async function loadArticles(){
       const formattedNews = autoNews.map(item => ({
         id: "news-" + item.id,
         title: item.title,
-        slug: "news-" + item.id,
+        slug: "news-"+item.id,
         ticker: "MARKET",
         category: item.category || "Market Insights",
         excerpt: item.summary,
