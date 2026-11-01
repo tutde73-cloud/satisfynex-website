@@ -15,7 +15,7 @@
 <meta property="og:description" content="Independent research on US stocks, company fundamentals, technical charts and market trends.">
 <meta property="og:url" content="https://www.satisfynex.com/">
 
-<!-- Canonical URL Statis Resmi (Mencegah Risiko Duplikasi Konten) -->
+<!-- Canonical URL Statis Resmi -->
 <link rel="canonical" href="https://www.satisfynex.com/">
  
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-742MNVD8XT"></script>
@@ -90,7 +90,12 @@ h1,h2,h3,p{margin-top:0}
 .side-story:last-child{border:0}
 .side-story img{width:100%;height:auto;object-fit:contain;background:#0c1017}
 .side-story h3{font-size:14px;line-height:1.45;margin:6px 0}
+
+/* Styling Badge Sentimen */
 .tag{display:inline-block;color:var(--accent);background:#183e35;border-radius:5px;padding:3px 7px;font-size:10px;text-transform:uppercase;letter-spacing:.7px;font-weight:800}
+.tag-bullish{background:#183e35!important;color:#8ee0bd!important}
+.tag-bearish{background:#3e1818!important;color:#ff8e8e!important}
+
 .meta{display:flex;flex-wrap:wrap;gap:8px 13px;color:var(--muted);font-size:11px}
 .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px}
 .filters input,.filters select{color:var(--text);background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:12px;outline:none}
@@ -496,6 +501,36 @@ function contentToText(content){
  }
  return String(content||"");
 }
+
+// FUNGSI LOGIKA: Ekstrak nilai angka TP dan Invalid dari teks, lalu bandingkan (TP > Invalid = Bullish)
+function calculateSentimentFromContent(text) {
+  const lower = text.toLowerCase();
+  
+  // Mencari pola angka setelah kata "tp", "target", "invalid"
+  const tpMatch = lower.match(/(?:tp|target)\s*[:=]?\s*([\d,.]+)/);
+  const invMatch = lower.match(/(?:invalid|sl|stop)\s*[:=]?\s*([\d,.]+)/);
+
+  if (tpMatch && invMatch) {
+    const tpVal = parseFloat(tpMatch[1].replace(/,/g, ''));
+    const invVal = parseFloat(invMatch[1].replace(/,/g, ''));
+    if (!isNaN(tpVal) && !isNaN(invVal)) {
+      return tpVal > invVal ? "BULLISH" : "BEARISH";
+    }
+  }
+
+  // Fallback manual jika teks tidak memuat format angka eksplisit
+  if (lower.includes("bearish") || lower.includes("collapse") || lower.includes("correction") || lower.includes("down")) {
+    return "BEARISH";
+  }
+  return "BULLISH";
+}
+
+function renderSentimentBadge(sentiment) {
+  if (sentiment === "BEARISH") {
+    return `<span class="tag tag-bearish" style="margin-left:5px;">BEARISH</span>`;
+  }
+  return `<span class="tag tag-bullish" style="margin-left:5px;">BULLISH</span>`;
+}
  
 function toArticle(row){
  const content=contentToText(row.content);
@@ -506,11 +541,15 @@ function toArticle(row){
  
  const isGlobal = ['$SSEC', '$COMPOSITE', '$IHSG', '$NYA', '$NDX', '$DJI', '$SPX', '$XAUUSD', '$KOSPI'].some(t => tickerVal.includes(t)) || catVal.includes("GLOBAL");
  
+ const combinedText = (row.title || "") + " " + (row.excerpt || "") + " " + content;
+ const sentiment = calculateSentimentFromContent(combinedText);
+
  return {
   id,
   title:row.title||"Untitled Article",
   ticker:row.ticker||"",
   category: isGlobal ? "GLOBAL MARKETS" : (row.category||"Stock Analysis"),
+  sentiment: sentiment,
   date:formatDate(row.created_at),
   image:safeImage(row.image_url),
   read:Math.max(1,Math.ceil(words/200))+" min read",
@@ -523,9 +562,14 @@ function toArticle(row){
  
 function cardMarkup(a){
  const url=articleUrl(a.id);
+ const sentimentBadge = renderSentimentBadge(a.sentiment);
  return `<article class="article-card">
  <a href="${escapeHTML(url)}" data-article="${escapeHTML(a.id)}"><img class="cover" src="${escapeHTML(a.image)}" alt="${escapeHTML(a.title)}" loading="lazy"></a>
- <div class="body"><span class="tag">${escapeHTML(a.category)}</span>
+ <div class="body">
+ <div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px;">
+   <span class="tag">${escapeHTML(a.category)}</span>
+   ${sentimentBadge}
+ </div>
  <h3><a href="${escapeHTML(url)}" data-article="${escapeHTML(a.id)}">${escapeHTML(a.title)}</a></h3>
  <div class="meta"><span>${escapeHTML(a.ticker)}</span><span>${escapeHTML(a.date)}</span><span>${escapeHTML(a.read)}</span></div>
  <p class="excerpt">${escapeHTML(a.excerpt)}</p><a class="read-more" href="${escapeHTML(url)}" data-article="${escapeHTML(a.id)}">Read analysis →</a></div></article>`;
@@ -542,13 +586,19 @@ function renderFeatured(){
  
  const main=normalArticles[0],side=normalArticles.slice(1,4);
  const mainUrl=articleUrl(main.id);
+ const mainSentimentBadge = renderSentimentBadge(main.sentiment);
  
  target.innerHTML=`<article class="feature-main">
  <a href="${escapeHTML(mainUrl)}" data-article="${escapeHTML(main.id)}"><img class="cover" src="${escapeHTML(main.image)}" alt="${escapeHTML(main.title)}"></a>
- <div class="body"><span class="tag">${escapeHTML(main.category)}</span><h3><a href="${escapeHTML(mainUrl)}" data-article="${escapeHTML(main.id)}">${escapeHTML(main.title)}</a></h3>
+ <div class="body">
+ <div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px;">
+   <span class="tag">${escapeHTML(main.category)}</span>
+   ${mainSentimentBadge}
+ </div>
+ <h3><a href="${escapeHTML(mainUrl)}" data-article="${escapeHTML(main.id)}">${escapeHTML(main.title)}</a></h3>
  <div class="meta"><span>${escapeHTML(main.ticker)}</span><span>${escapeHTML(main.date)}</span><span>${escapeHTML(main.read)}</span></div>
  <p class="excerpt">${escapeHTML(main.excerpt)}</p><a class="read-more" href="${escapeHTML(mainUrl)}" data-article="${escapeHTML(main.id)}">Read full analysis →</a></div></article>
- <div class="feature-side">${side.length?side.map(a=>`<article class="side-story"><a href="${escapeHTML(articleUrl(a.id))}" data-article="${escapeHTML(a.id)}"><img src="${escapeHTML(a.image)}" alt="${escapeHTML(a.title)}" loading="lazy"></a><div><span class="tag">${escapeHTML(a.category)}</span><h3><a href="${escapeHTML(articleUrl(a.id))}" data-article="${escapeHTML(a.id)}">${escapeHTML(a.title)}</a></h3><div class="meta">${escapeHTML(a.date)}</div></div></article>`).join(""):'<div class="notice">More research coming soon.</div>'}</div>`;
+ <div class="feature-side">${side.length?side.map(a=>`<article class="side-story"><a href="${escapeHTML(articleUrl(a.id))}" data-article="${escapeHTML(a.id)}"><img src="${escapeHTML(a.image)}" alt="${escapeHTML(a.title)}" loading="lazy"></a><div><div style="display:flex;align-items:center;gap:4px;"><span class="tag">${escapeHTML(a.category)}</span>${renderSentimentBadge(a.sentiment)}</div><h3><a href="${escapeHTML(articleUrl(a.id))}" data-article="${escapeHTML(a.id)}">${escapeHTML(a.title)}</a></h3><div class="meta">${escapeHTML(a.date)}</div></div></article>`).join(""):'<div class="notice">More research coming soon.</div>'}</div>`;
  
  setTimeout(processAllImages, 300);
 }
@@ -632,7 +682,6 @@ function updateDynamicCanonical() {
     c.rel = "canonical";
     document.head.appendChild(c);
   }
-  // Mengunci URL dasar yang resmi untuk mencegah duplikasi parameter
   c.href = SITE_URL + (window.location.pathname.toLowerCase() === "/index.html" ? "/" : window.location.pathname);
 }
  
@@ -720,7 +769,7 @@ function openArticleById(id,push=true){
    </div>
  </div>` : "";
  
- $("#articleDetail").innerHTML=`<article><header class="article-header"><span class="tag">${escapeHTML(article.category)}</span><h1>${escapeHTML(article.title)}</h1><p class="article-lead">${escapeHTML(article.excerpt)}</p><div class="meta"><span>${escapeHTML(article.ticker)}</span><span>${escapeHTML(article.date)}</span><span>${escapeHTML(article.read)}</span></div></header>
+ $("#articleDetail").innerHTML=`<article><header class="article-header"><div style="display:flex;align-items:center;gap:4px;margin-bottom:8px;"><span class="tag">${escapeHTML(article.category)}</span>${renderSentimentBadge(article.sentiment)}</div><h1>${escapeHTML(article.title)}</h1><p class="article-lead">${escapeHTML(article.excerpt)}</p><div class="meta"><span>${escapeHTML(article.ticker)}</span><span>${escapeHTML(article.date)}</span><span>${escapeHTML(article.read)}</span></div></header>
  <img class="article-hero" src="${escapeHTML(article.image)}" alt="${escapeHTML(article.title)}">
  <div class="article-layout"><div class="article-content">
  
@@ -906,7 +955,7 @@ async function loadArticles(){
   renderArticles();
   routeFromLocation();
  }catch(err){
-  console.error("Satisfynex loading error:",err);
+  console.log("Satisfynex loading error:",err);
   $("#featuredGrid").innerHTML='<div class="notice">Unable to load published research. Please try again later.</div>';
   $("#articleGrid").innerHTML='<div class="notice" style="grid-column:1/-1">Articles could not be loaded.</div>';
   $("#articleCount").textContent="Temporarily unavailable";
