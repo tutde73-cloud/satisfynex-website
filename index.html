@@ -15,7 +15,6 @@
 <meta property="og:description" content="Independent research on US stocks, company fundamentals, technical charts and market trends.">
 <meta property="og:url" content="https://www.satisfynex.com/">
 
-<!-- Canonical URL Statis Resmi (Mencegah Risiko Duplikasi Konten) -->
 <link rel="canonical" href="https://www.satisfynex.com/">
  
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-742MNVD8XT"></script>
@@ -81,17 +80,18 @@ h1,h2,h3,p{margin-top:0}
 .muted,.excerpt{color:var(--muted)}
 .small{font-size:12px}
 .featured-grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(260px,.8fr);gap:22px}
-.feature-main,.feature-side,.article-card,.panel,.contact-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.feature-main,.feature-side,.article-card,.panel,.contact-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
 .cover{width:100%;height:auto;object-fit:contain;background:#0c1017}
-.feature-main .body,.article-card .body{padding:20px}
+.feature-main .body,.article-card .body{padding:20px;display:flex;flex-direction:column;flex:1}
 .feature-main h3{font-size:clamp(22px,3vw,31px);line-height:1.3;margin:10px 0}
-.feature-side{display:flex;flex-direction:column}
-.side-story{display:grid;grid-template-columns:100px minmax(0,1fr);gap:14px;padding:15px;border-bottom:1px solid var(--line)}
-.side-story:last-child{border:0}
+.feature-side{display:flex;flex-direction:column;gap:15px}
+.side-story{display:grid;grid-template-columns:100px minmax(0,1fr);gap:14px;padding:15px;background:var(--panel);border:1px solid var(--line);border-radius:12px}
 .side-story img{width:100%;height:auto;object-fit:contain;background:#0c1017}
 .side-story h3{font-size:14px;line-height:1.45;margin:6px 0}
+
 .tag{display:inline-block;color:var(--accent);background:#183e35;border-radius:5px;padding:3px 7px;font-size:10px;text-transform:uppercase;letter-spacing:.7px;font-weight:800}
-.meta{display:flex;flex-wrap:wrap;gap:8px 13px;color:var(--muted);font-size:11px}
+
+.meta{display:flex;flex-wrap:wrap;gap:8px 13px;color:var(--muted);font-size:11px;margin-top:auto}
 .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px}
 .filters input,.filters select{color:var(--text);background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:12px;outline:none}
 .filters input{flex:1;min-width:200px}
@@ -99,8 +99,8 @@ h1,h2,h3,p{margin-top:0}
 .article-card{transition:transform .18s,border-color .18s}
 .article-card:hover{transform:translateY(-3px);border-color:#55796e}
 .article-card h3{font-size:19px;line-height:1.4;margin:11px 0}
-.excerpt{font-size:13px;line-height:1.7}
-.read-more,.back-link{display:inline-block;color:var(--accent);font-size:12px;font-weight:750;margin-top:9px}
+.excerpt{font-size:13px;line-height:1.7;margin:10px 0}
+.read-more,.back-link{display:inline-block;color:var(--accent);font-size:12px;font-weight:750;margin-top:auto}
 .notice,.empty{border:1px dashed var(--line);border-radius:12px;padding:24px;color:var(--muted);text-align:center}
 .article-page{min-height:60vh;padding-top:40px}
 .back-link{margin:0 0 24px}
@@ -244,7 +244,10 @@ h1,h2,h3,p{margin-top:0}
   <div class="eyebrow">Independent market research</div>
   <h1>Understand the business behind the stock.</h1>
   <p id="dynamicHeroText" class="text-rotator">Satisfynex delivers daily visual chart breakdowns and technical price action research on high-momentum US equities.</p>
-  <div class="hero-note">Research and education · Not financial advice</div>
+  <div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start;">
+    <div class="hero-note">Research and education · Not financial advice</div>
+    <div style="font-size: 11px; color: var(--muted); font-style: italic; opacity: 0.85;">While others lock their insights behind paywalls and sign-up forms, we give you the analysis upfront.</div>
+  </div>
  </div></section>
  
  <section class="section"><div class="container">
@@ -252,7 +255,6 @@ h1,h2,h3,p{margin-top:0}
   <div id="featuredGrid" class="featured-grid"><div class="notice">Loading published research...</div></div>
  </div></section>
  
- <!-- SECTION 1: LATEST ARTICLES & FILTER KATEGORI -->
  <section class="section" id="latest"><div class="container">
   <div class="section-heading"><div><div class="eyebrow">Explore the research</div><h2>Latest articles</h2></div><div id="articleCount" class="muted small"></div></div>
   <div class="filters">
@@ -267,7 +269,6 @@ h1,h2,h3,p{margin-top:0}
   <div id="paginationContainer"></div>
  </div></section>
  
- <!-- SECTION 2: KOLOM KHUSUS 5 ANALISIS GLOBAL TERBARU -->
  <section class="section" style="border-top: 1px solid var(--line); background: rgba(19, 26, 37, 0.4);"><div class="container">
   <div class="section-heading">
     <div><div class="eyebrow">Macro & Indices</div><h2>Global Markets Insights</h2></div>
@@ -505,7 +506,7 @@ function toArticle(row){
  const catVal = (row.category || "").toUpperCase();
  
  const isGlobal = ['$SSEC', '$COMPOSITE', '$IHSG', '$NYA', '$NDX', '$DJI', '$SPX', '$XAUUSD', '$KOSPI'].some(t => tickerVal.includes(t)) || catVal.includes("GLOBAL");
- 
+
  return {
   id,
   title:row.title||"Untitled Article",
@@ -525,7 +526,8 @@ function cardMarkup(a){
  const url=articleUrl(a.id);
  return `<article class="article-card">
  <a href="${escapeHTML(url)}" data-article="${escapeHTML(a.id)}"><img class="cover" src="${escapeHTML(a.image)}" alt="${escapeHTML(a.title)}" loading="lazy"></a>
- <div class="body"><span class="tag">${escapeHTML(a.category)}</span>
+ <div class="body">
+ <div><span class="tag">${escapeHTML(a.category)}</span></div>
  <h3><a href="${escapeHTML(url)}" data-article="${escapeHTML(a.id)}">${escapeHTML(a.title)}</a></h3>
  <div class="meta"><span>${escapeHTML(a.ticker)}</span><span>${escapeHTML(a.date)}</span><span>${escapeHTML(a.read)}</span></div>
  <p class="excerpt">${escapeHTML(a.excerpt)}</p><a class="read-more" href="${escapeHTML(url)}" data-article="${escapeHTML(a.id)}">Read analysis →</a></div></article>`;
@@ -545,10 +547,12 @@ function renderFeatured(){
  
  target.innerHTML=`<article class="feature-main">
  <a href="${escapeHTML(mainUrl)}" data-article="${escapeHTML(main.id)}"><img class="cover" src="${escapeHTML(main.image)}" alt="${escapeHTML(main.title)}"></a>
- <div class="body"><span class="tag">${escapeHTML(main.category)}</span><h3><a href="${escapeHTML(mainUrl)}" data-article="${escapeHTML(main.id)}">${escapeHTML(main.title)}</a></h3>
+ <div class="body">
+ <div><span class="tag">${escapeHTML(main.category)}</span></div>
+ <h3><a href="${escapeHTML(mainUrl)}" data-article="${escapeHTML(main.id)}">${escapeHTML(main.title)}</a></h3>
  <div class="meta"><span>${escapeHTML(main.ticker)}</span><span>${escapeHTML(main.date)}</span><span>${escapeHTML(main.read)}</span></div>
  <p class="excerpt">${escapeHTML(main.excerpt)}</p><a class="read-more" href="${escapeHTML(mainUrl)}" data-article="${escapeHTML(main.id)}">Read full analysis →</a></div></article>
- <div class="feature-side">${side.length?side.map(a=>`<article class="side-story"><a href="${escapeHTML(articleUrl(a.id))}" data-article="${escapeHTML(a.id)}"><img src="${escapeHTML(a.image)}" alt="${escapeHTML(a.title)}" loading="lazy"></a><div><span class="tag">${escapeHTML(a.category)}</span><h3><a href="${escapeHTML(articleUrl(a.id))}" data-article="${escapeHTML(a.id)}">${escapeHTML(a.title)}</a></h3><div class="meta">${escapeHTML(a.date)}</div></div></article>`).join(""):'<div class="notice">More research coming soon.</div>'}</div>`;
+ <div class="feature-side">${side.length?side.map(a=>`<article class="side-story"><a href="${escapeHTML(articleUrl(a.id))}" data-article="${escapeHTML(a.id)}"><img src="${escapeHTML(a.image)}" alt="${escapeHTML(a.title)}" loading="lazy"></a><div><div><span class="tag">${escapeHTML(a.category)}</span></div><h3><a href="${escapeHTML(articleUrl(a.id))}" data-article="${escapeHTML(a.id)}">${escapeHTML(a.title)}</a></h3><div class="meta">${escapeHTML(a.date)}</div></div></article>`).join(""):'<div class="notice">More research coming soon.</div>'}</div>`;
  
  setTimeout(processAllImages, 300);
 }
@@ -632,7 +636,6 @@ function updateDynamicCanonical() {
     c.rel = "canonical";
     document.head.appendChild(c);
   }
-  // Mengunci URL dasar yang resmi untuk mencegah duplikasi parameter
   c.href = SITE_URL + (window.location.pathname.toLowerCase() === "/index.html" ? "/" : window.location.pathname);
 }
  
@@ -719,8 +722,8 @@ function openArticleById(id,push=true){
      `).join("")}
    </div>
  </div>` : "";
- 
- $("#articleDetail").innerHTML=`<article><header class="article-header"><span class="tag">${escapeHTML(article.category)}</span><h1>${escapeHTML(article.title)}</h1><p class="article-lead">${escapeHTML(article.excerpt)}</p><div class="meta"><span>${escapeHTML(article.ticker)}</span><span>${escapeHTML(article.date)}</span><span>${escapeHTML(article.read)}</span></div></header>
+
+ $("#articleDetail").innerHTML=`<article><header class="article-header"><div style="margin-bottom:8px;"><span class="tag">${escapeHTML(article.category)}</span></div><h1>${escapeHTML(article.title)}</h1><p class="article-lead">${escapeHTML(article.excerpt)}</p><div class="meta"><span>${escapeHTML(article.ticker)}</span><span>${escapeHTML(article.date)}</span><span>${escapeHTML(article.read)}</span></div></header>
  <img class="article-hero" src="${escapeHTML(article.image)}" alt="${escapeHTML(article.title)}">
  <div class="article-layout"><div class="article-content">
  
@@ -885,7 +888,7 @@ async function loadArticles(){
       const formattedNews = autoNews.map(item => ({
         id: "news-" + item.id,
         title: item.title,
-        slug: "news-" + item.id,
+        slug: "news-"+item.id,
         ticker: "MARKET",
         category: item.category || "Market Insights",
         excerpt: item.summary,
