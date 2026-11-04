@@ -191,6 +191,16 @@ button:disabled{opacity:.5}
           </div>
 
           <div id="saveStatus" class="status" role="status"></div>
+
+          <!-- KOTAK TEKS SIAP POST UNTUK X (TWITTER) -->
+          <div id="socialOutputBox" style="display: none; margin-top: 25px; padding: 18px; background: #0f172a; border: 1px solid var(--accent); border-radius: 12px;">
+            <h3 style="margin-top:0; color:var(--accent); font-size:16px;">🐦 Teks Siap Post untuk X (Twitter)</h3>
+            <p class="hint" style="margin-bottom:10px;">Salin teks di bawah ini dan paste langsung ke akun X Anda bersama screenshot chart TradingView.</p>
+            <textarea id="socialText" rows="5" style="width: 100%; background: #070d14; color: #38bdf8; padding: 12px; border: 1px solid #263244; border-radius: 8px; font-family: monospace;" readonly></textarea>
+            <div class="row" style="margin-top: 10px;">
+              <button type="button" onclick="copySocialText()" class="primary small">📋 Copy Teks untuk X</button>
+            </div>
+          </div>
         </form>
       </div>
 
@@ -525,6 +535,7 @@ button:disabled{opacity:.5}
     $("imageStatus").textContent = "";
     preview("");
     $("editorHeading").textContent = "Write an article";
+    $("socialOutputBox").style.display = "none";
     status("saveStatus", "");
   }
   $("newBtn").addEventListener("click", resetEditor);
@@ -657,6 +668,15 @@ button:disabled{opacity:.5}
       $("slug").dataset.edited = "1";
       $("editorHeading").textContent = "Edit article";
       status("saveStatus", statusValue === "published" ? "Article published successfully." : "Draft saved successfully.");
+
+      // GENERATE OTOMATIS FORMAT TEKS X
+      const domainUrl = `satisfynex.com/articles/${slug}`;
+      const tickerFormatted = userTicker ? `${userTicker} ` : "";
+      const tweetFormat = `[NEW RESEARCH] ${tickerFormatted}${title}\n\nRead the full report 👇\n${domainUrl}\n\n#SatisfyNex #StockMarket #Investing #USEquities`;
+      
+      $("socialText").value = tweetFormat;
+      $("socialOutputBox").style.display = "block";
+
       await loadAllData();
     } catch (err) {
       status("saveStatus", err.message || "Unable to save article.", true);
@@ -665,6 +685,14 @@ button:disabled{opacity:.5}
       $("draftBtn").disabled = $("publishBtn").disabled = false;
     }
   }
+
+  // GLOBAL FUNCTION FOR COPYING X TEXT
+  window.copySocialText = function() {
+    const socialText = document.getElementById('socialText');
+    socialText.select();
+    navigator.clipboard.writeText(socialText.value);
+    alert('Teks berhasil di-copy! Tinggal paste ke X.');
+  };
 
   $("draftBtn").addEventListener("click", () => save("draft"));
   $("publishBtn").addEventListener("click", () => save("published"));
@@ -872,6 +900,13 @@ button:disabled{opacity:.5}
     preview(imageUrl);
     $("editorHeading").textContent = "Edit article";
     status("saveStatus", "Editing article #" + data.id);
+
+    // MUNCULKAN KOTAK X JUGA SAAT EDIT ARTIKEL LAMA
+    const domainUrl = `satisfynex.com/articles/${data.slug}`;
+    const tickerFormatted = data.ticker ? `${data.ticker} ` : "";
+    $("socialText").value = `[NEW RESEARCH] ${tickerFormatted}${data.title}\n\nRead the full report 👇\n${domainUrl}\n\n#SatisfyNex #StockMarket #Investing #USEquities`;
+    $("socialOutputBox").style.display = "block";
+
     window.scrollTo({top:0,behavior:"smooth"});
   }
 
