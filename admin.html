@@ -467,8 +467,17 @@ button:disabled{opacity:.5}
   function preview(url) {
     $("imagePreview").hidden = !url;
     $("removeImageBtn").hidden = !url;
-    if (url) $("imagePreview").src = url;
-    else $("imagePreview").removeAttribute("src");
+    if (url) {
+      $("imagePreview").src = url;
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => processWatermark(img);
+      img.src = url;
+    } else {
+      $("imagePreview").removeAttribute("src");
+      $("downloadWatermarkedBtn").style.display = "none";
+      watermarkedBlob = null;
+    }
   }
 
   function newsPreview(url) {
@@ -555,7 +564,6 @@ button:disabled{opacity:.5}
     $("imageFile").value = "";
     $("imageStatus").textContent = "";
     preview("");
-    $("downloadWatermarkedBtn").style.display = "none";
     $("editorHeading").textContent = "Write an article";
     updateSocialBox();
     status("saveStatus", "");
@@ -582,7 +590,6 @@ button:disabled{opacity:.5}
     watermarkedBlob = null;
     $("imageFile").value = "";
     $("imageStatus").textContent = "Image will be removed when saved.";
-    $("downloadWatermarkedBtn").style.display = "none";
     preview("");
   });
 
@@ -645,7 +652,6 @@ button:disabled{opacity:.5}
     removeImage = false;
   });
 
-  // TOMBOL DOWNLOAD GAMBAR WATERMARK TENGAH
   window.copySocialText = function() {
     const socialText = document.getElementById('socialText');
     socialText.select();
