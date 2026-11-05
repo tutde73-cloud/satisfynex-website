@@ -178,17 +178,12 @@ button:disabled{opacity:.5}
 
           <label for="imageFile">Cover image / chart</label>
           <input id="imageFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif">
-          <div class="hint">JPG, PNG, WebP, or GIF. Maximum 8 MB. Watermark 'satisfynex.com' otomatis di tengah.</div>
-          
+          <div class="hint">JPG, PNG, WebP, or GIF. Maximum 8 MB.</div>
           <div id="imageStatus" class="hint"></div>
           <img id="imagePreview" class="preview" alt="Article image preview" hidden>
-          
-          <div class="row" style="margin-top:10px">
-            <button id="downloadWatermarkedBtn" type="button" class="small primary" style="display:none;">📥 Download Gambar + Watermark Tengah</button>
+          <div class="row" style="margin-top:8px">
             <button id="removeImageBtn" type="button" class="small" hidden>Remove image</button>
           </div>
-          
-          <canvas id="watermarkCanvas" style="display:none;"></canvas>
 
           <div class="row" style="margin-top:20px">
             <button id="draftBtn" type="button">Save draft</button>
@@ -196,16 +191,6 @@ button:disabled{opacity:.5}
           </div>
 
           <div id="saveStatus" class="status" role="status"></div>
-
-          <!-- KOTAK TEKS SIAP POST UNTUK X (SELALU MUNCUL) -->
-          <div id="socialOutputBox" style="display: block; margin-top: 25px; padding: 18px; background: #0f172a; border: 1px solid var(--accent); border-radius: 12px;">
-            <h3 style="margin-top:0; color:var(--accent); font-size:16px;">🐦 Teks Siap Post untuk X (Twitter)</h3>
-            <p class="hint" style="margin-bottom:10px;">Otomatis ter-update dari Judul & Ticker. Copy lalu paste ke X bersama gambar ber-watermark.</p>
-            <textarea id="socialText" rows="5" style="width: 100%; background: #070d14; color: #38bdf8; padding: 12px; border: 1px solid #263244; border-radius: 8px; font-family: monospace;" readonly></textarea>
-            <div class="row" style="margin-top: 10px;">
-              <button type="button" onclick="copySocialText()" class="primary small">📋 Copy Teks untuk X</button>
-            </div>
-          </div>
         </form>
       </div>
 
@@ -297,7 +282,6 @@ button:disabled{opacity:.5}
   let imageUrl = "";
   let removeImage = false;
   let busy = false;
-  let watermarkedBlob = null;
 
   let newsImageUrl = "";
   let newsRemoveImage = false;
@@ -318,22 +302,6 @@ button:disabled{opacity:.5}
       .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")
       .slice(0, 200);
   }
-
-  // FUNGSI AUTO UPDATE TEKS X
-  function updateSocialBox() {
-    const title = $("title").value || "Judul Artikel";
-    const ticker = $("ticker").value.trim();
-    const slug = $("slug").value || "artikel-baru";
-    const domainUrl = `satisfynex.com/articles/${slug}`;
-    const tickerFormatted = ticker ? `${ticker.toUpperCase()} ` : "";
-    
-    const tweetFormat = `[NEW RESEARCH] ${tickerFormatted}${title}\n\nRead the full report 👇\n${domainUrl}\n\n#SatisfyNex #StockMarket #Investing #USEquities`;
-    $("socialText").value = tweetFormat;
-  }
-
-  $("title").addEventListener("input", updateSocialBox);
-  $("ticker").addEventListener("input", updateSocialBox);
-  $("slug").addEventListener("input", updateSocialBox);
 
   function convertMarkdownToHtml() {
     let text = $("content").value;
@@ -374,7 +342,7 @@ button:disabled{opacity:.5}
 
   $("formatMarkdownBtn").addEventListener("click", convertMarkdownToHtml);
 
-  // --- RENDER GOOGLE TRENDS STYLE TABLE ---
+  // --- RENDER GOOGLE TRENDS STYLE TABLE (AUTO LIVE RSS + AUTO PARSER) ---
   async function loadAdminMarketTrends() {
     const tbody = $("trendsTableBody");
     if (!tbody) return;
@@ -398,7 +366,10 @@ button:disabled{opacity:.5}
           { title: "NVIDIA Corp Stock Earnings & AI Infrastructure" },
           { title: "Reddit Inc RDDT Stock Market Volatility" },
           { title: "Google Alphabet GOOGL Stock Price Forecast" },
-          { title: "Intel Corp INTC Semiconductor Update" }
+          { title: "Intel Corp INTC Semiconductor Update" },
+          { title: "Microsoft MSFT AI Cloud Growth" },
+          { title: "PT Medco Energi Internasional Tbk MEDC" },
+          { title: "iShares MSCI Brazil ETF EWZ" }
         ];
       }
 
@@ -449,7 +420,6 @@ button:disabled{opacity:.5}
           $("title").dispatchEvent(new Event('input'));
           $("ticker").value = detectedTicker;
           $("category").value = "Stock Analysis";
-          updateSocialBox();
           window.scrollTo({top: 450, behavior: "smooth"});
         });
 
@@ -464,51 +434,11 @@ button:disabled{opacity:.5}
 
   $("fetchTrendsBtn")?.addEventListener("click", loadAdminMarketTrends);
 
-  function processWatermark(imgElement) {
-    const canvas = document.getElementById('watermarkCanvas');
-    const ctx = canvas.getContext('2d');
-
-    canvas.width = imgElement.naturalWidth || imgElement.width;
-    canvas.height = imgElement.naturalHeight || imgElement.height;
-
-    ctx.drawImage(imgElement, 0, 0);
-
-    const text = "satisfynex.com";
-    const fontSize = Math.max(24, Math.floor(canvas.width * 0.055)); 
-    ctx.font = `bold ${fontSize}px sans-serif`;
-    ctx.fillStyle = "rgba(255, 255, 255, 0.28)"; 
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-
-    const x = canvas.width / 2;
-    const y = canvas.height / 2;
-
-    ctx.fillText(text, x, y);
-
-    canvas.toBlob((blob) => {
-      watermarkedBlob = blob;
-      const btn = $("downloadWatermarkedBtn");
-      if (btn) {
-        btn.style.display = "inline-block";
-        btn.disabled = false;
-      }
-    }, 'image/png');
-  }
-
   function preview(url) {
     $("imagePreview").hidden = !url;
     $("removeImageBtn").hidden = !url;
-    if (url) {
-      $("imagePreview").src = url;
-      const img = new Image();
-      img.crossOrigin = "anonymous";
-      img.onload = () => processWatermark(img);
-      img.src = url;
-    } else {
-      $("imagePreview").removeAttribute("src");
-      $("downloadWatermarkedBtn").style.display = "none";
-      watermarkedBlob = null;
-    }
+    if (url) $("imagePreview").src = url;
+    else $("imagePreview").removeAttribute("src");
   }
 
   function newsPreview(url) {
@@ -591,12 +521,10 @@ button:disabled{opacity:.5}
     $("slug").dataset.edited = "";
     imageUrl = "";
     removeImage = false;
-    watermarkedBlob = null;
     $("imageFile").value = "";
     $("imageStatus").textContent = "";
     preview("");
     $("editorHeading").textContent = "Write an article";
-    updateSocialBox();
     status("saveStatus", "");
   }
   $("newBtn").addEventListener("click", resetEditor);
@@ -618,7 +546,6 @@ button:disabled{opacity:.5}
   $("removeImageBtn").addEventListener("click", () => {
     imageUrl = "";
     removeImage = true;
-    watermarkedBlob = null;
     $("imageFile").value = "";
     $("imageStatus").textContent = "Image will be removed when saved.";
     preview("");
@@ -640,38 +567,12 @@ button:disabled{opacity:.5}
       return status("saveStatus", "Image exceeds 8 MB limit.", true);
     }
     const reader = new FileReader();
-    reader.onload = e => { 
-      const img = new Image();
-      img.onload = () => {
-        $("imagePreview").src = img.src;
-        $("imagePreview").hidden = false;
-        $("removeImageBtn").hidden = false;
-        processWatermark(img);
-      };
-      img.src = e.target.result;
-    };
+    reader.onload = e => { $("imagePreview").src = e.target.result; };
     reader.readAsDataURL(file);
-    $("imageStatus").textContent = "Ready: " + file.name + " (Watermark tengah siap)";
+    $("imagePreview").hidden = false;
+    $("removeImageBtn").hidden = false;
+    $("imageStatus").textContent = "Ready: " + file.name;
     removeImage = false;
-  });
-
-  window.copySocialText = function() {
-    const socialText = document.getElementById('socialText');
-    socialText.select();
-    navigator.clipboard.writeText(socialText.value);
-    alert('Teks berhasil di-copy! Tinggal paste ke X.');
-  };
-
-  $("downloadWatermarkedBtn").addEventListener("click", () => {
-    if (!watermarkedBlob) return alert("Belum ada gambar yang diproses atau gambar masih dimuat!");
-    const url = URL.createObjectURL(watermarkedBlob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `satisfynex-chart-${Date.now()}.png`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
   });
 
   $("newsImageFile").addEventListener("change", () => {
@@ -756,8 +657,6 @@ button:disabled{opacity:.5}
       $("slug").dataset.edited = "1";
       $("editorHeading").textContent = "Edit article";
       status("saveStatus", statusValue === "published" ? "Article published successfully." : "Draft saved successfully.");
-
-      updateSocialBox();
       await loadAllData();
     } catch (err) {
       status("saveStatus", err.message || "Unable to save article.", true);
@@ -973,8 +872,6 @@ button:disabled{opacity:.5}
     preview(imageUrl);
     $("editorHeading").textContent = "Edit article";
     status("saveStatus", "Editing article #" + data.id);
-
-    updateSocialBox();
     window.scrollTo({top:0,behavior:"smooth"});
   }
 
