@@ -82,12 +82,16 @@ h1,h2,h3,p{margin-top:0}
 .small{font-size:12px}
 .featured-grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(260px,.8fr);gap:22px}
 .feature-main,.feature-side,.article-card,.panel,.contact-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
-.cover{width:100%;height:auto;object-fit:contain;background:#0c1017}
+
+/* KONSISTEN LANDSCAPE 16:9 UNTUK SEMUA THUMBNAIL KARTU DI BERANDA */
+.cover{width:100%;height:210px;object-fit:cover;background:#0c1017}
+.related-thumb{width:100%;height:130px;object-fit:cover;background:#0c1017}
+.side-story img{width:100px;height:75px;object-fit:cover;background:#0c1017;flex-shrink:0}
+
 .feature-main .body,.article-card .body{padding:20px;display:flex;flex-direction:column;flex:1}
 .feature-main h3{font-size:clamp(22px,3vw,31px);line-height:1.3;margin:10px 0}
 .feature-side{display:flex;flex-direction:column;gap:15px}
-.side-story{display:grid;grid-template-columns:100px minmax(0,1fr);gap:14px;padding:15px;background:var(--panel);border:1px solid var(--line);border-radius:12px}
-.side-story img{width:100%;height:auto;object-fit:contain;background:#0c1017}
+.side-story{display:flex;gap:14px;padding:15px;background:var(--panel);border:1px solid var(--line);border-radius:12px;align-items:center}
 .side-story h3{font-size:14px;line-height:1.45;margin:6px 0}
 
 .tag{display:inline-block;color:var(--accent);background:#183e35;border-radius:5px;padding:3px 7px;font-size:10px;text-transform:uppercase;letter-spacing:.7px;font-weight:800}
@@ -108,7 +112,10 @@ h1,h2,h3,p{margin-top:0}
 .article-header{max-width:850px;margin-bottom:26px}
 .article-header h1{font-size:clamp(32px,5vw,52px);line-height:1.15;margin:13px 0}
 .article-lead{color:var(--muted);font-size:18px}
-.article-hero{display:block;max-width:100%;height:auto;max-height:700px;object-fit:contain;margin:0 auto 30px;border-radius:12px}
+
+/* LANDSCAPE DI HALAMAN DETAIL ARTIKEL */
+.article-hero{display:block;width:100%;max-height:480px;object-fit:cover;margin:0 auto 30px;border-radius:12px}
+
 .article-layout{display:grid;grid-template-columns:minmax(0,780px) minmax(180px,1fr);gap:35px;align-items:start}
 .article-content{font-size:16px;color:#dbe2ed;overflow-wrap:anywhere}
 .article-content h2{color:var(--text);font-size:25px;margin:30px 0 12px}
@@ -136,7 +143,6 @@ h1,h2,h3,p{margin-top:0}
 .related-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:20px}
 .related-card{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;transition:transform .15s,border-color .15s}
 .related-card:hover{transform:translateY(-2px);border-color:#55796e}
-.related-thumb{width:100%;height:130px;object-fit:cover;background:#0c1017}
 .related-body{padding:12px;display:flex;flex-direction:column;flex:1}
 .related-date{font-size:11px;color:var(--muted);margin-bottom:6px}
 .related-title{font-size:13px;font-weight:600;line-height:1.35;color:var(--text);margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
@@ -508,7 +514,6 @@ function toArticle(row){
  
  const isGlobal = ['$SSEC', '$COMPOSITE', '$IHSG', '$NYA', '$NDX', '$DJI', '$SPX', '$XAUUSD', '$KOSPI'].some(t => tickerVal.includes(t)) || catVal.includes("GLOBAL");
 
- // PRIORITASKAN cover_image untuk kartu di halaman utama, fallback ke image_url jika kosong
  const displayImage = row.cover_image || row.image_url;
 
  return {
@@ -517,8 +522,8 @@ function toArticle(row){
   ticker:row.ticker||"",
   category: isGlobal ? "GLOBAL MARKETS" : (row.category||"Stock Analysis"),
   date:formatDate(row.created_at),
-  image:safeImage(displayImage),          // Digunakan untuk kartu di Beranda & Cover Utama Detail
-  chartImage:safeImage(row.image_url),    // Chart teknikal khusus di dalam isi artikel
+  image:safeImage(displayImage),
+  chartImage:safeImage(row.image_url),
   coverImage:safeImage(row.cover_image),   
   read:Math.max(1,Math.ceil(words/200))+" min read",
   excerpt:row.excerpt||content.slice(0,220)||"Read the latest Satisfynex research.",
@@ -660,7 +665,7 @@ function setMeta(article=null,pageTitle=null){
  og=document.querySelector('meta[property="og:description"]');
  if(og)og.content=description;
  og=document.querySelector('meta[property="og:url"]');
- og.content=document.querySelector('link[rel="canonical"]')?.href || window.location.href;
+ if(og)og.content=document.querySelector('link[rel="canonical"]')?.href || window.location.href;
 }
  
 function showView(view){
@@ -729,7 +734,6 @@ function openArticleById(id,push=true){
    </div>
  </div>` : "";
 
- // MENGGUNAKAN 2 GAMBAR TERPISAH (Cover 16:9 untuk Discover & kartu utama + Chart di dalam konten)
  $("#articleDetail").innerHTML=`<article>
  <header class="article-header">
    <div style="margin-bottom:8px;"><span class="tag">${escapeHTML(article.category)}</span></div>
@@ -738,7 +742,7 @@ function openArticleById(id,push=true){
    <div class="meta"><span>${escapeHTML(article.ticker)}</span><span>${escapeHTML(article.date)}</span><span>${escapeHTML(article.read)}</span></div>
  </header>
  
- <!-- GAMBAR 1: Sampul Utama 16:9 (Google Discover) -->
+ <!-- GAMBAR 1: Sampul Utama Landscape (16:9) -->
  <img class="article-hero" src="${escapeHTML(article.coverImage || article.image)}" alt="${escapeHTML(article.title)} Cover">
  
  <div class="article-layout">
