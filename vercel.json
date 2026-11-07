@@ -23,19 +23,6 @@
       ]
     }
   ],
-  "routes": [
-    {
-      "has": [
-        {
-          "type": "header",
-          "key": "user-agent",
-          "value": "(googlebot|bingbot|yandex|baiduspider|facebookexternalhit|twitterbot|rogerbot|linkedinbot|embedly|quora link preview|showyoubot|outbrain|pinterest\/0\.|pinterestbot|slackbot|vkShare|W3C_Validator|whatsapp)"
-        }
-      ],
-      "src": "/(.*)",
-      "destination": "https://service.prerender.io/https://www.satisfynex.com/$1"
-    }
-  ],
   "rewrites": [
     {
       "source": "/rss.xml",
