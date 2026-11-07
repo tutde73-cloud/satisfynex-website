@@ -508,14 +508,18 @@ function toArticle(row){
  
  const isGlobal = ['$SSEC', '$COMPOSITE', '$IHSG', '$NYA', '$NDX', '$DJI', '$SPX', '$XAUUSD', '$KOSPI'].some(t => tickerVal.includes(t)) || catVal.includes("GLOBAL");
 
+ // PRIORITASKAN cover_image untuk kartu di halaman utama, fallback ke image_url jika kosong
+ const displayImage = row.cover_image || row.image_url;
+
  return {
   id,
   title:row.title||"Untitled Article",
   ticker:row.ticker||"",
   category: isGlobal ? "GLOBAL MARKETS" : (row.category||"Stock Analysis"),
   date:formatDate(row.created_at),
-  image:safeImage(row.image_url),          // Chart asli di dalam artikel
-  coverImage:safeImage(row.cover_image),   // Sampul 16:9 khusus Google Discover
+  image:safeImage(displayImage),          // Digunakan untuk kartu di Beranda & Cover Utama Detail
+  chartImage:safeImage(row.image_url),    // Chart teknikal khusus di dalam isi artikel
+  coverImage:safeImage(row.cover_image),   
   read:Math.max(1,Math.ceil(words/200))+" min read",
   excerpt:row.excerpt||content.slice(0,220)||"Read the latest Satisfynex research.",
   content,
@@ -656,7 +660,7 @@ function setMeta(article=null,pageTitle=null){
  og=document.querySelector('meta[property="og:description"]');
  if(og)og.content=description;
  og=document.querySelector('meta[property="og:url"]');
- if(og)og.content=document.querySelector('link[rel="canonical"]')?.href || window.location.href;
+ og.content=document.querySelector('link[rel="canonical"]')?.href || window.location.href;
 }
  
 function showView(view){
@@ -725,7 +729,7 @@ function openArticleById(id,push=true){
    </div>
  </div>` : "";
 
- // MENGGUNAKAN 2 GAMBAR TERPISAH (Cover 16:9 untuk Discover + Chart di dalam konten)
+ // MENGGUNAKAN 2 GAMBAR TERPISAH (Cover 16:9 untuk Discover & kartu utama + Chart di dalam konten)
  $("#articleDetail").innerHTML=`<article>
  <header class="article-header">
    <div style="margin-bottom:8px;"><span class="tag">${escapeHTML(article.category)}</span></div>
@@ -742,7 +746,7 @@ function openArticleById(id,push=true){
      
      <!-- GAMBAR 2: Chart / Grafik Analisis Teknis di dalam artikel -->
      <div style="margin-bottom: 25px; text-align: center;">
-       <img src="${escapeHTML(article.image)}" alt="${escapeHTML(article.title)} Chart" style="width: 100%; border-radius: 10px;">
+       <img src="${escapeHTML(article.chartImage)}" alt="${escapeHTML(article.title)} Chart" style="width: 100%; border-radius: 10px;">
        <p class="small muted" style="margin-top: 8px;">Technical Chart & Price Action Structure</p>
      </div>
 
@@ -915,7 +919,7 @@ async function loadArticles(){
         excerpt: item.summary,
         content: `${item.summary}\n\nKey Market Analysis:\n${item.analysis}\n\nSource: ${item.source_name || 'CNBC'}`,
         image_url: item.image_url,
-        cover_image: item.image_url, // fallback jika berita otomatis belum punya cover khusus
+        cover_image: item.image_url,
         status: "published",
         created_at: item.created_at
       }));
