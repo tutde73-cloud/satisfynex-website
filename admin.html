@@ -176,13 +176,25 @@ button:disabled{opacity:.5}
           <div class="hint" style="margin-bottom:6px;">Tip: Copas teks dari hasil Gemini, lalu klik tombol hijau di atas agar otomatis menjadi format HTML (h2, p, ul, li, strong).</div>
           <textarea id="content" required placeholder="Paste your generated text here..."></textarea>
 
-          <label for="imageFile">Cover image / chart</label>
-          <input id="imageFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif">
-          <div class="hint">JPG, PNG, WebP, or GIF. Maximum 8 MB.</div>
-          <div id="imageStatus" class="hint"></div>
-          <img id="imagePreview" class="preview" alt="Article image preview" hidden>
+          <!-- DUA INPUT GAMBAR TERPISAH -->
+          <!-- 1. COVER IMAGE (GOOGLE DISCOVER) -->
+          <label for="coverImageFile" style="color:var(--accent); font-weight:700; margin-top:20px;">1. Cover Image (Google Discover 16:9, Min. 1200px)</label>
+          <input id="coverImageFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif">
+          <div class="hint">Gambar utama untuk Google Discover & sosial media (Rasio 16:9, min. lebar 1200px).</div>
+          <div id="coverImageStatus" class="hint"></div>
+          <img id="coverImagePreview" class="preview" alt="Cover Image Preview" hidden>
           <div class="row" style="margin-top:8px">
-            <button id="removeImageBtn" type="button" class="small" hidden>Remove image</button>
+            <button id="removeCoverBtn" type="button" class="small" hidden>Remove cover image</button>
+          </div>
+
+          <!-- 2. CHART IMAGE (DI DALAM ARTIKEL) -->
+          <label for="chartImageFile" style="margin-top:20px;">2. Chart / Technical Analysis Image (Di dalam Artikel)</label>
+          <input id="chartImageFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif">
+          <div class="hint">Gambar grafik TradingView / teknikal yang akan ditampilkan di dalam artikel.</div>
+          <div id="chartImageStatus" class="hint"></div>
+          <img id="chartImagePreview" class="preview" alt="Chart Image Preview" hidden>
+          <div class="row" style="margin-top:8px">
+            <button id="removeChartBtn" type="button" class="small" hidden>Remove chart image</button>
           </div>
 
           <div class="row" style="margin-top:20px">
@@ -289,8 +301,12 @@ button:disabled{opacity:.5}
   let user = null;
   let currentTab = "research";
   
-  let imageUrl = "";
-  let removeImage = false;
+  // State 2 gambar terpisah
+  let coverImageUrl = "";
+  let removeCoverImage = false;
+  let chartImageUrl = "";
+  let removeChartImage = false;
+  
   let busy = false;
 
   let newsImageUrl = "";
@@ -313,7 +329,7 @@ button:disabled{opacity:.5}
       .slice(0, 200);
   }
 
-  // FUNGSI AUTO UPDATE TEKS X
+  // AUTO UPDATE TEKS X
   function updateSocialBox() {
     const title = $("title").value || "Judul Artikel";
     const ticker = $("ticker").value.trim();
@@ -368,7 +384,7 @@ button:disabled{opacity:.5}
 
   $("formatMarkdownBtn").addEventListener("click", convertMarkdownToHtml);
 
-  // --- RENDER GOOGLE TRENDS STYLE TABLE ---
+  // RENDER GOOGLE TRENDS STYLE TABLE
   async function loadAdminMarketTrends() {
     const tbody = $("trendsTableBody");
     if (!tbody) return;
@@ -458,11 +474,18 @@ button:disabled{opacity:.5}
 
   $("fetchTrendsBtn")?.addEventListener("click", loadAdminMarketTrends);
 
-  function preview(url) {
-    $("imagePreview").hidden = !url;
-    $("removeImageBtn").hidden = !url;
-    if (url) $("imagePreview").src = url;
-    else $("imagePreview").removeAttribute("src");
+  function coverPreview(url) {
+    $("coverImagePreview").hidden = !url;
+    $("removeCoverBtn").hidden = !url;
+    if (url) $("coverImagePreview").src = url;
+    else $("coverImagePreview").removeAttribute("src");
+  }
+
+  function chartPreview(url) {
+    $("chartImagePreview").hidden = !url;
+    $("removeChartBtn").hidden = !url;
+    if (url) $("chartImagePreview").src = url;
+    else $("chartImagePreview").removeAttribute("src");
   }
 
   function newsPreview(url) {
@@ -543,11 +566,19 @@ button:disabled{opacity:.5}
     $("articleForm").reset();
     $("articleId").value = "";
     $("slug").dataset.edited = "";
-    imageUrl = "";
-    removeImage = false;
-    $("imageFile").value = "";
-    $("imageStatus").textContent = "";
-    preview("");
+    
+    coverImageUrl = "";
+    removeCoverImage = false;
+    $("coverImageFile").value = "";
+    $("coverImageStatus").textContent = "";
+    coverPreview("");
+
+    chartImageUrl = "";
+    removeChartImage = false;
+    $("chartImageFile").value = "";
+    $("chartImageStatus").textContent = "";
+    chartPreview("");
+
     $("editorHeading").textContent = "Write an article";
     updateSocialBox();
     status("saveStatus", "");
@@ -568,12 +599,54 @@ button:disabled{opacity:.5}
   }
   $("newNewsBtn").addEventListener("click", resetNewsEditor);
 
-  $("removeImageBtn").addEventListener("click", () => {
-    imageUrl = "";
-    removeImage = true;
-    $("imageFile").value = "";
-    $("imageStatus").textContent = "Image will be removed when saved.";
-    preview("");
+  // EVENT LISTENER COVER IMAGE
+  $("coverImageFile").addEventListener("change", () => {
+    const file = $("coverImageFile").files[0];
+    if (!file) return;
+    if (file.size > 8 * 1024 * 1024) {
+      $("coverImageFile").value = "";
+      return status("saveStatus", "Cover image exceeds 8 MB limit.", true);
+    }
+    const reader = new FileReader();
+    reader.onload = e => { $("coverImagePreview").src = e.target.result; };
+    reader.readAsDataURL(file);
+    $("coverImagePreview").hidden = false;
+    $("removeCoverBtn").hidden = false;
+    $("coverImageStatus").textContent = "Ready: " + file.name;
+    removeCoverImage = false;
+  });
+
+  $("removeCoverBtn").addEventListener("click", () => {
+    coverImageUrl = "";
+    removeCoverImage = true;
+    $("coverImageFile").value = "";
+    $("coverImageStatus").textContent = "Cover image will be removed when saved.";
+    coverPreview("");
+  });
+
+  // EVENT LISTENER CHART IMAGE
+  $("chartImageFile").addEventListener("change", () => {
+    const file = $("chartImageFile").files[0];
+    if (!file) return;
+    if (file.size > 8 * 1024 * 1024) {
+      $("chartImageFile").value = "";
+      return status("saveStatus", "Chart image exceeds 8 MB limit.", true);
+    }
+    const reader = new FileReader();
+    reader.onload = e => { $("chartImagePreview").src = e.target.result; };
+    reader.readAsDataURL(file);
+    $("chartImagePreview").hidden = false;
+    $("removeChartBtn").hidden = false;
+    $("chartImageStatus").textContent = "Ready: " + file.name;
+    removeChartImage = false;
+  });
+
+  $("removeChartBtn").addEventListener("click", () => {
+    chartImageUrl = "";
+    removeChartImage = true;
+    $("chartImageFile").value = "";
+    $("chartImageStatus").textContent = "Chart image will be removed when saved.";
+    chartPreview("");
   });
 
   $("newsRemoveImageBtn").addEventListener("click", () => {
@@ -582,22 +655,6 @@ button:disabled{opacity:.5}
     $("newsImageFile").value = "";
     $("newsImageStatus").textContent = "Image will be removed when saved.";
     newsPreview("");
-  });
-
-  $("imageFile").addEventListener("change", () => {
-    const file = $("imageFile").files[0];
-    if (!file) return;
-    if (file.size > 8 * 1024 * 1024) {
-      $("imageFile").value = "";
-      return status("saveStatus", "Image exceeds 8 MB limit.", true);
-    }
-    const reader = new FileReader();
-    reader.onload = e => { $("imagePreview").src = e.target.result; };
-    reader.readAsDataURL(file);
-    $("imagePreview").hidden = false;
-    $("removeImageBtn").hidden = false;
-    $("imageStatus").textContent = "Ready: " + file.name;
-    removeImage = false;
   });
 
   window.copySocialText = function() {
@@ -649,11 +706,20 @@ button:disabled{opacity:.5}
     status("saveStatus", "Saving article…");
 
     try {
-      let finalImage = removeImage ? null : imageUrl;
-      const file = $("imageFile").files[0];
-      if (file) {
-        status("saveStatus", "Uploading image…");
-        finalImage = await uploadImage(file);
+      // 1. UPLOAD COVER IMAGE (GOOGLE DISCOVER)
+      let finalCover = removeCoverImage ? null : coverImageUrl;
+      const coverFile = $("coverImageFile").files[0];
+      if (coverFile) {
+        status("saveStatus", "Uploading cover image…");
+        finalCover = await uploadImage(coverFile);
+      }
+
+      // 2. UPLOAD CHART IMAGE (IN ARTICLE)
+      let finalChart = removeChartImage ? null : chartImageUrl;
+      const chartFile = $("chartImageFile").files[0];
+      if (chartFile) {
+        status("saveStatus", "Uploading chart image…");
+        finalChart = await uploadImage(chartFile);
       }
 
       let userTicker = $("ticker").value.trim().toUpperCase();
@@ -668,7 +734,8 @@ button:disabled{opacity:.5}
         category: $("category").value,
         excerpt: $("excerpt").value.trim() || null,
         content,
-        image_url: finalImage,
+        cover_image: finalCover,
+        image_url: finalChart,
         status: statusValue,
         updated_at: new Date().toISOString()
       };
@@ -681,11 +748,19 @@ button:disabled{opacity:.5}
       if (result.error) throw result.error;
 
       $("articleId").value = result.data.id;
-      imageUrl = finalImage || "";
-      removeImage = false;
-      $("imageFile").value = "";
-      $("imageStatus").textContent = "";
-      preview(imageUrl);
+      coverImageUrl = finalCover || "";
+      chartImageUrl = finalChart || "";
+      removeCoverImage = false;
+      removeChartImage = false;
+
+      $("coverImageFile").value = "";
+      $("chartImageFile").value = "";
+      $("coverImageStatus").textContent = "";
+      $("chartImageStatus").textContent = "";
+
+      coverPreview(coverImageUrl);
+      chartPreview(chartImageUrl);
+
       $("slug").dataset.edited = "1";
       $("editorHeading").textContent = "Edit article";
       status("saveStatus", statusValue === "published" ? "Article published successfully." : "Draft saved successfully.");
@@ -899,11 +974,19 @@ button:disabled{opacity:.5}
     const hasGlobalTicker = ['$SSEC', '$COMPOSITE', '$IHSG', '$NYA', '$NDX', '$DJI', '$SPX', '$XAUUSD'].some(t => (data.ticker || "").toUpperCase().includes(t));
     $("targetSection").value = hasGlobalTicker ? "global" : "research";
 
-    imageUrl = data.image_url || "";
-    removeImage = false;
-    $("imageFile").value = "";
-    $("imageStatus").textContent = imageUrl ? "Current image loaded." : "No image attached.";
-    preview(imageUrl);
+    // LOAD PREVIEW DUA GAMBAR TERPISAH
+    coverImageUrl = data.cover_image || "";
+    removeCoverImage = false;
+    $("coverImageFile").value = "";
+    $("coverImageStatus").textContent = coverImageUrl ? "Current cover image loaded." : "No cover image attached.";
+    coverPreview(coverImageUrl);
+
+    chartImageUrl = data.image_url || "";
+    removeChartImage = false;
+    $("chartImageFile").value = "";
+    $("chartImageStatus").textContent = chartImageUrl ? "Current chart image loaded." : "No chart image attached.";
+    chartPreview(chartImageUrl);
+
     $("editorHeading").textContent = "Edit article";
     status("saveStatus", "Editing article #" + data.id);
 
