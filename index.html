@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Satisfynex — Independent US Stock Research</title>
 <meta name="description" content="Independent research on US stocks, company fundamentals, technical charts and market trends.">
+<meta name="robots" content="max-image-preview:large">
  
 <link rel="icon" href="/Icon.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="/Icon.png">
@@ -513,7 +514,8 @@ function toArticle(row){
   ticker:row.ticker||"",
   category: isGlobal ? "GLOBAL MARKETS" : (row.category||"Stock Analysis"),
   date:formatDate(row.created_at),
-  image:safeImage(row.image_url),
+  image:safeImage(row.image_url),          // Chart asli di dalam artikel
+  coverImage:safeImage(row.cover_image),   // Sampul 16:9 khusus Google Discover
   read:Math.max(1,Math.ceil(words/200))+" min read",
   excerpt:row.excerpt||content.slice(0,220)||"Read the latest Satisfynex research.",
   content,
@@ -723,40 +725,59 @@ function openArticleById(id,push=true){
    </div>
  </div>` : "";
 
- $("#articleDetail").innerHTML=`<article><header class="article-header"><div style="margin-bottom:8px;"><span class="tag">${escapeHTML(article.category)}</span></div><h1>${escapeHTML(article.title)}</h1><p class="article-lead">${escapeHTML(article.excerpt)}</p><div class="meta"><span>${escapeHTML(article.ticker)}</span><span>${escapeHTML(article.date)}</span><span>${escapeHTML(article.read)}</span></div></header>
- <img class="article-hero" src="${escapeHTML(article.image)}" alt="${escapeHTML(article.title)}">
- <div class="article-layout"><div class="article-content">
+ // MENGGUNAKAN 2 GAMBAR TERPISAH (Cover 16:9 untuk Discover + Chart di dalam konten)
+ $("#articleDetail").innerHTML=`<article>
+ <header class="article-header">
+   <div style="margin-bottom:8px;"><span class="tag">${escapeHTML(article.category)}</span></div>
+   <h1>${escapeHTML(article.title)}</h1>
+   <p class="article-lead">${escapeHTML(article.excerpt)}</p>
+   <div class="meta"><span>${escapeHTML(article.ticker)}</span><span>${escapeHTML(article.date)}</span><span>${escapeHTML(article.read)}</span></div>
+ </header>
  
- ${articleContentHtml}
+ <!-- GAMBAR 1: Sampul Utama 16:9 (Google Discover) -->
+ <img class="article-hero" src="${escapeHTML(article.coverImage || article.image)}" alt="${escapeHTML(article.title)} Cover">
  
- <div class="satisfynex-author-card" itemscope itemtype="https://schema.org/Person" style="margin: 30px 0 20px 0; padding: 20px; background-color: var(--panel); border: 1px solid var(--line); border-radius: 12px; display: flex; gap: 16px; align-items: flex-start; color: var(--text);">
-   <div style="flex-shrink: 0;">
-     <img src="/Icon.png" alt="Tutde Ariyasa" itemprop="image" style="width: 50px; height: 50px; border-radius: 50%; border: 1px solid var(--line); object-fit: cover; background: #0c1017;" />
-   </div>
-   <div style="display: flex; flex-direction: column; gap: 4px;">
-     <span style="font-size: 0.7rem; font-weight: 800; letter-spacing: 0.8px; color: var(--accent); text-transform: uppercase;">WRITTEN BY</span>
-     <h4 style="margin: 0; font-size: 1.05rem; font-weight: 600; color: var(--text);" itemprop="name">Tutde Ariyasa</h4>
-     <p style="margin: 4px 0 0; font-size: 0.85rem; line-height: 1.45; color: var(--muted);" itemprop="description">
-       Independent financial analyst and founder of Satisfynex, specializing in US equities technical analysis, market data visualization, and risk-first research.
-     </p>
-     <div style="margin-top: 6px; font-size: 0.8rem; color: var(--muted);">
-       <span itemprop="jobTitle">Independent Financial Analyst</span> • <a href="/about" style="color: var(--accent); text-decoration: underline;">Learn about our research methodology &rarr;</a>
+ <div class="article-layout">
+   <div class="article-content">
+     
+     <!-- GAMBAR 2: Chart / Grafik Analisis Teknis di dalam artikel -->
+     <div style="margin-bottom: 25px; text-align: center;">
+       <img src="${escapeHTML(article.image)}" alt="${escapeHTML(article.title)} Chart" style="width: 100%; border-radius: 10px;">
+       <p class="small muted" style="margin-top: 8px;">Technical Chart & Price Action Structure</p>
      </div>
+
+     ${articleContentHtml}
+     
+     <div class="satisfynex-author-card" itemscope itemtype="https://schema.org/Person" style="margin: 30px 0 20px 0; padding: 20px; background-color: var(--panel); border: 1px solid var(--line); border-radius: 12px; display: flex; gap: 16px; align-items: flex-start; color: var(--text);">
+       <div style="flex-shrink: 0;">
+         <img src="/Icon.png" alt="Tutde Ariyasa" itemprop="image" style="width: 50px; height: 50px; border-radius: 50%; border: 1px solid var(--line); object-fit: cover; background: #0c1017;" />
+       </div>
+       <div style="display: flex; flex-direction: column; gap: 4px;">
+         <span style="font-size: 0.7rem; font-weight: 800; letter-spacing: 0.8px; color: var(--accent); text-transform: uppercase;">WRITTEN BY</span>
+         <h4 style="margin: 0; font-size: 1.05rem; font-weight: 600; color: var(--text);" itemprop="name">Tutde Ariyasa</h4>
+         <p style="margin: 4px 0 0; font-size: 0.85rem; line-height: 1.45; color: var(--muted);" itemprop="description">
+           Independent financial analyst and founder of Satisfynex, specializing in US equities technical analysis, market data visualization, and risk-first research.
+         </p>
+         <div style="margin-top: 6px; font-size: 0.8rem; color: var(--muted);">
+           <span itemprop="jobTitle">Independent Financial Analyst</span> • <a href="/about" style="color: var(--accent); text-decoration: underline;">Learn about our research methodology &rarr;</a>
+         </div>
+       </div>
+     </div>
+     
+     <div style="margin: 20px 0; padding: 12px; background: rgba(142, 224, 189, 0.03); border-left: 3px solid var(--accent); font-size: 0.85rem; color: var(--muted);">
+       <span>Primary Source Verification: </span>
+       <a href="https://www.sec.gov" target="_blank" rel="noopener" style="color: var(--accent);">SEC EDGAR Database</a> &bull; 
+       <a href="https://www.investor.gov" target="_blank" rel="noopener" style="color: var(--accent);">Investor Relations Portal</a>
+     </div>
+     
+     <hr style="border:0;border-top:1px solid var(--line);margin:35px 0"><p class="muted small">This article is provided for informational and educational purposes only. It is not a recommendation to buy or sell any security.</p>
+     
+     ${relatedHtml}
+     
    </div>
+   <aside class="sidebar"><div class="panel"><h3>About this research</h3><p>Satisfynex explores company fundamentals, market developments, technical evidence, and investment risks.</p></div><div class="panel"><h3>Explore more</h3><a class="read-more" href="/#latest">Browse all articles →</a></div></aside>
  </div>
- 
- <div style="margin: 20px 0; padding: 12px; background: rgba(142, 224, 189, 0.03); border-left: 3px solid var(--accent); font-size: 0.85rem; color: var(--muted);">
-   <span>Primary Source Verification: </span>
-   <a href="https://www.sec.gov" target="_blank" rel="noopener" style="color: var(--accent);">SEC EDGAR Database</a> &bull; 
-   <a href="https://www.investor.gov" target="_blank" rel="noopener" style="color: var(--accent);">Investor Relations Portal</a>
- </div>
- 
- <hr style="border:0;border-top:1px solid var(--line);margin:35px 0"><p class="muted small">This article is provided for informational and educational purposes only. It is not a recommendation to buy or sell any security.</p>
- 
- ${relatedHtml}
- 
- </div>
- <aside class="sidebar"><div class="panel"><h3>About this research</h3><p>Satisfynex explores company fundamentals, market developments, technical evidence, and investment risks.</p></div><div class="panel"><h3>Explore more</h3><a class="read-more" href="/#latest">Browse all articles →</a></div></aside></div></article>`;
+</article>`;
  
  setMeta(article);
  updateDynamicCanonical();
@@ -867,7 +888,7 @@ async function loadArticles(){
    Accept: "application/json"
  };
  
- const articlesEndpoint = SUPABASE_URL + "/rest/v1/articles?select=id,title,slug,ticker,category,excerpt,content,image_url,status,created_at&status=eq.published&order=created_at.desc";
+ const articlesEndpoint = SUPABASE_URL + "/rest/v1/articles?select=id,title,slug,ticker,category,excerpt,content,image_url,cover_image,status,created_at&status=eq.published&order=created_at.desc";
  const newsEndpoint = SUPABASE_URL + "/rest/v1/news?select=id,title,summary,analysis,category,image_url,source_url,source_name,created_at&order=created_at.desc";
  
  try{
@@ -894,6 +915,7 @@ async function loadArticles(){
         excerpt: item.summary,
         content: `${item.summary}\n\nKey Market Analysis:\n${item.analysis}\n\nSource: ${item.source_name || 'CNBC'}`,
         image_url: item.image_url,
+        cover_image: item.image_url, // fallback jika berita otomatis belum punya cover khusus
         status: "published",
         created_at: item.created_at
       }));
