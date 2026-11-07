@@ -239,69 +239,93 @@ h1,h2,h3,p{margin-top:0}
  </div>
 </header>
  
-<main class="container" style="padding: 40px 0;">
-  <div style="background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
-    <div class="eyebrow" style="margin-bottom: 8px;">Admin Dashboard</div>
-    <h1 id="editorHeading" style="font-size: 28px; margin-bottom: 20px;">Publish Article</h1>
-    
-    <div id="statusMessage"></div>
-
-    <form id="articleForm">
-      <input type="hidden" id="articleId">
-
-      <div style="margin-bottom: 20px;">
-        <label style="display:block; margin-bottom: 8px; font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase;">Article Title</label>
-        <input type="text" id="title" required style="width:100%; padding:12px; background:var(--bg); border:1px solid var(--line); border-radius:8px; color:var(--text);">
-      </div>
-
-      <div style="margin-bottom: 20px;">
-        <label style="display:block; margin-bottom: 8px; font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase;">Slug / URL Path</label>
-        <input type="text" id="slug" required style="width:100%; padding:12px; background:var(--bg); border:1px solid var(--line); border-radius:8px; color:var(--text);">
-      </div>
-
-      <div style="margin-bottom: 20px;">
-        <label style="display:block; margin-bottom: 8px; font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase;">Stock Ticker</label>
-        <input type="text" id="ticker" style="width:100%; padding:12px; background:var(--bg); border:1px solid var(--line); border-radius:8px; color:var(--text);">
-      </div>
-
-      <div style="margin-bottom: 20px;">
-        <label style="display:block; margin-bottom: 8px; font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase;">Category</label>
-        <select id="category" style="width:100%; padding:12px; background:var(--bg); border:1px solid var(--line); border-radius:8px; color:var(--text);">
-          <option value="Stock Analysis">Stock Analysis</option>
-          <option value="GLOBAL MARKETS">Global Markets</option>
-        </select>
-      </div>
-
-      <div style="margin-bottom: 20px;">
-        <label style="display:block; margin-bottom: 8px; font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase;">Excerpt / Ringkasan Singkat</label>
-        <textarea id="excerpt" style="width:100%; padding:12px; background:var(--bg); border:1px solid var(--line); border-radius:8px; color:var(--text); min-height: 80px;"></textarea>
-      </div>
-
-      <!-- INPUT 1: Cover Image (16:9 untuk Google Discover) -->
-      <div style="margin-bottom: 20px;">
-        <label style="display:block; margin-bottom: 8px; font-size: 13px; font-weight: 600; color: var(--accent); text-transform: uppercase;">1. Cover Image (16:9 Landscape - Google Discover)</label>
-        <input type="file" id="coverImageFile" accept="image/*" style="color:var(--text);">
-        <div id="coverImageStatus" style="font-size: 11px; color: var(--muted); margin-top: 4px;">Rekomendasi rasio 16:9 bersih untuk thumbnail dan Google Discover.</div>
-      </div>
-
-      <!-- INPUT 2: Technical Chart Image (Di dalam Artikel) -->
-      <div style="margin-bottom: 20px;">
-        <label style="display:block; margin-bottom: 8px; font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase;">2. Technical Chart Image (Di dalam Artikel)</label>
-        <input type="file" id="imageFile" accept="image/*" style="color:var(--text);">
-        <div id="imageStatus" style="font-size: 11px; color: var(--muted); margin-top: 4px;">Gambar grafik harga / analisis teknikal yang tampil di badan artikel.</div>
-      </div>
-
-      <div style="margin-bottom: 20px;">
-        <label style="display:block; margin-bottom: 8px; font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase;">Article Content (HTML)</label>
-        <textarea id="content" required style="width:100%; padding:12px; background:var(--bg); border:1px solid var(--line); border-radius:8px; color:var(--text); min-height: 250px;"></textarea>
-      </div>
-
-      <div style="display: flex; gap: 12px; align-items: center;">
-        <button type="submit" id="submitBtn" style="background:var(--accent); color:#0c1017; border:none; padding:12px 24px; border-radius:8px; font-weight:800; cursor:pointer;">Publish Article</button>
-        <button type="button" id="resetBtn" style="background:transparent; color:var(--muted); border:1px solid var(--line); padding:12px 20px; border-radius:8px; cursor:pointer;">Reset Form</button>
-      </div>
-    </form>
+<main>
+<div id="homeView">
+ <section class="hero"><div class="container">
+  <div class="eyebrow">Independent market research</div>
+  <h1>Understand the business behind the stock.</h1>
+  <p id="dynamicHeroText" class="text-rotator">Satisfynex delivers daily visual chart breakdowns and technical price action research on high-momentum US equities.</p>
+  <div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start;">
+    <div class="hero-note">Research and education · Not financial advice</div>
+    <div style="font-size: 11px; color: var(--muted); font-style: italic; opacity: 0.85;">While others lock their insights behind paywalls and sign-up forms, we give you the analysis upfront.</div>
   </div>
+ </div></section>
+ 
+ <section class="section"><div class="container">
+  <div class="section-heading"><div><div class="eyebrow">Editor's selection</div><h2>Featured research</h2></div></div>
+  <div id="featuredGrid" class="featured-grid"><div class="notice">Loading published research...</div></div>
+ </div></section>
+ 
+ <section class="section" id="latest"><div class="container">
+  <div class="section-heading"><div><div class="eyebrow">Explore the research</div><h2>Latest articles</h2></div><div id="articleCount" class="muted small"></div></div>
+  <div class="filters">
+   <input id="searchInput" type="search" placeholder="Search company, ticker, or topic..." aria-label="Search articles">
+   <select id="categoryFilter" aria-label="Filter by category">
+     <option value="">All categories</option>
+     <option value="Stock Analysis">Stock Analysis</option>
+     <option value="GLOBAL MARKETS">Global Markets</option>
+   </select>
+  </div>
+  <div id="articleGrid" class="article-grid"><div class="notice">Loading articles...</div></div>
+  <div id="paginationContainer"></div>
+ </div></section>
+ 
+ <section class="section" style="border-top: 1px solid var(--line); background: rgba(19, 26, 37, 0.4);"><div class="container">
+  <div class="section-heading">
+    <div><div class="eyebrow">Macro & Indices</div><h2>Global Markets Insights</h2></div>
+    <a class="read-more" href="/global-markets" style="margin: 0;">View all global markets →</a>
+  </div>
+  <div id="homeGlobalGrid" class="article-grid"><div class="notice">Loading global insights...</div></div>
+ </div></section>
+ 
+ <section class="screener-section"><div class="container">
+  <div class="screener-panel">
+   <div style="padding: 10px 10px 15px;">
+    <div class="eyebrow">Market Quotes Data</div>
+    <h2 style="font-size: 22px; margin: 4px 0 0 0;">Global Markets Overview & Sectors</h2>
+   </div>
+   <div style="padding: 0 10px 10px;">
+    <script type="module" src="https://widgets.tradingview-widget.com/w/en/tv-market-data.js"></script>
+    <tv-market-data symbol-sectors='[{"sectionName":"Indices","symbols":["FOREXCOM:SPXUSD","FOREXCOM:NSXUSD","FOREXCOM:DJI","INDEX:NKY","INDEX:DEU40","FOREXCOM:UKXGBP"]},{"sectionName":"Futures","symbols":["BMFBOVESPA:ISP1!","BMFBOVESPA:EUR1!","CMCMARKETS:GOLD","TVC:USOIL","BMFBOVESPA:CCM1!"]},{"sectionName":"Bonds","symbols":["EUREX:FGBL1!","EUREX:FBTP1!","EUREX:FGBM1!"]},{"sectionName":"Forex","symbols":["FX:EURUSD","FX:GBPUSD","FX:USDJPY","FX:USDCHF","FX:AUDUSD","FX:USDCAD"]}]' theme="dark"></tv-market-data>
+   </div>
+  </div>
+ </div></section>
+ 
+ <section class="screener-section" style="padding-top: 10px;"><div class="container">
+  <div class="screener-panel">
+   <div style="padding: 10px 10px 15px;">
+    <div class="eyebrow">Market Movers</div>
+    <h2 style="font-size: 22px; margin: 4px 0 0 0;">Active Equities & Performance Overview</h2>
+   </div>
+   <div style="padding: 0 10px 10px;">
+    <script type="module" src="https://widgets.tradingview-widget.com/w/en/tv-market-overview.js"></script>
+    <tv-market-overview exchange="NASDAQ" time-frame="1D" mode="market-movers" theme="dark"></tv-market-overview>
+   </div>
+  </div>
+ </div></section>
+</div>
+ 
+<section id="globalView" class="article-page hidden">
+ <div class="container">
+  <a class="back-link" href="/">← Back to research</a>
+  <div class="article-header">
+   <span class="tag">Global Markets & Macro</span>
+   <h1>Sovereign Indices, Country Benchmarks & Commodity Action</h1>
+   <p class="article-lead">Macroeconomic trends, global index breakdowns, and commodity liquidity flows.</p>
+  </div>
+  <div id="globalGrid" class="article-grid" style="margin-top: 25px;">
+   <div class="notice">Loading global market insights...</div>
+  </div>
+ </div>
+</section>
+ 
+<section id="articleView" class="article-page hidden"><div class="container">
+ <a class="back-link" href="/">← Back to research</a><div id="articleDetail"></div>
+</div></section>
+ 
+<section id="pageView" class="article-page hidden"><div class="container legal-content">
+ <a class="back-link" href="/">← Back to research</a><div id="pageDetail"></div>
+</div></section>
 </main>
  
 <footer class="footer"><div class="container">
@@ -324,142 +348,599 @@ h1,h2,h3,p{margin-top:0}
 <script>
 "use strict";
  
+document.addEventListener("contextmenu", function(e) {
+  e.preventDefault();
+});
+ 
+function applyWatermark(imgElement) {
+  if (!imgElement || imgElement.dataset.watermarked === "true") return;
+ 
+  if (!imgElement.complete || imgElement.naturalWidth === 0) {
+    imgElement.onload = () => applyWatermark(imgElement);
+    return;
+  }
+ 
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+ 
+  const img = new Image();
+  img.crossOrigin = "anonymous";
+ 
+  img.onload = () => {
+    try {
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      ctx.drawImage(img, 0, 0);
+ 
+      const fontSize = Math.max(22, Math.floor(canvas.width * 0.065)); 
+      ctx.font = `bold ${fontSize}px Inter, sans-serif`;
+      ctx.fillStyle = "rgba(255, 255, 255, 0.25)"; 
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+ 
+      ctx.shadowColor = "rgba(0, 0, 0, 0.4)";
+      ctx.shadowBlur = 10;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 0;
+ 
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      ctx.fillText("satisfynex.com", centerX, centerY);
+ 
+      imgElement.src = canvas.toDataURL("image/png");
+      imgElement.dataset.watermarked = "true";
+    } catch (err) {
+      console.warn("Watermark terhalang isu CORS Supabase:", err);
+    }
+  };
+ 
+  img.onerror = () => {
+    console.warn("Gagal memuat gambar untuk watermark.");
+  };
+ 
+  if (imgElement.src.startsWith("data:")) return;
+  img.src = imgElement.src + (imgElement.src.includes("?") ? "&" : "?") + "cors=1";
+}
+ 
+function processAllImages() {
+  const images = document.querySelectorAll("img.cover, img.article-hero, .article-content img, .side-story img, .related-thumb");
+  images.forEach(img => applyWatermark(img));
+}
+ 
 const SUPABASE_URL="https://ngysrsypmieuvucqupgd.supabase.co";
 const SUPABASE_KEY="sb_publishable_U05M_WQFKioCZ1LNSfyNbQ_jUoJTQvd";
+const SITE_URL="https://www.satisfynex.com";
+const FALLBACK_IMAGE="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80";
  
-document.getElementById("year").textContent = new Date().getFullYear();
-const $ = s => document.querySelector(s);
-
-let imageUrl = "";
-let coverImageUrl = "";
-
-// Fungsi helper upload file ke Supabase Storage (Bucket: 'images')
-async function uploadToSupabaseStorage(file) {
-  const fileExt = file.name.split('.').pop();
-  const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
-  const filePath = `articles/${fileName}`;
+let articles=[];
+let currentPage=1;
+const ARTICLES_PER_PAGE=20;
  
-  const response = await fetch(`${SUPABASE_URL}/storage/v1/object/images/${filePath}`, {
-    method: 'POST',
-    headers: {
-      apikey: SUPABASE_KEY,
-      Authorization: `Bearer ${SUPABASE_KEY}`,
-      'Content-Type': file.type
-    },
-    body: file
-  });
+const $=s=>document.querySelector(s);
  
-  if (!response.ok) {
-    throw new Error('Gagal mengunggah file gambar ke storage Supabase.');
-  }
+const rotatingSentences = [
+  "Satisfynex delivers daily visual chart breakdowns and technical price action research on high-momentum US equities.",
+  "At Satisfynex, we bridge the gap between underlying business fundamentals and technical chart structures for US-listed companies.",
+  "Satisfynex provides independent market coverage, analyzing technical breakouts, moving average supports, and risk boundaries across Wall Street.",
+  "Welcome to Satisfynex research, where we highlight key resistance channels, volume expansion, and structural trend levels on US stocks.",
+  "Satisfynex tracks daily price action and quarterly earnings momentum to identify critical technical inflection points across US markets."
+];
  
-  return `${SUPABASE_URL}/storage/v1/object/public/images/${filePath}`;
+function initTextRotator() {
+  const targetElement = $("#dynamicHeroText");
+  if (!targetElement) return;
+  let currentIndex = 0;
+  setInterval(() => {
+    targetElement.classList.add("fade-out");
+    setTimeout(() => {
+      currentIndex = (currentIndex + 1) % rotatingSentences.length;
+      targetElement.textContent = rotatingSentences[currentIndex];
+      targetElement.classList.remove("fade-out");
+    }, 600);
+  }, 3800);
 }
-
-// Handler upload file chart langsung saat dipilih
-$("#imageFile").addEventListener("change", async function(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  $("#imageStatus").textContent = "Mengunggah chart ke storage...";
-  try {
-    imageUrl = await uploadToSupabaseStorage(file);
-    $("#imageStatus").textContent = "✓ Chart berhasil diunggah!";
-    $("#imageStatus").style.color = "var(--accent)";
-  } catch(err) {
-    console.error(err);
-    $("#imageStatus").textContent = "✗ Gagal upload chart.";
-    $("#imageStatus.style.color = "#ff8e8e";
-  }
-});
-
-// Handler upload file cover 16:9 langsung saat dipilih
-$("#coverImageFile").addEventListener("change", async function(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  $("#coverImageStatus").textContent = "Mengunggah cover 16:9 ke storage...";
-  try {
-    coverImageUrl = await uploadToSupabaseStorage(file);
-    $("#coverImageStatus").textContent = "✓ Cover 16:9 berhasil diunggah!";
-    $("#coverImageStatus").style.color = "var(--accent)";
-  } catch(err) {
-    console.error(err);
-    $("#coverImageStatus").textContent = "✗ Gagal upload cover.";
-    $("#coverImageStatus").style.color = "#ff8e8e";
-  }
-});
  
-document.getElementById('articleForm').addEventListener('submit', async function(e) {
+function escapeHTML(v){
+ return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+ 
+function slugify(v){
+ return String(v||"").normalize("NFKD").toLowerCase().trim()
+  .replace(/[\u0300-\u036f]/g,"")
+  .replace(/[^a-z0-9]+/g,"-")
+  .replace(/^-+|-+$/g,"")
+  .slice(0,180);
+}
+ 
+function normalizeSlug(value){
+ if(value===null||value===undefined)return "";
+ let raw=String(value).trim();
+ if(!raw)return "";
+ if(/^https?:\/\//i.test(raw)){
+  try{raw=new URL(raw).pathname;}catch(e){raw=raw.replace(/^https?:\/\/[^/]+/i,"");}
+ }
+ raw=raw.split(/[?#]/)[0].trim();
+ raw=raw.replace(/^https?:\/\/[^/]+/i,"");
+ raw=raw.replace(/^\/+/,"");
+ raw=raw.replace(/^www\.satisfynex\.com\/?/i,"");
+ raw=raw.replace(/^satisfynex\.com\/?/i,"");
+ raw=raw.replace(/^articles\//i,"");
+ raw=raw.replace(/\/+$/,"");
+ raw=raw.split("/").filter(Boolean).pop()||"";
+ try{raw=decodeURIComponent(raw);}catch(e){}
+ return slugify(raw);
+}
+ 
+function articleUrl(value){
+ const slug=normalizeSlug(value);
+ if(!slug)return "/";
+ return "/articles/"+encodeURIComponent(slug);
+}
+ 
+function safeImage(value){
+ try{
+  const u=new URL(value||FALLBACK_IMAGE,SITE_URL);
+  if(["https:","http:"].includes(u.protocol))return u.href;
+ }catch(e){}
+ return FALLBACK_IMAGE;
+}
+ 
+function formatDate(value){
+ if(!value)return "Research";
+ const d=new Date(value);
+ if(Number.isNaN(d.getTime()))return "Research";
+ return new Intl.DateTimeFormat("en-US",{month:"short",day:"numeric",year:"numeric",timeZone:"UTC"}).format(d);
+}
+ 
+function contentToText(content){
+ if(Array.isArray(content)){
+  return content.map(x=>typeof x==="string"?x:(x.text||x.content||"")).join("\n\n");
+ }
+ return String(content||"");
+}
+ 
+function toArticle(row){
+ const content=contentToText(row.content);
+ const words=content.trim().split(/\s+/).filter(Boolean).length;
+ const id=normalizeSlug(row.slug)||slugify(row.title)||String(row.id);
+ const tickerVal = (row.ticker || "").toUpperCase();
+ const catVal = (row.category || "").toUpperCase();
+ 
+ const isGlobal = ['$SSEC', '$COMPOSITE', '$IHSG', '$NYA', '$NDX', '$DJI', '$SPX', '$XAUUSD', '$KOSPI'].some(t => tickerVal.includes(t)) || catVal.includes("GLOBAL");
+
+ return {
+  id,
+  title:row.title||"Untitled Article",
+  ticker:row.ticker||"",
+  category: isGlobal ? "GLOBAL MARKETS" : (row.category||"Stock Analysis"),
+  date:formatDate(row.created_at),
+  image:safeImage(row.image_url),          // Chart asli di dalam artikel
+  coverImage:safeImage(row.cover_image),   // Sampul 16:9 khusus Google Discover
+  read:Math.max(1,Math.ceil(words/200))+" min read",
+  excerpt:row.excerpt||content.slice(0,220)||"Read the latest Satisfynex research.",
+  content,
+  isGlobal,
+  created_at: row.created_at
+ };
+}
+ 
+function cardMarkup(a){
+ const url=articleUrl(a.id);
+ return `<article class="article-card">
+ <a href="${escapeHTML(url)}" data-article="${escapeHTML(a.id)}"><img class="cover" src="${escapeHTML(a.image)}" alt="${escapeHTML(a.title)}" loading="lazy"></a>
+ <div class="body">
+ <div><span class="tag">${escapeHTML(a.category)}</span></div>
+ <h3><a href="${escapeHTML(url)}" data-article="${escapeHTML(a.id)}">${escapeHTML(a.title)}</a></h3>
+ <div class="meta"><span>${escapeHTML(a.ticker)}</span><span>${escapeHTML(a.date)}</span><span>${escapeHTML(a.read)}</span></div>
+ <p class="excerpt">${escapeHTML(a.excerpt)}</p><a class="read-more" href="${escapeHTML(url)}" data-article="${escapeHTML(a.id)}">Read analysis →</a></div></article>`;
+}
+ 
+function renderFeatured(){
+ const target=$("#featuredGrid");
+ const normalArticles = articles.filter(a => !a.isGlobal);
+ 
+ if(!normalArticles.length){
+  target.innerHTML='<div class="notice">No published articles yet. Publish an article through your admin page.</div>';
+  return;
+ }
+ 
+ const main=normalArticles[0],side=normalArticles.slice(1,4);
+ const mainUrl=articleUrl(main.id);
+ 
+ target.innerHTML=`<article class="feature-main">
+ <a href="${escapeHTML(mainUrl)}" data-article="${escapeHTML(main.id)}"><img class="cover" src="${escapeHTML(main.image)}" alt="${escapeHTML(main.title)}"></a>
+ <div class="body">
+ <div><span class="tag">${escapeHTML(main.category)}</span></div>
+ <h3><a href="${escapeHTML(mainUrl)}" data-article="${escapeHTML(main.id)}">${escapeHTML(main.title)}</a></h3>
+ <div class="meta"><span>${escapeHTML(main.ticker)}</span><span>${escapeHTML(main.date)}</span><span>${escapeHTML(main.read)}</span></div>
+ <p class="excerpt">${escapeHTML(main.excerpt)}</p><a class="read-more" href="${escapeHTML(mainUrl)}" data-article="${escapeHTML(main.id)}">Read full analysis →</a></div></article>
+ <div class="feature-side">${side.length?side.map(a=>`<article class="side-story"><a href="${escapeHTML(articleUrl(a.id))}" data-article="${escapeHTML(a.id)}"><img src="${escapeHTML(a.image)}" alt="${escapeHTML(a.title)}" loading="lazy"></a><div><div><span class="tag">${escapeHTML(a.category)}</span></div><h3><a href="${escapeHTML(articleUrl(a.id))}" data-article="${escapeHTML(a.id)}">${escapeHTML(a.title)}</a></h3><div class="meta">${escapeHTML(a.date)}</div></div></article>`).join(""):'<div class="notice">More research coming soon.</div>'}</div>`;
+ 
+ setTimeout(processAllImages, 300);
+}
+ 
+function renderCategories(){
+ const s=$("#categoryFilter"),old=s.value;
+ const categories=[...new Set(articles.map(a=>a.category))].filter(Boolean).sort();
+ s.innerHTML='<option value="">All categories</option>'+categories.map(c=>`<option value="${escapeHTML(c)}">${escapeHTML(c)}</option>`).join("");
+ if(categories.includes(old))s.value=old;
+}
+ 
+function renderArticles(){
+ const search=($("#searchInput").value||"").trim().toLowerCase();
+ const cat=$("#categoryFilter").value;
+ 
+ const filtered = articles.filter(a => 
+   (!search || [a.title, a.ticker, a.category, a.excerpt, a.content].join(" ").toLowerCase().includes(search)) && 
+   (!cat || a.category.toUpperCase() === cat.toUpperCase())
+ );
+ 
+ const totalPages=Math.ceil(filtered.length/ARTICLES_PER_PAGE)||1;
+ if(currentPage>totalPages)currentPage=totalPages;
+ if(currentPage<1)currentPage=1;
+ 
+ const start=(currentPage-1)*ARTICLES_PER_PAGE;
+ const paginated=filtered.slice(start,start+ARTICLES_PER_PAGE);
+ 
+ $("#articleCount").textContent=filtered.length+(filtered.length===1?" article":" articles");
+ $("#articleGrid").innerHTML=paginated.length?paginated.map(cardMarkup).join(""):'<div class="empty" style="grid-column:1/-1">No matching articles found.</div>';
+ 
+ const globalArticles = articles.filter(a => a.isGlobal).slice(0, 5);
+ const homeGlobalGrid = $("#homeGlobalGrid");
+ if(homeGlobalGrid){
+   if(globalArticles.length > 0){
+     homeGlobalGrid.innerHTML = globalArticles.map(cardMarkup).join("");
+   } else {
+     homeGlobalGrid.innerHTML = '<div class="notice" style="grid-column:1/-1">No global market insights published yet.</div>';
+   }
+ }
+ 
+ setTimeout(processAllImages, 300);
+ 
+ const pagContainer=$("#paginationContainer");
+ if(totalPages>1){
+  pagContainer.innerHTML=`<div class="pagination">
+   <button id="prevPageBtn" ${currentPage===1?"disabled":""}>← Previous</button>
+   <span>Page ${currentPage} of ${totalPages}</span>
+   <button id="nextPageBtn" ${currentPage===totalPages?"disabled":""}>Next →</button>
+  </div>`;
+ 
+  $("#prevPageBtn")?.addEventListener("click",()=>{
+   if(currentPage>1){currentPage--;renderArticles();$("#latest").scrollIntoView({behavior:"smooth"});}
+  });
+  $("#nextPageBtn")?.addEventListener("click",()=>{
+   if(currentPage<totalPages){currentPage++;renderArticles();$("#latest").scrollIntoView({behavior:"smooth"});}
+  });
+ }else{
+  pagContainer.innerHTML="";
+ }
+}
+ 
+function renderGlobalMarkets(){
+ const grid = $("#globalGrid");
+ if(!grid) return;
+ 
+ const globalFiltered = articles.filter(a => a.isGlobal);
+ 
+ if(globalFiltered.length === 0){
+  grid.innerHTML = '<div class="notice" style="grid-column:1/-1">No global market indices analysis published yet.</div>';
+  return;
+ }
+ 
+ grid.innerHTML = globalFiltered.map(cardMarkup).join("");
+ setTimeout(processAllImages, 300);
+}
+ 
+function updateDynamicCanonical() {
+  let c = document.querySelector('link[rel="canonical"]');
+  if (!c) {
+    c = document.createElement("link");
+    c.rel = "canonical";
+    document.head.appendChild(c);
+  }
+  c.href = SITE_URL + (window.location.pathname.toLowerCase() === "/index.html" ? "/" : window.location.pathname);
+}
+ 
+function setMeta(article=null,pageTitle=null){
+ const title=article?`${article.title} | Satisfynex`:pageTitle?`${pageTitle} | Satisfynex`:"Satisfynex — Independent US Stock Research";
+ const description=String(article?.excerpt||"Independent US stock analysis, company research, technical charts, and investing education.").replace(/\s+/g," ").slice(0,155);
+ 
+ document.title=title;
+ let d=document.querySelector('meta[name="description"]');
+ if(d)d.content=description;
+ 
+ updateDynamicCanonical();
+ 
+ let og=document.querySelector('meta[property="og:title"]');
+ if(og)og.content=title;
+ og=document.querySelector('meta[property="og:description"]');
+ if(og)og.content=description;
+ og=document.querySelector('meta[property="og:url"]');
+ if(og)og.content=document.querySelector('link[rel="canonical"]')?.href || window.location.href;
+}
+ 
+function showView(view){
+ $("#homeView").classList.toggle("hidden",view!=="home");
+ $("#globalView").classList.toggle("hidden",view!=="global");
+ $("#articleView").classList.toggle("hidden",view!=="article");
+ $("#pageView").classList.toggle("hidden",view!=="page");
+}
+ 
+function showHome(push=true,hash=""){
+ showView("home");
+ setMeta();
+ updateDynamicCanonical();
+ if(push)history.pushState({view:"home"},"","/"+hash);
+ if(hash==="#latest")setTimeout(()=>$("#latest").scrollIntoView({behavior:"smooth"}),0);
+ else window.scrollTo({top:0,behavior:"auto"});
+}
+ 
+function showGlobalMarkets(push=true){
+ showView("global");
+ renderGlobalMarkets();
+ setMeta(null, "Global Markets & Macro Analysis");
+ updateDynamicCanonical();
+ if(push)history.pushState({view:"global"},"","/global-markets");
+ window.scrollTo({top:0,behavior:"auto"});
+}
+ 
+function openArticleById(id,push=true){
+ const normalized=normalizeSlug(id);
+ const article=articles.find(a=>a.id===normalized);
+ 
+ if(!article){
+  showView("home");
+  setMeta();
+  updateDynamicCanonical();
+  $("#articleGrid").insertAdjacentHTML("afterbegin",'<div class="notice" style="grid-column:1/-1">This article could not be found. Check that its published slug matches the URL.</div>');
+  if(push)history.pushState({view:"home"},"","/");
+  return;
+ }
+ 
+ showView("article");
+ const articleContentHtml = article.content || "<p>Full analysis coming soon.</p>";
+ 
+ const sameCategoryArticles = articles.filter(a => a.id !== article.id && a.category === article.category);
+ const otherArticles = articles.filter(a => a.id !== article.id && a.category !== article.category);
+ const relatedArticles = [...sameCategoryArticles, ...otherArticles].slice(0, 3);
+ 
+ const relatedHtml = relatedArticles.length > 0 ? `
+ <div class="related-research-section">
+   <div class="eyebrow" style="margin-bottom: 4px;">Keep Researching</div>
+   <h3 style="font-size: 20px; margin: 0 0 12px 0;">Related Research</h3>
+   <div class="related-grid">
+     ${relatedArticles.map(rel => `
+       <article class="related-card">
+         <a href="${escapeHTML(articleUrl(rel.id))}" data-article="${escapeHTML(rel.id)}">
+           <img class="related-thumb" src="${escapeHTML(rel.image)}" alt="${escapeHTML(rel.title)}" loading="lazy">
+         </a>
+         <div class="related-body">
+           <span class="related-date">${escapeHTML(rel.date)}</span>
+           <h4 class="related-title">
+             <a href="${escapeHTML(articleUrl(rel.id))}" data-article="${escapeHTML(rel.id)}">${escapeHTML(rel.title)}</a>
+           </h4>
+         </div>
+       </article>
+     `).join("")}
+   </div>
+ </div>` : "";
+
+ // MENGGUNAKAN 2 GAMBAR TERPISAH (Cover 16:9 untuk Discover + Chart di dalam konten)
+ $("#articleDetail").innerHTML=`<article>
+ <header class="article-header">
+   <div style="margin-bottom:8px;"><span class="tag">${escapeHTML(article.category)}</span></div>
+   <h1>${escapeHTML(article.title)}</h1>
+   <p class="article-lead">${escapeHTML(article.excerpt)}</p>
+   <div class="meta"><span>${escapeHTML(article.ticker)}</span><span>${escapeHTML(article.date)}</span><span>${escapeHTML(article.read)}</span></div>
+ </header>
+ 
+ <!-- GAMBAR 1: Sampul Utama 16:9 (Google Discover) -->
+ <img class="article-hero" src="${escapeHTML(article.coverImage || article.image)}" alt="${escapeHTML(article.title)} Cover">
+ 
+ <div class="article-layout">
+   <div class="article-content">
+     
+     <!-- GAMBAR 2: Chart / Grafik Analisis Teknis di dalam artikel -->
+     <div style="margin-bottom: 25px; text-align: center;">
+       <img src="${escapeHTML(article.image)}" alt="${escapeHTML(article.title)} Chart" style="width: 100%; border-radius: 10px;">
+       <p class="small muted" style="margin-top: 8px;">Technical Chart & Price Action Structure</p>
+     </div>
+
+     ${articleContentHtml}
+     
+     <div class="satisfynex-author-card" itemscope itemtype="https://schema.org/Person" style="margin: 30px 0 20px 0; padding: 20px; background-color: var(--panel); border: 1px solid var(--line); border-radius: 12px; display: flex; gap: 16px; align-items: flex-start; color: var(--text);">
+       <div style="flex-shrink: 0;">
+         <img src="/Icon.png" alt="Tutde Ariyasa" itemprop="image" style="width: 50px; height: 50px; border-radius: 50%; border: 1px solid var(--line); object-fit: cover; background: #0c1017;" />
+       </div>
+       <div style="display: flex; flex-direction: column; gap: 4px;">
+         <span style="font-size: 0.7rem; font-weight: 800; letter-spacing: 0.8px; color: var(--accent); text-transform: uppercase;">WRITTEN BY</span>
+         <h4 style="margin: 0; font-size: 1.05rem; font-weight: 600; color: var(--text);" itemprop="name">Tutde Ariyasa</h4>
+         <p style="margin: 4px 0 0; font-size: 0.85rem; line-height: 1.45; color: var(--muted);" itemprop="description">
+           Independent financial analyst and founder of Satisfynex, specializing in US equities technical analysis, market data visualization, and risk-first research.
+         </p>
+         <div style="margin-top: 6px; font-size: 0.8rem; color: var(--muted);">
+           <span itemprop="jobTitle">Independent Financial Analyst</span> • <a href="/about" style="color: var(--accent); text-decoration: underline;">Learn about our research methodology &rarr;</a>
+         </div>
+       </div>
+     </div>
+     
+     <div style="margin: 20px 0; padding: 12px; background: rgba(142, 224, 189, 0.03); border-left: 3px solid var(--accent); font-size: 0.85rem; color: var(--muted);">
+       <span>Primary Source Verification: </span>
+       <a href="https://www.sec.gov" target="_blank" rel="noopener" style="color: var(--accent);">SEC EDGAR Database</a> &bull; 
+       <a href="https://www.investor.gov" target="_blank" rel="noopener" style="color: var(--accent);">Investor Relations Portal</a>
+     </div>
+     
+     <hr style="border:0;border-top:1px solid var(--line);margin:35px 0"><p class="muted small">This article is provided for informational and educational purposes only. It is not a recommendation to buy or sell any security.</p>
+     
+     ${relatedHtml}
+     
+   </div>
+   <aside class="sidebar"><div class="panel"><h3>About this research</h3><p>Satisfynex explores company fundamentals, market developments, technical evidence, and investment risks.</p></div><div class="panel"><h3>Explore more</h3><a class="read-more" href="/#latest">Browse all articles →</a></div></aside>
+ </div>
+</article>`;
+ 
+ setMeta(article);
+ updateDynamicCanonical();
+ setTimeout(processAllImages, 300);
+ 
+ if(push)history.pushState({view:"article",id:article.id},"",articleUrl(article.id));
+ window.scrollTo(0, 0);
+}
+ 
+const pages={
+ privacy:{title:"Privacy Policy",body:`<p><strong>Last updated: October 20, 2026</strong></p><p>This Privacy Policy explains how Satisfynex handles information when you visit our website.</p><h2>Information we may collect</h2><p>Our hosting and website services may process technical information such as IP address, browser type, device information, and request logs to operate and secure the website.</p><h2>Contacting us</h2><p>If you email us, we receive the information you choose to include and use it to respond.</p><h2>Cookies and advertising</h2><p>If analytics or advertising services are enabled, those services may use cookies or similar technologies under their own policies. Actual use depends on the services enabled on this website.</p><h2>Third-party services</h2><p>Hosting, database, analytics, and advertising providers may process information under their own policies.</p><h2>Your choices</h2><p>Depending on applicable law, you may request access to, correction of, or deletion of personal information.</p><h2>Contact</h2><p>Privacy questions: <a href="mailto:research@satisfynex.com">research@satisfynex.com</a>.</p>`},
+ terms:{title:"Terms of Service",body:`<p><strong>Last updated: October 20, 2026</strong></p><p>By using Satisfynex, you agree to these terms.</p><h2>Purpose</h2><p>Satisfynex publishes general information and educational research about US-listed companies, financial results, industries, and markets.</p><h2>No investment advice</h2><p>Content is not personalized financial, legal, or tax advice and is not an offer to buy or sell securities. You are responsible for your decisions.</p><h2>Accuracy and risks</h2><p>We do not guarantee content is complete, current, or error-free. Investing involves risk, including the possible loss of capital. Past performance does not guarantee future results.</p><h2>Intellectual property</h2><p>Do not republish substantial original content commercially without permission from the relevant rights holder.</p><h2>Third-party links</h2><p>We are not responsible for external websites or services.</p><h2>Contact</h2><p><a href="mailto:research@satisfynex.com">research@satisfynex.com</a></p>`},
+ about:{
+   title: "About Us",
+   body: `
+     <p>Satisfynex is an independent financial research platform dedicated to delivering clean, data-driven technical analysis and market insights on US-listed equities, energy sectors, and commodities. Founded in Bali, Indonesia, Satisfynex operates with a clear objective: to cut through market noise and provide retail investors with objective, actionable visual chart breakdowns.</p>
+     <h2>The Founder's Journey: Self-Taught Discipline & Market Precision</h2>
+     <p>Satisfynex is founded and operated by <strong>Tutde Ariyasa</strong>, an independent financial analyst and self-taught market researcher based in Bali, Indonesia. Starting as an individual investor who spent years studying US stock market dynamics, technical charting workflows, and custom indicator development on TradingView, Tutde built this platform to document rigorous, hands-on market evaluations.</p>
+     <h2>Our Mission & Approach</h2>
+     <p>Our mission is to serve as an objective research journal, presenting clear technical indicators, fundamental business metrics, and structural chart analysis.</p>
+     <h2>Educational Disclaimer</h2>
+     <p>All articles, charts, commentary, and materials published by Satisfynex are strictly for educational and informational purposes.</p>
+     <h2>Contact</h2>
+     <p><a href="mailto:research@satisfynex.com">research@satisfynex.com</a></p>
+   `
+ },
+ contact:{title:"Contact Us",body:`<p>We welcome reader feedback, questions about published research, and correction requests.</p><div class="contact-card"><div class="eyebrow">Email</div><h2>Get in touch with Satisfynex</h2><p><a class="email-link" href="mailto:research@satisfynex.com">research@satisfynex.com</a></p></div>`},
+ disclaimer:{title:"Investment Disclaimer",body:`<p><strong>Last updated: October 20, 2026</strong></p><p>All articles, charts, commentary, and materials published by Satisfynex are for general informational and educational purposes only.</p>`}
+};
+ 
+function showPage(type,push=true){
+ const p=pages[type];
+ if(!p){showHome(false);return;}
+ showView("page");
+ $("#pageDetail").innerHTML=`<h1>${escapeHTML(p.title)}</h1>${p.body}`;
+ setMeta(null,p.title);
+ updateDynamicCanonical();
+ const paths={privacy:"/privacy-policy",terms:"/terms-of-service",about:"/about",contact:"/contact",disclaimer:"/disclaimer"};
+ if(push)history.pushState({view:"page",type},"",paths[type]);
+ window.scrollTo(0, 0);
+}
+ 
+function routeFromLocation(){
+ const path=location.pathname.replace(/\/+$/,"")||"/";
+ if(path==="/global-markets"){
+  showGlobalMarkets(false);
+  return;
+ }
+ if(path.startsWith("/articles/")){
+  const slug=path.slice("/articles/".length);
+  openArticleById(slug,false);
+  return;
+ }
+ const routes={"/privacy-policy":"privacy","/terms-of-service":"terms","/about":"about","/contact":"contact","/disclaimer":"disclaimer"};
+ if(routes[path]){
+  showPage(routes[path],false);
+  return;
+ }
+ showView("home");
+ setMeta();
+ updateDynamicCanonical();
+ if(location.hash==="#latest")setTimeout(()=>$("#latest").scrollIntoView(),0);
+}
+ 
+document.addEventListener("click",e=>{
+ const a=e.target.closest("a[data-article]");
+ if(a&&!e.ctrlKey&&!e.metaKey&&!e.shiftKey&&!e.altKey&&e.button===0){
   e.preventDefault();
-  const btn = document.getElementById('submitBtn');
-  const statusDiv = document.getElementById('statusMessage');
-  
-  btn.disabled = true;
-  btn.textContent = "Menyimpan Artikel...";
-  statusDiv.innerHTML = '<div style="padding:12px; background:#183e35; color:var(--accent); border-radius:8px; margin-bottom:20px; font-size:13px;">Menyimpan data artikel ke database Supabase...</div>';
+  openArticleById(a.dataset.article,true);
+  return;
+ }
+ const link=e.target.closest("a");
+ if(!link||e.ctrlKey||e.metaKey||e.shiftKey||e.altKey||e.button!==0)return;
+ const url=new URL(link.href,location.href);
+ if(url.origin!==location.origin)return;
  
-  try {
-    const rawTicker = $("#ticker").value.trim();
-    let userTicker = rawTicker ? rawTicker.toUpperCase() : null;
-
-    const title = $("#title").value.trim();
-    const slug = $("#slug").value.trim();
-    const content = $("#content").value;
-    const statusValue = "published";
-
-    // Objek artikel lengkap dengan dual-image (image_url untuk chart, cover_image untuk Google Discover)
-    const article = {
-      title,
-      slug,
-      ticker: userTicker,
-      category: $("#category").value,
-      excerpt: $("#excerpt").value.trim() || null,
-      content,
-      image_url: imageUrl || null,
-      cover_image: coverImageUrl || imageUrl || null,
-      status: statusValue,
-      updated_at: new Date().toISOString()
-    };
+ if(url.pathname==="/global-markets"){
+  e.preventDefault();
+  showGlobalMarkets(true);
+  return;
+ }
+ if(url.pathname==="/#latest"||link.getAttribute("href")==="/#latest"){
+  e.preventDefault();
+  showHome(true,"#latest");
+  return;
+ }
+ if(url.pathname==="/"&&!url.hash){
+  e.preventDefault();
+  showHome(true);
+  return;
+ }
+ const pathToType={"/privacy-policy":"privacy","/terms-of-service":"terms","/about":"about","/contact":"contact","/disclaimer":"disclaimer"};
+ if(pathToType[url.pathname]){
+  e.preventDefault();
+  showPage(pathToType[url.pathname],true);
+ }
+});
  
-    const id = $("#articleId").value;
-    const result = id 
-      ? await fetch(`${SUPABASE_URL}/rest/v1/articles?id=eq.${id}`, {
-          method: 'PATCH',
-          headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-          body: JSON.stringify(article)
-        })
-      : await fetch(`${SUPABASE_URL}/rest/v1/articles`, {
-          method: 'POST',
-          headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-          body: JSON.stringify(article)
-        });
+window.addEventListener("popstate",routeFromLocation);
+$("#searchInput").addEventListener("input",()=>{currentPage=1;renderArticles();});
+$("#categoryFilter").addEventListener("change",()=>{currentPage=1;renderArticles();});
+$("#year").textContent=new Date().getFullYear();
  
-    if (!result.ok) {
-      throw new Error('Gagal menyimpan artikel ke database Supabase (Periksa keunikan slug).');
-    }
+async function loadArticles(){
+ const headers = {
+   apikey: SUPABASE_KEY,
+   Authorization: "Bearer " + SUPABASE_KEY,
+   Accept: "application/json"
+ };
  
-    statusDiv.innerHTML = '<div style="padding:12px; background:#183e35; color:var(--accent); border-radius:8px; margin-bottom:20px; font-size:13px;">Artikel berhasil diterbitkan dengan 2 gambar terpisah (Cover Discover & Chart)!</div>';
-    document.getElementById('articleForm').reset();
-    imageUrl = "";
-    coverImageUrl = "";
-    $("#imageStatus").textContent = "Rekomendasi gambar grafik teknikal.";
-    $("#coverImageStatus").textContent = "Rekomendasi rasio 16:9 bersih untuk thumbnail dan Google Discover.";
-  } catch (err) {
-    console.error(err);
-    statusDiv.innerHTML = `<div style="padding:12px; background:#421a1a; color:#ff8e8e; border-radius:8px; margin-bottom:20px; font-size:13px;">Error: ${err.message}</div>`;
-  } finally {
-    btn.disabled = false;
-    btn.textContent = "Publish Article";
+ const articlesEndpoint = SUPABASE_URL + "/rest/v1/articles?select=id,title,slug,ticker,category,excerpt,content,image_url,cover_image,status,created_at&status=eq.published&order=created_at.desc";
+ const newsEndpoint = SUPABASE_URL + "/rest/v1/news?select=id,title,summary,analysis,category,image_url,source_url,source_name,created_at&order=created_at.desc";
+ 
+ try{
+  const [resArticles, resNews] = await Promise.all([
+    fetch(articlesEndpoint, { headers }),
+    fetch(newsEndpoint, { headers })
+  ]);
+ 
+  let combinedRows = [];
+  if (resArticles.ok) {
+    const manualArticles = await resArticles.json();
+    if (Array.isArray(manualArticles)) combinedRows.push(...manualArticles);
   }
-});
-
-$("#resetBtn").addEventListener("click", () => {
-  document.getElementById('articleForm').reset();
-  $("#articleId").value = "";
-  imageUrl = "";
-  coverImageUrl = "";
-  $("#statusMessage").innerHTML = "";
-  $("#editorHeading").textContent = "Publish Article";
-});
+ 
+  if (resNews.ok) {
+    const autoNews = await resNews.json();
+    if (Array.isArray(autoNews)) {
+      const formattedNews = autoNews.map(item => ({
+        id: "news-" + item.id,
+        title: item.title,
+        slug: "news-"+item.id,
+        ticker: "MARKET",
+        category: item.category || "Market Insights",
+        excerpt: item.summary,
+        content: `${item.summary}\n\nKey Market Analysis:\n${item.analysis}\n\nSource: ${item.source_name || 'CNBC'}`,
+        image_url: item.image_url,
+        cover_image: item.image_url, // fallback jika berita otomatis belum punya cover khusus
+        status: "published",
+        created_at: item.created_at
+      }));
+      combinedRows.push(...formattedNews);
+    }
+  }
+ 
+  combinedRows.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  articles = combinedRows.map(toArticle);
+ 
+  renderCategories();
+  renderFeatured();
+  renderArticles();
+  routeFromLocation();
+ }catch(err){
+  console.error("Satisfynex loading error:",err);
+  $("#featuredGrid").innerHTML='<div class="notice">Unable to load published research. Please try again later.</div>';
+  $("#articleGrid").innerHTML='<div class="notice" style="grid-column:1/-1">Articles could not be loaded.</div>';
+  $("#articleCount").textContent="Temporarily unavailable";
+  routeFromLocation();
+ }
+}
+ 
+loadArticles();
+initTextRotator();
 </script>
 </body>
 </html>
