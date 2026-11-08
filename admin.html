@@ -301,7 +301,6 @@ button:disabled{opacity:.5}
   let user = null;
   let currentTab = "research";
   
-  // State 2 gambar terpisah
   let coverImageUrl = "";
   let removeCoverImage = false;
   let chartImageUrl = "";
@@ -329,12 +328,12 @@ button:disabled{opacity:.5}
       .slice(0, 200);
   }
 
-  // AUTO UPDATE TEKS X
+  // AUTO UPDATE TEKS X (DISESUAIKAN KE /news/)
   function updateSocialBox() {
     const title = $("title").value || "Judul Artikel";
     const ticker = $("ticker").value.trim();
     const slug = $("slug").value || "artikel-baru";
-    const domainUrl = `satisfynex.com/articles/${slug}`;
+    const domainUrl = `satisfynex.com/news/${slug}`;
     const tickerFormatted = ticker ? `${ticker.toUpperCase()} ` : "";
     
     const tweetFormat = `[NEW RESEARCH] ${tickerFormatted}${title}\n\nRead the full report 👇\n${domainUrl}\n\n#SatisfyNex #StockMarket #Investing #USEquities`;
@@ -384,7 +383,6 @@ button:disabled{opacity:.5}
 
   $("formatMarkdownBtn").addEventListener("click", convertMarkdownToHtml);
 
-  // RENDER GOOGLE TRENDS STYLE TABLE
   async function loadAdminMarketTrends() {
     const tbody = $("trendsTableBody");
     if (!tbody) return;
@@ -599,7 +597,6 @@ button:disabled{opacity:.5}
   }
   $("newNewsBtn").addEventListener("click", resetNewsEditor);
 
-  // EVENT LISTENER COVER IMAGE
   $("coverImageFile").addEventListener("change", () => {
     const file = $("coverImageFile").files[0];
     if (!file) return;
@@ -624,7 +621,6 @@ button:disabled{opacity:.5}
     coverPreview("");
   });
 
-  // EVENT LISTENER CHART IMAGE
   $("chartImageFile").addEventListener("change", () => {
     const file = $("chartImageFile").files[0];
     if (!file) return;
@@ -706,7 +702,6 @@ button:disabled{opacity:.5}
     status("saveStatus", "Saving article…");
 
     try {
-      // 1. UPLOAD COVER IMAGE (GOOGLE DISCOVER)
       let finalCover = removeCoverImage ? null : coverImageUrl;
       const coverFile = $("coverImageFile").files[0];
       if (coverFile) {
@@ -714,7 +709,6 @@ button:disabled{opacity:.5}
         finalCover = await uploadImage(coverFile);
       }
 
-      // 2. UPLOAD CHART IMAGE (IN ARTICLE)
       let finalChart = removeChartImage ? null : chartImageUrl;
       const chartFile = $("chartImageFile").files[0];
       if (chartFile) {
@@ -974,7 +968,6 @@ button:disabled{opacity:.5}
     const hasGlobalTicker = ['$SSEC', '$COMPOSITE', '$IHSG', '$NYA', '$NDX', '$DJI', '$SPX', '$XAUUSD'].some(t => (data.ticker || "").toUpperCase().includes(t));
     $("targetSection").value = hasGlobalTicker ? "global" : "research";
 
-    // LOAD PREVIEW DUA GAMBAR TERPISAH
     coverImageUrl = data.cover_image || "";
     removeCoverImage = false;
     $("coverImageFile").value = "";
