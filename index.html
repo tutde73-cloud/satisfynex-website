@@ -67,8 +67,23 @@ button,input,select{font:inherit}
  
 .eyebrow{color:var(--accent);font-size:11px;letter-spacing:2px;font-weight:800;text-transform:uppercase}
 h1,h2,h3,p{margin-top:0}
-.hero h1, .hero h2.hero-title{max-width:780px;margin:16px 0;font-size:clamp(36px,6vw,60px);line-height:1.1;letter-spacing:-1.8px;text-shadow: 0 2px 10px rgba(0,0,0,0.7)}
-.hero p{max-width:640px;color:#d0d9e5;font-size:17px;min-height:65px;text-shadow: 0 1px 5px rgba(0,0,0,0.8)}
+.hero h1, .hero h2.hero-title{
+  max-width: 780px;
+  margin: 12px 0 16px 0;
+  font-size: clamp(32px, 5vw, 52px);
+  line-height: 1.25;
+  letter-spacing: -1px;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.7);
+}
+.hero p{
+  max-width: 640px;
+  color: #d0d9e5;
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: auto;
+  text-shadow: 0 1px 5px rgba(0,0,0,0.8);
+  margin-bottom: 20px;
+}
 .hero-note{display:inline-block;border:1px solid var(--line);border-radius:30px;padding:7px 13px;color:var(--muted);font-size:12px;background: rgba(12, 16, 23, 0.6);backdrop-filter: blur(4px)}
  
 .section,.article-page{padding:42px 0}
@@ -112,7 +127,6 @@ h1,h2,h3,p{margin-top:0}
 
 .article-hero{display:block;width:100%;max-height:480px;object-fit:cover;margin:0 auto 30px;border-radius:12px}
 
-/* Styling Gambar Kedua di Tengah Artikel (Diperkecil & Rapi) */
 .article-chart-img {
   display: block;
   width: 100%;
@@ -286,61 +300,13 @@ document.addEventListener("contextmenu", function(e) {
   e.preventDefault();
 });
  
-function applyWatermark(imgElement) {
-  if (!imgElement || imgElement.dataset.watermarked === "true") return;
- 
-  if (!imgElement.complete || imgElement.naturalWidth === 0) {
-    imgElement.onload = () => applyWatermark(imgElement);
-    return;
+// Fallback otomatis jika gambar gagal dimuat agar tidak muncul tanda tanya [?]
+document.addEventListener("error", function (e) {
+  if (e.target.tagName.toLowerCase() === "img") {
+    e.target.src = "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=1200&q=80";
   }
- 
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
- 
-  const img = new Image();
-  img.crossOrigin = "anonymous";
- 
-  img.onload = () => {
-    try {
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
-      ctx.drawImage(img, 0, 0);
- 
-      const fontSize = Math.max(22, Math.floor(canvas.width * 0.065)); 
-      ctx.font = `bold ${fontSize}px Inter, sans-serif`;
-      ctx.fillStyle = "rgba(255, 255, 255, 0.25)"; 
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
- 
-      ctx.shadowColor = "rgba(0, 0, 0, 0.4)";
-      ctx.shadowBlur = 10;
-      ctx.shadowOffsetX = 0;
-      ctx.shadowOffsetY = 0;
- 
-      const centerX = canvas.width / 2;
-      const centerY = canvas.height / 2;
-      ctx.fillText("satisfynex.com", centerX, centerY);
- 
-      imgElement.src = canvas.toDataURL("image/png");
-      imgElement.dataset.watermarked = "true";
-    } catch (err) {
-      console.warn("Watermark terhalang isu CORS Supabase:", err);
-    }
-  };
- 
-  img.onerror = () => {
-    console.warn("Gagal memuat gambar untuk watermark.");
-  };
- 
-  if (imgElement.src.startsWith("data:")) return;
-  img.src = imgElement.src + (imgElement.src.includes("?") ? "&" : "?") + "cors=1";
-}
- 
-function processAllImages() {
-  const images = document.querySelectorAll("img.cover, img.article-hero, .article-content img, .side-story img, .related-thumb");
-  images.forEach(img => applyWatermark(img));
-}
- 
+}, true);
+
 const SUPABASE_URL="https://ngysrsypmieuvucqupgd.supabase.co";
 const SUPABASE_KEY="sb_publishable_U05M_WQFKioCZ1LNSfyNbQ_jUoJTQvd";
 const SITE_URL="https://www.satisfynex.com";
@@ -397,7 +363,6 @@ function normalizeSlug(value){
  raw=raw.replace(/^\/+/,"");
  raw=raw.replace(/^www\.satisfynex\.com\/?/i,"");
  raw=raw.replace(/^satisfynex\.com\/?/i,"");
- // Diubah dari articles/ menjadi news/
  raw=raw.replace(/^news\//i,"");
  raw=raw.replace(/\/+$/,"");
  raw=raw.split("/").filter(Boolean).pop()||"";
@@ -408,7 +373,6 @@ function normalizeSlug(value){
 function articleUrl(value){
  const slug=normalizeSlug(value);
  if(!slug)return "/";
- // Diubah dari /articles/ menjadi /news/
  return "/news/"+encodeURIComponent(slug);
 }
  
@@ -485,8 +449,6 @@ function renderFeatured(){
  <div class="meta"><span>${escapeHTML(main.date)}</span><span>${escapeHTML(main.read)}</span></div>
  <p class="excerpt">${escapeHTML(main.excerpt)}</p><a class="read-more" href="${escapeHTML(mainUrl)}" data-article="${escapeHTML(main.id)}">Read full review →</a></div></article>
  <div class="feature-side">${side.length?side.map(a=>`<article class="side-story"><a href="${escapeHTML(articleUrl(a.id))}" data-article="${escapeHTML(a.id)}"><img src="${escapeHTML(a.image)}" alt="${escapeHTML(a.title)}" loading="lazy"></a><div><div><span class="tag">${escapeHTML(a.category)}</span></div><h3><a href="${escapeHTML(articleUrl(a.id))}" data-article="${escapeHTML(a.id)}">${escapeHTML(a.title)}</a></h3><div class="meta">${escapeHTML(a.date)}</div></div></article>`).join(""):'<div class="notice">More gadget news coming soon.</div>'}</div>`;
- 
- setTimeout(processAllImages, 300);
 }
  
 function renderCategories(){
@@ -514,8 +476,6 @@ function renderArticles(){
  
  $("#articleCount").textContent=filtered.length+(filtered.length===1?" article":" articles");
  $("#articleGrid").innerHTML=paginated.length?paginated.map(cardMarkup).join(""):'<div class="empty" style="grid-column:1/-1">No matching articles found.</div>';
- 
- setTimeout(processAllImages, 300);
  
  const pagContainer=$("#paginationContainer");
  if(totalPages>1){
@@ -692,7 +652,6 @@ function openArticleById(id,push=true){
  
  setMeta(article);
  updateDynamicCanonical();
- setTimeout(processAllImages, 300);
  
  if(push)history.pushState({view:"article",id:article.id},"",articleUrl(article.id));
  window.scrollTo(0, 0);
@@ -728,7 +687,6 @@ function showPage(type,push=true){
  
 function routeFromLocation(){
  const path=location.pathname.replace(/\/+$/,"")||"/";
- // Diubah dari /articles/ menjadi /news/
  if(path.startsWith("/news/")){
   const slug=path.slice("/news/".length);
   openArticleById(slug,false);
