@@ -24,14 +24,21 @@ export default async function handler(req, res) {
     // Filter artikel yang published (toleransi huruf besar/kecil)
     const articles = (allArticles || []).filter(a => !a.status || a.status.toLowerCase() === 'published');
 
-    const itemsXml = articles.map(article => `
+    const itemsXml = articles.map(article => {
+      let cleanSlug = String(article.slug || '')
+        .trim()
+        .replace(/^\/+|\/+$/g, "")
+        .replace(/^(articles|news)\//i, "");
+
+      return `
     <item>
       <title><![CDATA[${article.title || ''}]]></title>
-      <link>${SITE_URL}/articles/${article.slug}</link>
-      <guid isPermaLink="true">${SITE_URL}/articles/${article.slug}</guid>
+      <link>${SITE_URL}/news/${encodeURIComponent(cleanSlug)}</link>
+      <guid isPermaLink="true">${SITE_URL}/news/${encodeURIComponent(cleanSlug)}</guid>
       <pubDate>${new Date(article.created_at).toUTCString()}</pubDate>
       <description><![CDATA[${article.excerpt || ''}]]></description>
-    </item>`).join('');
+    </item>`;
+    }).join('');
 
     const rssXml = `<?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
@@ -47,7 +54,7 @@ export default async function handler(req, res) {
 </rss>`;
 
     res.setHeader('Content-Type', 'text/xml; charset=utf-8');
-    // UBAH: Matikan Cache Vercel agar RSS selalu menyajikan data paling gres dari Supabase
+    // Matikan Cache Vercel agar RSS selalu menyajikan data paling gres dari Supabase
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     return res.status(200).send(rssXml);
   } catch (err) {
