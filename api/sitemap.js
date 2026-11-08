@@ -45,19 +45,19 @@ export default async function handler(req, res) {
     <priority>1.0</priority>
   </url>`);
 
-    // 2. Daftar Artikel
+    // 2. Daftar Artikel (Diubah rutenya dari /articles/ ke /news/)
     for (const article of articles) {
       if (!article.slug) continue;
 
       let cleanSlug = String(article.slug)
         .trim()
         .replace(/^\/+|\/+$/g, "")
-        .replace(/^articles\//i, "");
+        .replace(/^(articles|news)\//i, "");
 
       if (!cleanSlug || seen.has(cleanSlug)) continue;
       seen.add(cleanSlug);
 
-      const loc = `${SITE_URL}/articles/${encodeURIComponent(cleanSlug)}`;
+      const loc = `${SITE_URL}/news/${encodeURIComponent(cleanSlug)}`;
       const date = article.updated_at || article.created_at;
 
       let lastmod = "";
