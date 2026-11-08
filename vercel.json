@@ -23,6 +23,13 @@
       ]
     }
   ],
+  "redirects": [
+    {
+      "source": "/articles/:path+",
+      "destination": "/",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/rss.xml",
