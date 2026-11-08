@@ -112,6 +112,18 @@ h1,h2,h3,p{margin-top:0}
 
 .article-hero{display:block;width:100%;max-height:480px;object-fit:cover;margin:0 auto 30px;border-radius:12px}
 
+/* Styling Khusus Gambar Kedua / Chart agar di tengah dan proporsional (diperkecil) */
+.article-chart-img {
+  display: block;
+  width: 100%;
+  max-width: 650px;
+  max-height: 400px;
+  object-fit: cover;
+  margin: 30px auto;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+}
+
 .article-layout{display:grid;grid-template-columns:minmax(0,780px) minmax(180px,1fr);gap:35px;align-items:start}
 .article-content{font-size:16px;color:#dbe2ed;overflow-wrap:anywhere}
 .article-content h2{color:var(--text);font-size:25px;margin:30px 0 12px}
@@ -618,8 +630,8 @@ function openArticleById(id,push=true){
  <div class="article-layout">
    <div class="article-content">
      
-     <!-- Gambar Kedua (Chart / Analysis Image) -->
-     ${article.chartImage ? `<img src="${escapeHTML(article.chartImage)}" alt="Analysis & Detailed View">` : ""}
+     <!-- Gambar Kedua (Diperkecil dan Diposisikan di Tengah) -->
+     ${article.chartImage ? `<img class="article-chart-img" src="${escapeHTML(article.chartImage)}" alt="Analysis & Detailed View">` : ""}
      
      ${articleContentHtml}
      
