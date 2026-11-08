@@ -1,5 +1,5 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "$schema": "https://vercel.sh",
   "headers": [
     {
       "source": "/(.*)",
@@ -41,10 +41,6 @@
     },
     {
       "source": "/global-markets",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/articles/:path*",
       "destination": "/index.html"
     },
     {
