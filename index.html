@@ -397,7 +397,8 @@ function normalizeSlug(value){
  raw=raw.replace(/^\/+/,"");
  raw=raw.replace(/^www\.satisfynex\.com\/?/i,"");
  raw=raw.replace(/^satisfynex\.com\/?/i,"");
- raw=raw.replace(/^articles\//i,"");
+ // Diubah dari articles/ menjadi news/
+ raw=raw.replace(/^news\//i,"");
  raw=raw.replace(/\/+$/,"");
  raw=raw.split("/").filter(Boolean).pop()||"";
  try{raw=decodeURIComponent(raw);}catch(e){}
@@ -407,7 +408,8 @@ function normalizeSlug(value){
 function articleUrl(value){
  const slug=normalizeSlug(value);
  if(!slug)return "/";
- return "/articles/"+encodeURIComponent(slug);
+ // Diubah dari /articles/ menjadi /news/
+ return "/news/"+encodeURIComponent(slug);
 }
  
 function safeImage(value){
@@ -618,13 +620,11 @@ function openArticleById(id,push=true){
    </div>
  </div>` : "";
 
- // Logika untuk memecah konten artikel agar gambar kedua tampil persis di tengah artikel (sesuai coretan hijau)
  let finalContentHtml = articleContentHtml;
  if (article.chartImage) {
    const chartImgHtml = `<img class="article-chart-img" src="${escapeHTML(article.chartImage)}" alt="Analysis & Detailed View">`;
    const h3Tags = articleContentHtml.match(/<h3>/g);
    
-   // Jika artikel memiliki subheading (h3), letakkan tepat sebelum subheading ke-2 (persis di posisi coretan hijau)
    if (h3Tags && h3Tags.length >= 2) {
      let splitIndex = 0;
      let foundCount = 0;
@@ -643,7 +643,6 @@ function openArticleById(id,push=true){
        finalContentHtml = articleContentHtml + chartImgHtml;
      }
    } else {
-     // Fallback: jika tidak ada subheading, letakkan di tengah panjang teks
      const middle = Math.floor(articleContentHtml.length / 2);
      const nextParagraph = articleContentHtml.indexOf("</p>", middle);
      if (nextParagraph !== -1) {
@@ -729,8 +728,9 @@ function showPage(type,push=true){
  
 function routeFromLocation(){
  const path=location.pathname.replace(/\/+$/,"")||"/";
- if(path.startsWith("/articles/")){
-  const slug=path.slice("/articles/".length);
+ // Diubah dari /articles/ menjadi /news/
+ if(path.startsWith("/news/")){
+  const slug=path.slice("/news/".length);
   openArticleById(slug,false);
   return;
  }
@@ -809,7 +809,7 @@ async function loadArticles(){
   $("#featuredGrid").innerHTML='<div class="notice">Unable to load published articles. Please try again later.</div>';
   $("#articleGrid").innerHTML='<div class="notice" style="grid-column:1/-1">Articles could not be loaded.</div>';
   $("#articleCount").textContent="Temporarily unavailable";
-  routeFromCurrentLocation();
+  routeFromLocation();
  }
 }
  
