@@ -112,16 +112,17 @@ h1,h2,h3,p{margin-top:0}
 
 .article-hero{display:block;width:100%;max-height:480px;object-fit:cover;margin:0 auto 30px;border-radius:12px}
 
-/* Styling Khusus Gambar Kedua / Chart agar di tengah dan proporsional (diperkecil) */
+/* Styling Gambar Kedua di Tengah Artikel (Diperkecil & Rapi) */
 .article-chart-img {
   display: block;
   width: 100%;
-  max-width: 650px;
-  max-height: 400px;
+  max-width: 480px;
+  max-height: 300px;
   object-fit: cover;
-  margin: 30px auto;
-  border-radius: 12px;
+  margin: 35px auto;
+  border-radius: 10px;
   border: 1px solid var(--line);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
 }
 
 .article-layout{display:grid;grid-template-columns:minmax(0,780px) minmax(180px,1fr);gap:35px;align-items:start}
@@ -617,6 +618,42 @@ function openArticleById(id,push=true){
    </div>
  </div>` : "";
 
+ // Logika untuk memecah konten artikel agar gambar kedua tampil persis di tengah artikel (sesuai coretan hijau)
+ let finalContentHtml = articleContentHtml;
+ if (article.chartImage) {
+   const chartImgHtml = `<img class="article-chart-img" src="${escapeHTML(article.chartImage)}" alt="Analysis & Detailed View">`;
+   const h3Tags = articleContentHtml.match(/<h3>/g);
+   
+   // Jika artikel memiliki subheading (h3), letakkan tepat sebelum subheading ke-2 (persis di posisi coretan hijau)
+   if (h3Tags && h3Tags.length >= 2) {
+     let splitIndex = 0;
+     let foundCount = 0;
+     for (let i = 0; i < articleContentHtml.length; i++) {
+       if (articleContentHtml.substring(i, i + 4) === "<h3>") {
+         foundCount++;
+         if (foundCount === 2) {
+           splitIndex = i;
+           break;
+         }
+       }
+     }
+     if (splitIndex > 0) {
+       finalContentHtml = articleContentHtml.substring(0, splitIndex) + chartImgHtml + articleContentHtml.substring(splitIndex);
+     } else {
+       finalContentHtml = articleContentHtml + chartImgHtml;
+     }
+   } else {
+     // Fallback: jika tidak ada subheading, letakkan di tengah panjang teks
+     const middle = Math.floor(articleContentHtml.length / 2);
+     const nextParagraph = articleContentHtml.indexOf("</p>", middle);
+     if (nextParagraph !== -1) {
+       finalContentHtml = articleContentHtml.substring(0, nextParagraph + 4) + chartImgHtml + articleContentHtml.substring(nextParagraph + 4);
+     } else {
+       finalContentHtml = articleContentHtml + chartImgHtml;
+     }
+   }
+ }
+
  $("#articleDetail").innerHTML=`<article>
  <header class="article-header">
    <div style="margin-bottom:8px;"><span class="tag">${escapeHTML(article.category)}</span></div>
@@ -630,10 +667,7 @@ function openArticleById(id,push=true){
  <div class="article-layout">
    <div class="article-content">
      
-     <!-- Gambar Kedua (Diperkecil dan Diposisikan di Tengah) -->
-     ${article.chartImage ? `<img class="article-chart-img" src="${escapeHTML(article.chartImage)}" alt="Analysis & Detailed View">` : ""}
-     
-     ${articleContentHtml}
+     ${finalContentHtml}
      
      <div class="satisfynex-author-card" itemscope itemtype="https://schema.org/Person" style="margin: 30px 0 20px 0; padding: 20px; background-color: var(--panel); border: 1px solid var(--line); border-radius: 12px; display: flex; gap: 16px; align-items: flex-start; color: var(--text);">
        <div style="flex-shrink: 0;">
@@ -775,7 +809,7 @@ async function loadArticles(){
   $("#featuredGrid").innerHTML='<div class="notice">Unable to load published articles. Please try again later.</div>';
   $("#articleGrid").innerHTML='<div class="notice" style="grid-column:1/-1">Articles could not be loaded.</div>';
   $("#articleCount").textContent="Temporarily unavailable";
-  routeFromLocation();
+  routeFromCurrentLocation();
  }
 }
  
