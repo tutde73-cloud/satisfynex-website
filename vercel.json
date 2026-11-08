@@ -44,6 +44,10 @@
       "destination": "/index.html"
     },
     {
+      "source": "/news/:path*",
+      "destination": "/index.html"
+    },
+    {
       "source": "/privacy-policy",
       "destination": "/index.html"
     },
