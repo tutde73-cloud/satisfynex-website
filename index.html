@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Satisfynex — Technology, Web Engineering & AI Insights</title>
-<meta name="description" content="Independent research and articles on modern web engineering, cloud infrastructure, AI integrations, and software architecture.">
+<title>Satisfynex — Latest Gadgets, Smartphone Reviews & Tech News</title>
+<meta name="description" content="Your independent source for smartphone reviews, gadget updates, hardware teardowns, and consumer technology news.">
 <meta name="robots" content="max-image-preview:large">
  
 <link rel="icon" href="/Icon.png" type="image/png" sizes="192x192">
@@ -12,8 +12,8 @@
  
 <meta property="og:site_name" content="Satisfynex">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Satisfynex — Technology, Web Engineering & AI Insights">
-<meta property="og:description" content="Independent research and articles on modern web engineering, cloud infrastructure, AI integrations, and software architecture.">
+<meta property="og:title" content="Satisfynex — Latest Gadgets, Smartphone Reviews & Tech News">
+<meta property="og:description" content="Your independent source for smartphone reviews, gadget updates, hardware teardowns, and consumer technology news.">
 <meta property="og:url" content="https://www.satisfynex.com/">
 
 <link rel="canonical" href="https://www.satisfynex.com/">
@@ -203,7 +203,7 @@ h1,h2,h3,p{margin-top:0}
   <a class="brand" href="/">satisfy<span>nex</span></a>
   <nav class="navlinks" aria-label="Main navigation">
    <a href="/">Articles</a>
-   <a href="/#latest">Latest</a>
+   <a href="/#latest">Latest News</a>
    <a href="/about">About</a>
   </nav>
  </div>
@@ -212,29 +212,29 @@ h1,h2,h3,p{margin-top:0}
 <main>
 <div id="homeView">
  <section class="hero"><div class="container">
-  <div class="eyebrow">Technology & Engineering Insights</div>
-  <h2 class="hero-title">Building modern software, web infrastructure, and AI systems.</h2>
-  <p id="dynamicHeroText" class="text-rotator">Satisfynex delivers deep dives into frontend architecture, cloud deployment workflows, and modern software engineering practices.</p>
+  <div class="eyebrow">Gadget Reviews & Tech News</div>
+  <h2 class="hero-title">Latest smartphones, hardware reviews, and tech breakthroughs.</h2>
+  <p id="dynamicHeroText" class="text-rotator">Satisfynex delivers hands-on smartphone reviews, gadget specifications, and breaking technology news.</p>
   <div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start;">
-    <div class="hero-note">Engineering research and tutorials</div>
+    <div class="hero-note">Consumer technology & gadget journalism</div>
   </div>
  </div></section>
  
  <section class="section"><div class="container">
-  <div class="section-heading"><div><div class="eyebrow">Editor's selection</div><h2>Featured articles</h2></div></div>
+  <div class="section-heading"><div><div class="eyebrow">Editor's pick</div><h2>Featured reviews</h2></div></div>
   <div id="featuredGrid" class="featured-grid"><div class="notice">Loading published articles...</div></div>
  </div></section>
  
  <section class="section" id="latest"><div class="container">
-  <div class="section-heading"><div><div class="eyebrow">Explore tech logs</div><h2>Latest articles</h2></div><div id="articleCount" class="muted small"></div></div>
+  <div class="section-heading"><div><div class="eyebrow">Latest updates</div><h2>Recent gadget news & articles</h2></div><div id="articleCount" class="muted small"></div></div>
   <div class="filters">
-   <input id="searchInput" type="search" placeholder="Search topic, keyword, or technology..." aria-label="Search articles">
+   <input id="searchInput" type="search" placeholder="Search smartphone, gadget, or brand..." aria-label="Search articles">
    <select id="categoryFilter" aria-label="Filter by category">
      <option value="">All categories</option>
-     <option value="Web Engineering">Web Engineering</option>
-     <option value="AI & Machine Learning">AI & Machine Learning</option>
-     <option value="Cloud & DevOps">Cloud & DevOps</option>
-     <option value="Architecture">Architecture</option>
+     <option value="Smartphones">Smartphones</option>
+     <option value="Reviews">Reviews</option>
+     <option value="Wearables">Wearables</option>
+     <option value="Tech News">Tech News</option>
    </select>
   </div>
   <div id="articleGrid" class="article-grid"><div class="notice">Loading articles...</div></div>
@@ -254,8 +254,8 @@ h1,h2,h3,p{margin-top:0}
 <footer class="footer"><div class="container">
  <div class="footer-row"><div>
   <a class="brand" href="/">satisfy<span>nex</span></a>
-  <p style="margin:8px 0">Independent technology research, web engineering, and software publishing.</p>
-  <p>Questions? <a class="email-link" href="mailto:research@satisfynex.com">research@satisfynex.com</a></p>
+  <p style="margin:8px 0">Independent gadget reviews, smartphone news, and consumer technology reporting.</p>
+  <p>Contact: <a class="email-link" href="mailto:research@satisfynex.com">research@satisfynex.com</a></p>
  </div>
  <nav class="footer-links" aria-label="Policies and information">
   <a href="/privacy-policy">Privacy Policy</a>
@@ -331,7 +331,7 @@ function processAllImages() {
 const SUPABASE_URL="https://ngysrsypmieuvucqupgd.supabase.co";
 const SUPABASE_KEY="sb_publishable_U05M_WQFKioCZ1LNSfyNbQ_jUoJTQvd";
 const SITE_URL="https://www.satisfynex.com";
-const FALLBACK_IMAGE="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1200&q=80";
+const FALLBACK_IMAGE="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=1200&q=80";
  
 let articles=[];
 let currentPage=1;
@@ -340,10 +340,10 @@ const ARTICLES_PER_PAGE=20;
 const $=s=>document.querySelector(s);
  
 const rotatingSentences = [
-  "Satisfynex delivers deep dives into frontend architecture, cloud deployment workflows, and modern software engineering practices.",
-  "Exploring scalable web applications, serverless configurations, and database management with Supabase and PostgreSQL.",
-  "Sharing practical guides on API integrations, automated pipelines, and performance optimization for independent developers.",
-  "Welcome to Satisfynex, documenting modern software development, web tools, and technical publishing workflows."
+  "Satisfynex delivers hands-on smartphone reviews, gadget specifications, and breaking technology news.",
+  "Exploring the latest mobile processors, camera performance benchmarks, and consumer electronics.",
+  "Your trusted source for in-depth gadget analysis, tech tips, and upcoming hardware releases.",
+  "Welcome to Satisfynex, covering the devices and innovations shaping our digital daily lives."
 ];
  
 function initTextRotator() {
@@ -428,13 +428,13 @@ function toArticle(row){
  return {
   id,
   title:row.title||"Untitled Article",
-  category:row.category||"Web Engineering",
+  category:row.category||"Smartphones",
   date:formatDate(row.created_at),
   image:safeImage(displayImage),
   chartImage:safeImage(row.image_url),
   coverImage:safeImage(row.cover_image),   
   read:Math.max(1,Math.ceil(words/200))+" min read",
-  excerpt:row.excerpt||content.slice(0,220)||"Read the latest Satisfynex technology research.",
+  excerpt:row.excerpt||content.slice(0,220)||"Read the latest gadget reviews and tech news on Satisfynex.",
   content,
   created_at: row.created_at
  };
@@ -448,14 +448,14 @@ function cardMarkup(a){
  <div><span class="tag">${escapeHTML(a.category)}</span></div>
  <h3><a href="${escapeHTML(url)}" data-article="${escapeHTML(a.id)}">${escapeHTML(a.title)}</a></h3>
  <div class="meta"><span>${escapeHTML(a.date)}</span><span>${escapeHTML(a.read)}</span></div>
- <p class="excerpt">${escapeHTML(a.excerpt)}</p><a class="read-more" href="${escapeHTML(url)}" data-article="${escapeHTML(a.id)}">Read article →</a></div></article>`;
+ <p class="excerpt">${escapeHTML(a.excerpt)}</p><a class="read-more" href="${escapeHTML(url)}" data-article="${escapeHTML(a.id)}">Read review →</a></div></article>`;
 }
  
 function renderFeatured(){
  const target=$("#featuredGrid");
  
  if(!articles.length){
-  target.innerHTML='<div class="notice">No published articles yet. Publish your first tech article through your admin backend.</div>';
+  target.innerHTML='<div class="notice">No published articles yet. Publish your first gadget review through your admin backend.</div>';
   return;
  }
  
@@ -468,8 +468,8 @@ function renderFeatured(){
  <div><span class="tag">${escapeHTML(main.category)}</span></div>
  <h3><a href="${escapeHTML(mainUrl)}" data-article="${escapeHTML(main.id)}">${escapeHTML(main.title)}</a></h3>
  <div class="meta"><span>${escapeHTML(main.date)}</span><span>${escapeHTML(main.read)}</span></div>
- <p class="excerpt">${escapeHTML(main.excerpt)}</p><a class="read-more" href="${escapeHTML(mainUrl)}" data-article="${escapeHTML(main.id)}">Read full article →</a></div></article>
- <div class="feature-side">${side.length?side.map(a=>`<article class="side-story"><a href="${escapeHTML(articleUrl(a.id))}" data-article="${escapeHTML(a.id)}"><img src="${escapeHTML(a.image)}" alt="${escapeHTML(a.title)}" loading="lazy"></a><div><div><span class="tag">${escapeHTML(a.category)}</span></div><h3><a href="${escapeHTML(articleUrl(a.id))}" data-article="${escapeHTML(a.id)}">${escapeHTML(a.title)}</a></h3><div class="meta">${escapeHTML(a.date)}</div></div></article>`).join(""):'<div class="notice">More tech guides coming soon.</div>'}</div>`;
+ <p class="excerpt">${escapeHTML(main.excerpt)}</p><a class="read-more" href="${escapeHTML(mainUrl)}" data-article="${escapeHTML(main.id)}">Read full review →</a></div></article>
+ <div class="feature-side">${side.length?side.map(a=>`<article class="side-story"><a href="${escapeHTML(articleUrl(a.id))}" data-article="${escapeHTML(a.id)}"><img src="${escapeHTML(a.image)}" alt="${escapeHTML(a.title)}" loading="lazy"></a><div><div><span class="tag">${escapeHTML(a.category)}</span></div><h3><a href="${escapeHTML(articleUrl(a.id))}" data-article="${escapeHTML(a.id)}">${escapeHTML(a.title)}</a></h3><div class="meta">${escapeHTML(a.date)}</div></div></article>`).join(""):'<div class="notice">More gadget news coming soon.</div>'}</div>`;
  
  setTimeout(processAllImages, 300);
 }
@@ -532,8 +532,8 @@ function updateDynamicCanonical() {
 }
  
 function setMeta(article=null,pageTitle=null){
- const title=article?`${article.title} | Satisfynex`:pageTitle?`${pageTitle} | Satisfynex`:"Satisfynex — Technology, Web Engineering & AI Insights";
- const description=String(article?.excerpt||"Independent research on modern web engineering, cloud infrastructure, AI integrations, and software architecture.").replace(/\s+/g," ").slice(0,155);
+ const title=article?`${article.title} | Satisfynex`:pageTitle?`${pageTitle} | Satisfynex`:"Satisfynex — Latest Gadgets, Smartphone Reviews & Tech News";
+ const description=String(article?.excerpt||"Your independent source for smartphone reviews, gadget updates, hardware teardowns, and consumer technology news.").replace(/\s+/g," ").slice(0,155);
  
  document.title=title;
  let d=document.querySelector('meta[name="description"]');
@@ -578,7 +578,7 @@ function openArticleById(id,push=true){
  }
  
  showView("article");
- const articleContentHtml = article.content || "<p>Full article content coming soon.</p>";
+ const articleContentHtml = article.content || "<p>Full review coming soon.</p>";
  
  const sameCategoryArticles = articles.filter(a => a.id !== article.id && a.category === article.category);
  const otherArticles = articles.filter(a => a.id !== article.id && a.category !== article.category);
@@ -586,8 +586,8 @@ function openArticleById(id,push=true){
  
  const relatedHtml = relatedArticles.length > 0 ? `
  <div class="related-research-section">
-   <div class="eyebrow" style="margin-bottom: 4px;">Keep Reading</div>
-   <h3 style="font-size: 20px; margin: 0 0 12px 0;">Related Articles</h3>
+   <div class="eyebrow" style="margin-bottom: 4px;">More Coverage</div>
+   <h3 style="font-size: 20px; margin: 0 0 12px 0;">Related Reviews & News</h3>
    <div class="related-grid">
      ${relatedArticles.map(rel => `
        <article class="related-card">
@@ -628,7 +628,7 @@ function openArticleById(id,push=true){
          <span style="font-size: 0.7rem; font-weight: 800; letter-spacing: 0.8px; color: var(--accent); text-transform: uppercase;">WRITTEN BY</span>
          <h4 style="margin: 0; font-size: 1.05rem; font-weight: 600; color: var(--text);" itemprop="name">Tutde Ariyasa</h4>
          <p style="margin: 4px 0 0; font-size: 0.85rem; line-height: 1.45; color: var(--muted);" itemprop="description">
-           Independent tech publisher and frontend engineer, specializing in web architecture, cloud deployments, and developer tooling.
+           Gadget reviewer and tech publisher specializing in mobile devices, consumer electronics, and hardware performance.
          </p>
        </div>
      </div>
@@ -638,7 +638,7 @@ function openArticleById(id,push=true){
      ${relatedHtml}
      
    </div>
-   <aside class="sidebar"><div class="panel"><h3>About Satisfynex</h3><p>Exploring web engineering, cloud infrastructure, AI tools, and code workflows.</p></div><div class="panel"><h3>Explore more</h3><a class="read-more" href="/#latest">Browse all articles →</a></div></aside>
+   <aside class="sidebar"><div class="panel"><h3>About Satisfynex</h3><p>Your go-to portal for smartphone reviews, hardware specs, and tech news.</p></div><div class="panel"><h3>Explore more</h3><a class="read-more" href="/#latest">Browse all news →</a></div></aside>
  </div>
 </article>`;
  
@@ -652,18 +652,18 @@ function openArticleById(id,push=true){
  
 const pages={
  privacy:{title:"Privacy Policy",body:`<p><strong>Last updated: November 2026</strong></p><p>This Privacy Policy explains how Satisfynex handles information when you visit our website.</p><h2>Information we may collect</h2><p>Our hosting and website services may process technical information such as IP address, browser type, device information, and request logs to operate and secure the website.</p><h2>Contact</h2><p>Privacy questions: <a href="mailto:research@satisfynex.com">research@satisfynex.com</a>.</p>`},
- terms:{title:"Terms of Service",body:`<p><strong>Last updated: November 2026</strong></p><p>By using Satisfynex, you agree to these terms.</p><h2>Purpose</h2><p>Satisfynex publishes general information, technical tutorials, and engineering research.</p><h2>Intellectual property</h2><p>Do not republish substantial original content commercially without permission.</p><h2>Contact</h2><p><a href="mailto:research@satisfynex.com">research@satisfynex.com</a></p>`},
+ terms:{title:"Terms of Service",body:`<p><strong>Last updated: November 2026</strong></p><p>By using Satisfynex, you agree to these terms.</p><h2>Purpose</h2><p>Satisfynex publishes gadget reviews, technology news, and consumer electronics guides.</p><h2>Intellectual property</h2><p>Do not republish substantial original content commercially without permission.</p><h2>Contact</h2><p><a href="mailto:research@satisfynex.com">research@satisfynex.com</a></p>`},
  about:{
    title: "About Us",
    body: `
-     <p>Satisfynex is an independent technology publishing platform focused on web engineering, cloud infrastructure, frontend development, and automated workflows. Based in Bali, Indonesia, Satisfynex explores modern software design and practical deployment solutions.</p>
+     <p>Satisfynex is an independent digital media platform focused on consumer technology, smartphone reviews, mobile hardware, and gadget trends. Based in Bali, Indonesia, Satisfynex aims to deliver transparent, objective device analysis.</p>
      <h2>About the Author</h2>
-     <p>Satisfynex is operated by <strong>Tutde Ariyasa</strong>, a self-taught developer and independent publisher specializing in custom web applications, Git workflows, and technical content integration.</p>
+     <p>Satisfynex is operated by <strong>Tutde Ariyasa</strong>, a technology enthusiast and independent publisher passionate about mobile tech and gadget ecosystems.</p>
      <h2>Contact</h2>
      <p><a href="mailto:research@satisfynex.com">research@satisfynex.com</a></p>
    `
  },
- contact:{title:"Contact Us",body:`<p>We welcome reader feedback, questions, and technical inquiries.</p><div class="contact-card"><div class="eyebrow">Email</div><h2>Get in touch with Satisfynex</h2><p><a class="email-link" href="mailto:research@satisfynex.com">research@satisfynex.com</a></p></div>`}
+ contact:{title:"Contact Us",body:`<p>We welcome reader feedback, gadget review pitches, and press inquiries.</p><div class="contact-card"><div class="eyebrow">Email</div><h2>Get in touch with Satisfynex</h2><p><a class="email-link" href="mailto:research@satisfynex.com">research@satisfynex.com</a></p></div>`}
 };
  
 function showPage(type,push=true){
